@@ -22,4 +22,8 @@ export class RegistroEmpleadosService {
   getAllHuellas(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/huellas`);
   }
+
+  getAllEmpleados(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/all`);
+  }
 }
