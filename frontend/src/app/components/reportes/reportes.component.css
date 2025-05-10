@@ -1,0 +1,23 @@
+/* reportes.component.css */
+.reportes-container {
+    max-width: 800px;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f8f9fa;
+  }
+  
