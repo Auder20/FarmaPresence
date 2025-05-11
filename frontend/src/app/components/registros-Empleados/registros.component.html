@@ -85,6 +85,26 @@
               </button>
             </div>
           </div>
+
+          <!-- Campo Horario -->
+          <div class="form-group">
+            <label for="horario">Horario:</label>
+            <select
+              id="horario"
+              [(ngModel)]="empleado.horarioId"
+              name="horario"
+              required
+              class="form-control"
+            >
+              <option [ngValue]="null" disabled>Seleccione un horario</option>
+              <option *ngFor="let horario of horarios" [value]="horario.id">
+                {{ horario.descripcion }} - {{ horario.horaInicio1 }} a {{ horario.horaFin1 }}
+                <span *ngIf="horario.horaInicio2 && horario.horaFin2">
+                  , {{ horario.horaInicio2 }} a {{ horario.horaFin2 }}
+                </span>
+              </option>
+            </select>
+          </div>
         </div>
       </div>
 

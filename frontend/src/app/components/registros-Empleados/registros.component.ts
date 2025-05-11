@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit } from '@angular/core';
 import { RegistroEmpleadosService } from '../../services/registro-empleados.service';
 
 interface Empleado {
@@ -17,13 +17,15 @@ interface Empleado {
   styleUrls: ['./registros.component.css']
 })
 export class RegistrosComponent implements OnInit {
-  empleado: Empleado = { nombre: '', identificacion: '', fechaContratacion: '', activo: false, rol: '', huellaDactilar: '' };
+  empleado: Empleado & { horarioId?: number | null } = { nombre: '', identificacion: '', fechaContratacion: '', activo: false, rol: '', huellaDactilar: '', horarioId: null };
   huellas: string[] = [];
+  horarios: any[] = [];
 
   constructor(private registroService: RegistroEmpleadosService) {}
 
   ngOnInit(): void {
     this.getHuellas();
+    this.getHorarios();
   }
 
   getHuellas(): void {
@@ -32,13 +34,19 @@ export class RegistrosComponent implements OnInit {
     });
   }
 
+  getHorarios(): void {
+    this.registroService.getAllHorarios().subscribe((response: any) => {
+      this.horarios = response.data; // Ajusta el acceso a la lista de horarios según tu respuesta backend
+    });
+  }
+
   onSubmit(): void {
     if (this.empleado.huellaDactilar) {
       this.empleado.activo = this.empleado.activoStr === 'Sí' ? true : false;
-  
+
       console.log(this.empleado);
       console.log(this.empleado.huellaDactilar);
-  
+
       this.registroService.updateEmpleado(this.empleado.huellaDactilar, this.empleado)
         .subscribe(
           (response) => {
@@ -49,7 +57,7 @@ export class RegistrosComponent implements OnInit {
           },
           (error) => {
             console.error('Error al actualizar el empleado:', error);
-  
+
             // Acceder al mensaje de error que está dentro de la respuesta HTTP
             if (error.error && error.error.message) {
               alert(error.error.message);  // Mostrar el mensaje que viene del backend
@@ -62,7 +70,7 @@ export class RegistrosComponent implements OnInit {
       alert('Debe seleccionar una huella dactilar válida.');
     }
   }
-  
+
   // Método para vaciar el formulario
 resetForm(): void {
   // Restablecer las propiedades del objeto empleado a su estado inicial
