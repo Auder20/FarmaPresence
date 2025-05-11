@@ -10,6 +10,9 @@ export class InformacionInicioComponent {
   modalEstado: boolean = false; // Modal de calificaciones
   empleados: any[] = [];
 
+  searchIdentificacion: string = '';
+  modalEmpleadosVisible: boolean = false;
+
   // Properties for update form binding
   idEmpleado: string = '';
   nombreEmpleado: string = '';
@@ -25,11 +28,21 @@ export class InformacionInicioComponent {
       (response) => {
         if (response && response.data) {
           this.empleados = response.data;
+          this.modalEmpleadosVisible = true; // Show modal with employees
         }
       },
       (error) => {
         console.error('Error al obtener empleados:', error);
       }
+    );
+  }
+
+  get empleadosFiltrados() {
+    if (!this.searchIdentificacion) {
+      return this.empleados;
+    }
+    return this.empleados.filter(e =>
+      e.identificacion.toLowerCase().includes(this.searchIdentificacion.toLowerCase())
     );
   }
 
@@ -39,6 +52,11 @@ export class InformacionInicioComponent {
 
   cerrarModal() {
     this.modalEstado = false;
+  }
+
+  cerrarModalEmpleados() {
+    this.modalEmpleadosVisible = false;
+    this.searchIdentificacion = '';
   }
 
   cargarEmpleadoParaActualizar(empleado: any) {
