@@ -1,17 +1,20 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RegistroEmpleadosService } from '../../../services/registro-empleados.service';
+import { LoginService } from '../../../services/login.service';
 
 @Component({
   selector: 'app-informacion-inicio',
   templateUrl: './informacion-inicio.component.html',
   styleUrls: ['./informacion-inicio.component.css']
 })
-export class InformacionInicioComponent {
+export class InformacionInicioComponent implements OnInit {
   modalEstado: boolean = false; // Modal de calificaciones
   empleados: any[] = [];
 
   searchIdentificacion: string = '';
   modalEmpleadosVisible: boolean = false;
+
+  horarios: any[] = [];
 
   // Properties for update form binding
   idEmpleado: string = '';
@@ -19,9 +22,33 @@ export class InformacionInicioComponent {
   rolEmpleado: string = '';
   telefonoEmpleado: string = '';
   identificacionEmpleado: string = '';
+  activoEmpleado: boolean = false;
+  horarioEmpleado: string = '';
   huellaEmpleado: string = '';
 
-  constructor(private registroEmpleadosService: RegistroEmpleadosService) {}
+  userName: string = 'Usuario';
+
+  constructor(private registroEmpleadosService: RegistroEmpleadosService, private loginService: LoginService) {}
+
+  ngOnInit(): void {
+    this.loginService.studentInfo$.subscribe(info => {
+      console.log('InformacionInicioComponent - user info received:', info);
+      if (info && info.data && info.data.nombre) {
+        this.userName = info.data.nombre;
+      }
+    });
+
+    this.registroEmpleadosService.getAllHorarios().subscribe(
+      (response) => {
+        if (response && response.data) {
+          this.horarios = response.data;
+        }
+      },
+      (error) => {
+        console.error('Error al obtener horarios:', error);
+      }
+    );
+  }
 
   consultarEmpleados() {
     this.registroEmpleadosService.getAllEmpleados().subscribe(
@@ -65,6 +92,8 @@ export class InformacionInicioComponent {
     this.rolEmpleado = empleado.rol || '';
     this.telefonoEmpleado = empleado.telefono || '';
     this.identificacionEmpleado = empleado.identificacion || '';
+    this.activoEmpleado = empleado.activo || false;
+    this.horarioEmpleado = empleado.horario || '';
     this.huellaEmpleado = empleado.huellaDactilar || '';
     this.abrirModalActualizar();
   }
@@ -76,11 +105,12 @@ export class InformacionInicioComponent {
       rol: this.rolEmpleado,
       telefono: this.telefonoEmpleado,
       identificacion: this.identificacionEmpleado,
-      // Add other fields as needed
+      activo: this.activoEmpleado,
+      horario: this.horarioEmpleado
     };
 
-    // Call update method in service using huellaEmpleado as identifier
-    this.registroEmpleadosService.updateEmpleado(this.huellaEmpleado, empleadoData).subscribe(
+    // Call update method in service using identificacion as identifier
+    this.registroEmpleadosService.updateEmpleadoByIdentificacion(this.identificacionEmpleado, empleadoData).subscribe(
       (response) => {
         console.log('Empleado actualizado:', response);
         this.cerrarModal();

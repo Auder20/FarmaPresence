@@ -14,9 +14,9 @@ import {  HttpHeaders } from '@angular/common/http';
 })
 
 export class LoginService {
-  
+
   private API_SERVER = "http://localhost:8080/usuario";
-  
+
   private usuarioidKey = 'usuarioid'; // Clave para almacenar el ID de usuario
   private estudianteidKey = 'estudianteid'; // Clave para almacenar el ID del estudiante
   private rememberMeKey = 'rememberMe'; // Clave para almacenar el estado de "recordar sesión"
@@ -47,29 +47,29 @@ export class LoginService {
 
   login(username: string, password: string, rememberMe: boolean): Observable<boolean> {
     const loginPayload = { username, password };
-  
+
     return this.httpClient.post<any>(`${this.API_SERVER}/login`, loginPayload).pipe(
       map(response => {
         if (response && response.code === "200" && response.message === "Login exitoso") {
           localStorage.setItem(this.isLoggedInKey, 'true');
           this.isLoggedIn = true;
-  
+
           this.toggleMostrarFormulario();
           this.unlockButtons();
           this.changeFormVisibility(true);
-  
+
           const userId = response.data.id;
           localStorage.setItem(this.usuarioidKey, userId);
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
-  
+
           // Llamada para obtener el ID del estudiante y almacenarlo
           this.getStudentInfo(userId).subscribe(estudiante => {
-        
+
             if (estudiante && estudiante.data.id) {
               localStorage.setItem(this.estudianteidKey, estudiante.data.id.toString());
             }
           });
-  
+
           this.authService.notifyLogin();
 
           return true;
@@ -83,10 +83,10 @@ export class LoginService {
       })
     );
   }
-  
+
 
    // Método para simular el proceso de inicio de sesión
- 
+
 
 
 /*-------------------------------------------------------------*/
@@ -118,7 +118,7 @@ export class LoginService {
     localStorage.setItem(this.isLoggedInKey, this.isLoggedIn ? 'true' : 'false');
   }
 
- 
+
 
   // Método para simular el proceso de cierre de sesión
   // Método para cerrar sesión
@@ -135,7 +135,7 @@ export class LoginService {
     this.changeFormVisibility(false);
     this.router.navigate(['/']);
   }
-  
+
 
   // Método para verificar si el usuario está autenticado
   isAuthenticated(): boolean {
@@ -145,7 +145,7 @@ export class LoginService {
 
 
 //-----------------------------------------------------------------------
-  // LOGICA PRA DESBLOQUEAR LOS BOTONES DE INICIO 
+  // LOGICA PRA DESBLOQUEAR LOS BOTONES DE INICIO
 
  private botonesInicioKey = 'botonesInicio';
   private botonesInicioSubject = new BehaviorSubject<boolean>(localStorage.getItem(this.botonesInicioKey) === 'true');
@@ -209,7 +209,7 @@ private estudianteUpdateUrl = "http://localhost:8080/estudiante"; // URL base pa
 private studentInfoSubject = new BehaviorSubject<any>(null);
 studentInfo$ = this.studentInfoSubject.asObservable();
 
-  
+
   // Método para obtener la información del estudiante
   getStudentInfo(userId: string): Observable<any> {
     return this.httpClient.get<any>(`${this.estudianteApiUrl}/${userId}`).pipe(
@@ -242,7 +242,7 @@ studentInfo$ = this.studentInfoSubject.asObservable();
   resetPassword(token: string, password: string): Observable<any> {
     return this.httpClient.post(`http://localhost:8080/usuario/reset-password?token=${token}`, { password });
   }
-  
+
 
 }
 

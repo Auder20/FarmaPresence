@@ -1,7 +1,8 @@
 <!-- bienvenida.component.html -->
 <div class="jumbotron">
-    <h1 class="display-4">Bienvenido a FarmaGestión</h1>
-    <p class="lead">Nuestra plataforma está diseñada para facilitar la gestión de inventario, empleados y reportes de asistencia en la farmacia. ¡Inicia sesión y explora todas nuestras herramientas para optimizar tu negocio!</p>
+    <h1 class="display-4">Bienvenido {{ userName }}</h1>
+    <h3 class="display-10">Optimiza tu farmacia con nuestra solución inteligente</h3>
+    <p class="lead">Controla asistencia, gestiona empleados y supervisa a los empleados desde un solo lugar. ¡Empieza ahora!</p>
     <hr class="my-4">
 
 <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -85,6 +86,21 @@
               <div class="col-md-6 form-group">
                 <label for="identificacionEmpleado" class="form-label"><strong>Identificación</strong></label>
                 <input type="text" class="form-control form-control-sm" id="identificacionEmpleado" required [(ngModel)]="identificacionEmpleado" name="identificacionEmpleado">
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="activoEmpleado" class="form-label"><strong>Activo</strong></label>
+                <select class="form-control form-control-sm" id="activoEmpleado" [(ngModel)]="activoEmpleado" name="activoEmpleado" required>
+                  <option [ngValue]="true">Sí</option>
+                  <option [ngValue]="false">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6 form-group">
+                <label for="horarioEmpleado" class="form-label"><strong>Horario</strong></label>
+                <select class="form-control form-control-sm" id="horarioEmpleado" [(ngModel)]="horarioEmpleado" name="horarioEmpleado" required>
+                  <option *ngFor="let horario of horarios" [value]="horario.id">{{ horario.descripcion }}</option>
+                </select>
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>

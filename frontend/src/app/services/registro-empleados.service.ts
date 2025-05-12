@@ -21,6 +21,12 @@ export class RegistroEmpleadosService {
     return this.http.post(url, empleado, { headers });
   }
 
+  updateEmpleadoByIdentificacion(identificacion: string, empleado: any): Observable<any> {
+    const url = `${this.apiUrl}/actualizar/${identificacion}`;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.http.put(url, empleado, { headers });
+  }
+
   getAllHuellas(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/huellas`);
   }
