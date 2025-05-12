@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { LoginService } from '../../../services/login.service';
 import { AuthService } from '../../../services/auth.service';
-import { Route, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
 
 export class LoginComponent implements OnInit {
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
   email: string = '';
   showRecoveryForm: boolean = false;
 
-  constructor(public loginService: LoginService, private authService: AuthService, private Router: Router) { }
+  constructor(public loginService: LoginService, private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginService.currentFormVisibility.subscribe(isVisible => {
@@ -29,19 +29,15 @@ export class LoginComponent implements OnInit {
 
     // Suscripción a los cambios en la información del estudiante
     this.loginService.studentInfo$.subscribe(info => {
-
       this.studentInfo = info;
-      
     });
 
     const userId = localStorage.getItem('usuarioid');
-   
     if (userId) {
       this.loginService.getStudentInfo(userId).subscribe();
     }
-
-
   }
+
   showRecoveryModal: boolean = false;
   validationMessage: string | null = null;
 
@@ -57,6 +53,7 @@ export class LoginComponent implements OnInit {
     this.email = ''; // Limpiar el campo de email
     this.validationMessage = null; // Limpiar mensajes anteriores
   }
+
   login(): void {
     this.loginService.login(this.username, this.password, this.rememberMe).subscribe(
       success => {
@@ -65,10 +62,7 @@ export class LoginComponent implements OnInit {
 
           this.authService.notifyLogin(); // Notifica el evento de inicio de sesión
 
-          // Redirecciona o recarga la página después de un breve retraso para asegurar que los cambios se reflejen
-          setTimeout(() => {
-            window.location.reload();
-          }, 500); // Ajusta el tiempo si es necesario
+          this.router.navigate(['/informacionInicio']); // Redirige a la página principal
 
         } else {
           window.alert('Credenciales incorrectas. Por favor, intente de nuevo.');
@@ -79,7 +73,6 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-
 
   showForgotPassword(): void {
     this.showRecoveryForm = true;
@@ -106,25 +99,19 @@ export class LoginComponent implements OnInit {
       }
     );
   }
-  // Método para mostrar alertas estilizadas
-
 
   logout(): void {
     this.loginService.logout();
+    this.authService.logout();
     this.username = '';
     this.password = '';
-
   }
 
-
   passwordFieldType: string = 'password'; // Default is to hide the password
-
-
 
   togglePasswordVisibility() {
     this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
   }
-
 }
 
 

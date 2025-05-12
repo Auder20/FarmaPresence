@@ -1,16 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private loggedInKey = 'isLoggedIn';
 
-  private loginEvent = new Subject<void>();
+  constructor() {}
 
-  loginEvent$ = this.loginEvent.asObservable();
-
-  notifyLogin() {
-    this.loginEvent.next();
+  login(): void {
+    localStorage.setItem(this.loggedInKey, 'true');
   }
-  
+
+  notifyLogin(): void {
+    this.login();
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.loggedInKey);
+  }
+
+  isLoggedIn(): boolean {
+    return localStorage.getItem(this.loggedInKey) === 'true';
+  }
 }

@@ -11,6 +11,7 @@ export class RegistroEmpleadosService {
   private apiUrl = 'http://localhost:8080/empleado'; // Ajusta la URL según sea necesario
   private apiUrlRegsitrarEmpeleado = 'http://localhost:8080/empleado/registrar'; // Cambia la URL al endpoint correcto de tu backend
   private apiUrlHorarios = 'http://localhost:8080/horarios'; // URL para horarios
+  private apiUrlAsistencia = 'http://localhost:8080/asistencia'; // URL para asistencia
 
   constructor(private http: HttpClient) {}
 
@@ -30,5 +31,9 @@ export class RegistroEmpleadosService {
 
   getAllHorarios(): Observable<any> {
     return this.http.get<any>(`${this.apiUrlHorarios}/all`);
+  }
+
+  getReporteComparativoGrafica(mes: number, anio: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrlAsistencia}/reporteComparativo/grafica?mes=${mes}&anio=${anio}`);
   }
 }
