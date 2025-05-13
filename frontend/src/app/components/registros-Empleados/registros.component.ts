@@ -9,6 +9,8 @@ interface Empleado {
   activoStr?: string; // Nueva propiedad para almacenar la selección de "Sí" o "No"
   rol: string;
   huellaDactilar: string;
+  telefono?: string; // Nuevo campo teléfono
+  horario?: { id: number | null }; // Agregar propiedad horario con id opcional
 }
 
 @Component({
@@ -43,6 +45,13 @@ export class RegistrosComponent implements OnInit {
   onSubmit(): void {
     if (this.empleado.huellaDactilar) {
       this.empleado.activo = this.empleado.activoStr === 'Sí' ? true : false;
+
+      // Transformar horarioId en objeto horario con id
+      if (this.empleado.horarioId !== null && this.empleado.horarioId !== undefined) {
+        this.empleado.horario = { id: this.empleado.horarioId };
+      } else {
+        this.empleado.horario = undefined;
+      }
 
       console.log(this.empleado);
       console.log(this.empleado.huellaDactilar);
@@ -87,5 +96,36 @@ resetForm(): void {
 
   onRefresh() {
     this.getHuellas(); // Actualiza la lista al hacer clic en el botón
+  }
+
+  updateEmpleadoData(identificacion: string): void {
+    if (!identificacion) {
+      alert('Debe proporcionar una identificación válida para actualizar.');
+      return;
+    }
+
+    // Preparar objeto empleado para actualizar
+    if (this.empleado.horarioId !== null && this.empleado.horarioId !== undefined) {
+      this.empleado.horario = { id: this.empleado.horarioId };
+    } else {
+      this.empleado.horario = undefined;
+    }
+
+    this.registroService.updateEmpleadoByIdentificacion(identificacion, this.empleado)
+      .subscribe(
+        (response) => {
+          console.log('Empleado actualizado:', response);
+          alert(response.message || 'Empleado actualizado correctamente');
+          this.resetForm();
+        },
+        (error) => {
+          console.error('Error al actualizar el empleado:', error);
+          if (error.error && error.error.message) {
+            alert(error.error.message);
+          } else {
+            alert('Error desconocido al actualizar el empleado');
+          }
+        }
+      );
   }
 }
