@@ -54,7 +54,7 @@ export class LoginService {
           localStorage.setItem(this.isLoggedInKey, 'true');
           this.isLoggedIn = true;
 
-          this.toggleMostrarFormulario();
+          this.setMostrarFormulario(false);
           this.unlockButtons();
           this.changeFormVisibility(true);
 
@@ -111,6 +111,11 @@ export class LoginService {
     localStorage.setItem('mostrarFormulario', newValue.toString());
   }
 
+  setMostrarFormulario(value: boolean): void {
+    this.mostrarFormularioSubject.next(value);
+    localStorage.setItem('mostrarFormulario', value.toString());
+  }
+
   // Método para cambiar el estado de autenticación del usuario
   toggleLoginStatus(): void {
     this.isLoggedIn = !this.isLoggedIn;
@@ -130,7 +135,7 @@ export class LoginService {
     localStorage.removeItem(this.rememberMeKey);
 
 
-    this.toggleMostrarFormulario();
+    this.setMostrarFormulario(true);
     this.lockButtons();
     this.changeFormVisibility(false);
     this.router.navigate(['/']);

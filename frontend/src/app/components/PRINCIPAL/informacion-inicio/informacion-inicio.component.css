@@ -4,7 +4,7 @@
     width: 100%; /* Ajusta el ancho según sea necesario */
     padding: 20px; /* Añade padding si es necesario */
   }
-  
+
   /* Estilos para el componente jumbotron */
   .jumbotron {
     position: relative; /* Cambia de fixed a relative si no deseas que esté siempre en la pantalla */
@@ -17,7 +17,7 @@
     border-radius: 5px; /* Bordes redondeados */
     box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.2), inset -1px -1px 0 0 rgba(0,0,0,0.2); /* Sombra */
   }
-  
+
   /* Estilos para las pastillas de navegación */
   .nav-pills {
     position: relative; /* Cambia de fixed a relative si no deseas que esté siempre en la pantalla */
@@ -28,31 +28,33 @@
     max-height: auto;
     overflow-y: auto; /* Agrega un scrollbar si el contenido es mayor que el contenedor */
     align-items: flex-start; /* Alinea las pastillas a la izquierda */
+    background: none !important; /* Quitar fondo azul */
+    box-shadow: none !important; /* Quitar sombra */
   }
-  
+
   /* Estilos para cada pastilla de navegación */
-  .nav-link {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    display: inline-flex; /* Utiliza flex para centrar el contenido */
-    align-items: center; /* Centra el contenido verticalmente */
-    justify-content: center; /* Centra el contenido horizontalmente */
-    width: 300px; /* Tamaño fijo para los botones */
-    padding: 10px; /* Ajusta el padding según sea necesario */
-    margin-bottom: 10px; /* Espacio entre las pastillas */
-    color: black;
-    background: linear-gradient(to bottom, #30497e, #77d6fc); /* Cambia los colores de acuerdo a tu preferencia */
-    text-align: center; /* Centra el texto */
-    border-radius: 5px; /* Bordes redondeados */
-    text-decoration: none; /* Elimina el subrayado del texto */
-  }
-  
-  
-  .nav-link:hover {
-    transform: translateY(-3px); /* Efecto de levantamiento al pasar el ratón */
-    color: black;
-    background:#30497e; /* Cambia los colores de acuerdo a tu preferencia */
-  }
-  
+.nav-link {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: white;
+  background: #0047b3;
+  text-align: center;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: white;
+  background: #003a8c;
+  transform: none;
+}
+
   /* Estilos para la tabla dentro de jumbotron */
   .jumbotron table {
     width: 100%; /* La tabla ocupa todo el ancho del jumbotron */
@@ -63,18 +65,18 @@
     margin-top: 20px; /* Espacio entre la tabla y el encabezado */
     border-collapse: collapse; /* Colapsar los bordes de las celdas */
   }
-  
+
   .jumbotron th,
   .jumbotron td {
     border: 1px solid black; /* Bordes de las celdas */
     padding: 8px; /* Espacio interno de las celdas */
     text-align: left; /* Alinear el texto a la izquierda */
   }
-  
+
   .jumbotron th {
     background-color: #71ee60; /* Color de fondo para el encabezado */
   }
-  
+
   .pdf-container {
     position: fixed; /* Asegura que el contenedor esté fijo en la pantalla */
     top: 0;
@@ -88,12 +90,11 @@
     justify-content: center;
     z-index: 9999; /* Asegura que el contenedor esté sobre otros elementos */
   }
-  
+
   .pdf-container iframe {
     border: none; /* Quita el borde del iframe */
   }
-  
+
   .pdf-container .btn-secondary {
     margin-top: 20px; /* Espacio entre el iframe y el botón */
   }
-  

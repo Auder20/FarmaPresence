@@ -20,21 +20,21 @@
   <button type="button" class="signin-submit" (click)="openRecoveryModal()">Olvidé mi contraseña</button>
       </form>
     </div>
-  
-    <div *ngIf="!(loginService.mostrarFormulario$ | async)">
+
+    <!--<div *ngIf="!(loginService.mostrarFormulario$ | async)">
       <div class="jumbotron login">
         <p class="lead">Bienvenido {{ studentInfo?.data?.nombre || 'Usuario' }}</p>
         <hr class="my-4">
         <button type="button" class="btn btn-danger x" (click)="logout()">Cerrar sesión</button>
         <p class="lead"></p>
       </div>
-    </div>
+    </div>-->
   </div>
-  
-  
+
+
   <!-- logins.component.html -->
   <div class="logins-container">
-  
+
     <div *ngIf="showRecoveryModal" class="recovery-modal">
       <div class="modal-content">
         <span class="close" (click)="closeRecoveryModal()">&times;</span>
@@ -54,8 +54,7 @@
         </form>
       </div>
     </div>
-    
-  
+
+
     <router-outlet></router-outlet> <!-- Aquí se cargará OpcionesInicioComponent -->
   </div>
-  
