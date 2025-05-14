@@ -42,6 +42,9 @@ public class Empleado_Model {
     @JoinColumn(name = "turnoProgramado_id", nullable = true)
     private TurnoProgramado_Model turnoProgramado;  // Horario asignado al turno
 
+    @Column(name = "telefono", length = 20, nullable = true)
+    private String telefono;  // Teléfono del empleado
+
     // Constructor vacío
     public Empleado_Model() {
     }
@@ -49,7 +52,7 @@ public class Empleado_Model {
     // Constructor con todos los atributos excepto turnos
 
 
-    public Empleado_Model(Boolean activo, LocalDate fechaContratacion, Horario_Model horario, String huellaDactilar, String identificacion, String nombre, String rol, TurnoProgramado_Model turnoProgramado) {
+    public Empleado_Model(Boolean activo, LocalDate fechaContratacion, Horario_Model horario, String huellaDactilar, String identificacion, String nombre, String rol, TurnoProgramado_Model turnoProgramado, String telefono) {
         this.activo = activo;
         this.fechaContratacion = fechaContratacion;
         this.horario = horario;
@@ -58,6 +61,7 @@ public class Empleado_Model {
         this.nombre = nombre;
         this.rol = rol;
         this.turnoProgramado = turnoProgramado;
+        this.telefono = telefono;
     }
 
     // Método para obtener el estado de "activo"

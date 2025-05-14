@@ -148,6 +148,7 @@ public class Empleado_Controller {
                 empleado.setRol(empleadoData.getRol());
                 empleado.setHorario(empleadoData.getHorario());
                 empleado.setTurnoProgramado(empleadoData.getTurnoProgramado());
+                empleado.setTelefono(empleadoData.getTelefono());
 
                 Empleado_Model empleadoGuardado = empleadoServices.save(empleado);
 
