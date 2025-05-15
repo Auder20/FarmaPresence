@@ -40,11 +40,11 @@ export class HeaderComponent implements OnInit {
   }
 
   editProfile(): void {
-    alert('Editar perfil - funcionalidad pendiente');
+    this.router.navigate(['/editar-perfil']);
   }
 
   addUser(): void {
-    alert('Agregar usuario - funcionalidad pendiente');
+    this.router.navigate(['/agregar-usuario']);
   }
 
   logout(): void {

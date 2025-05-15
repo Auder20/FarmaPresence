@@ -1,2 +1,111 @@
-<h2>Agregar Usuario</h2>
-<p>Aquí puedes implementar el formulario para agregar un nuevo usuario.</p>
+<div class="panel-container">
+  <div class="usuario-container">
+    <h2>Registro de Usuario</h2>
+    <form class="usuario-form" (ngSubmit)="onSubmit()">
+      <!-- Fila 1: Nombre / Identificación -->
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input
+              type="text"
+              id="nombre"
+              [(ngModel)]="usuario.nombre"
+              name="nombre"
+              placeholder="Nombre completo"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label for="identificacion">Identificación:</label>
+            <input
+              type="text"
+              id="identificacion"
+              [(ngModel)]="usuario.identificacion"
+              name="identificacion"
+              placeholder="N° de documento de identidad"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 2: Fecha / Activo -->
+      <div class="form-row">
+           <div class="form-column">
+          <div class="form-group">
+            <label for="correo">correo electrónico:</label>
+            <input
+              type="text"
+              id="correo"
+              [(ngModel)]="usuario.correo"
+              name="correo"
+              placeholder="correo electrónico"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label for="Rol">Rol:</label>
+            <select
+              id="Rol"
+              [(ngModel)]="usuario.Rol"
+              name="Rol"
+              required
+            >
+              <option value="Admin">Administrador</option>
+              <option value="User">Usuario Comun</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fila 3: Rol / Huella -->
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="Nombre de usuario">nombre de usuario:</label>
+            <input
+              type="text"
+              id="Nombre de usuario"
+              [(ngModel)]="usuario.nombreDeUsuario"
+              name="nombreDeUsuario"
+              placeholder="nombre de usuario"
+              required
+            />
+          </div>
+        </div>
+        <div class="form-column">
+  <div class="form-group">
+    <label for="contrasena">Contraseña:</label>
+    <div class="password-wrapper">
+      <input
+        [type]="mostrarContrasena ? 'text' : 'password'"
+        id="contrasena"
+        [(ngModel)]="usuario.contrasena"
+        name="contrasena"
+        placeholder="Contraseña del usuario"
+      />
+      <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
+        {{ mostrarContrasena ? '🙈' : '👁️' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+
+      </div>
+
+      <!-- ✅ Nueva fila: Teléfono / Horario -->
+      <div class="form-row">
+
+      </div>
+
+      <!-- Botón de envío -->
+      <button type="submit" class="submit-btn">Registrar usuario</button>
+    </form>
+  </div>
+</div>
