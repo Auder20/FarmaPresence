@@ -48,6 +48,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    alert('Cerrar sesión - funcionalidad pendiente');
+    this.loginService.logout();
   }
 }
