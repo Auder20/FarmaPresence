@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegistroAsistenciaComponent } from './components/registro-asistencia/registro-asistencia.component'; // Importa ReactiveFormsModule y FormsModule
 import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
+import { EditarPerfilComponent } from './components/usuario/editar-perfil.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.co
     LoginComponent,
     GraficasComponent,
     RegistroAsistenciaComponent,
-    AgregarUsuarioComponent
+    AgregarUsuarioComponent,
+    EditarPerfilComponent
   ],
   imports: [
     BrowserModule,

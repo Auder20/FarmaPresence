@@ -17,7 +17,6 @@ const routes: Routes = [
   { path: 'reportes', component: ReportesComponent, canActivate: [AuthGuard]},
   { path: 'registros', component : RegistrosComponent, canActivate: [AuthGuard]},
   { path: 'graficas', component : GraficasComponent, canActivate: [AuthGuard]},
-  { path:'registroAsistencia',component: RegistroAsistenciaComponent, canActivate: [AuthGuard]},
   { path: 'editar-perfil', component: EditarPerfilComponent, canActivate: [AuthGuard]},
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard]},
   { path: 'login', component : LoginComponent,

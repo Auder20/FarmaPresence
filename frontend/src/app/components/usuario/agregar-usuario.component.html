@@ -32,7 +32,7 @@
         </div>
       </div>
 
-      <!-- Fila 2: Fecha / Activo -->
+      <!-- Fila 2: Correo / contraseña -->
       <div class="form-row">
            <div class="form-column">
           <div class="form-group">
@@ -47,39 +47,7 @@
             />
           </div>
         </div>
-        <div class="form-column">
-          <div class="form-group">
-            <label for="Rol">Rol:</label>
-            <select
-              id="Rol"
-              [(ngModel)]="usuario.Rol"
-              name="Rol"
-              required
-            >
-              <option value="Admin">Administrador</option>
-              <option value="User">Usuario Comun</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fila 3: Rol / Huella -->
-      <div class="form-row">
-        <div class="form-column">
-          <div class="form-group">
-            <label for="Nombre de usuario">nombre de usuario:</label>
-            <input
-              type="text"
-              id="Nombre de usuario"
-              [(ngModel)]="usuario.nombreDeUsuario"
-              name="nombreDeUsuario"
-              placeholder="nombre de usuario"
-              required
-            />
-          </div>
-        </div>
-        <div class="form-column">
-  <div class="form-group">
+        <div class="form-group">
     <label for="contrasena">Contraseña:</label>
     <div class="password-wrapper">
       <input
@@ -94,14 +62,56 @@
       </button>
     </div>
   </div>
-</div>
+      </div>
+
+      <!-- Fila 3: Usuario / Rol -->
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="Nombre de usuario">nombre de usuario:</label>
+            <input
+              type="text"
+              id="Nombre de usuario"
+              [(ngModel)]="usuario.nombreDeUsuario"
+              name="nombreDeUsuario"
+              placeholder="nombre de usuario"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-column">
+          <div class="form-group">
+            <label for="Rol">Rol:</label>
+            <select
+              id="Rol"
+              [(ngModel)]="usuario.Rol"
+              name="Rol"
+              required
+            >
+              <option value="Admin">Administrador</option>
+              <option value="User">Usuario Comun</option>
+            </select>
+          </div>
+        </div>
 
 
       </div>
 
-      <!-- ✅ Nueva fila: Teléfono / Horario -->
+      <!-- ✅ Nueva fila: Teléfono /?? -->
       <div class="form-row">
-
+<div class="form-column">
+          <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input
+              type="text"
+              id="telefono"
+              [(ngModel)]="usuario.telefono"
+              name="telefono"
+              placeholder="Teléfono del usuario"
+            />
+          </div>
+        </div>
       </div>
 
       <!-- Botón de envío -->

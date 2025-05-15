@@ -1,2 +1,71 @@
-<h2>Editar Perfil</h2>
-<p>Aquí puedes implementar el formulario para editar el perfil del usuario.</p>
+<div class="panel-container">
+  <div class="editar-perfil-container">
+    <h2>Editar Perfil de Usuario</h2>
+
+    <form (ngSubmit)="guardarCambios()">
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="idusuario"><strong>ID del usuario</strong></label>
+            <input type="text" id="idusuario" class="form-control" [value]="idusuario" readonly>
+          </div>
+        </div>
+
+        <div class="form-column">
+          <div class="form-group">
+            <label for="nombreUsuario"><strong>Nombre</strong></label>
+            <input type="text" id="nombreUsuario" class="form-control" required [(ngModel)]="nombreDeUsuario" name="nombreDeUsuario">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="Rolusuario"><strong>Rol</strong></label>
+            <select id="Rolusuario" class="form-control" required [(ngModel)]="Rolusuario" name="Rolusuario">
+              <option value="Admin">Administrador</option>
+              <option value="User">Usuario común</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-column">
+          <div class="form-group">
+            <label for="telefonousuario"><strong>Teléfono</strong></label>
+            <input type="text" id="telefonousuario" class="form-control" required [(ngModel)]="telefonousuario" name="telefonousuario">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="correoUSUARIO"><strong>Correo electrónico</strong></label>
+            <input type="text" id="correoUSUARIO" class="form-control" required [(ngModel)]="correoUSUARIO" name="correoUSUARIO">
+          </div>
+        </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label for="UserName"><strong>Nombre de Usuario</strong></label>
+            <input type="text" id="UserName" class="form-control" required [(ngModel)]="UserName" name="UserName">
+          </div>
+        </div>
+      </div>
+       <label for="contrasena">Contraseña:</label>
+    <div class="password-wrapper">
+      <input
+        [type]="mostrarContrasena ? 'text' : 'password'"
+        id="contrasena"
+        [(ngModel)]="contrasena"
+        name="contrasena"
+        placeholder="Contraseña del usuario"
+      />
+      <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
+        {{ mostrarContrasena ? '🙈' : '👁️' }}
+      </button>
+    </div>
+      <button type="submit" class="submit-btn">Guardar Cambios</button>
+    </form>
+  </div>
+  </div>

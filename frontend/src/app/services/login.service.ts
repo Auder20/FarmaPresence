@@ -84,6 +84,10 @@ export class LoginService {
     );
   }
 
+  registerUser(usuario: any): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.httpClient.post(`${this.API_SERVER}`, usuario, { headers });
+  }
 
    // Método para simular el proceso de inicio de sesión
 

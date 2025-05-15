@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RegistroEmpleadosService } from '../../services/registro-empleados.service';
+import { UsuarioService } from '../../services/usuario.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,12 +14,13 @@ export class AgregarUsuarioComponent {
     correo: '',
     Rol: '',
     nombreDeUsuario: '',
-    contrasena: ''
+    contrasena: '',
+    telefono: ''
   };
 
   mostrarContrasena: boolean = false;
 
-  constructor(private registroEmpleadosService: RegistroEmpleadosService, private router: Router) {}
+  constructor(private usuarioService: UsuarioService, private router: Router) {}
 
   toggleMostrarContrasena(): void {
     this.mostrarContrasena = !this.mostrarContrasena;
@@ -27,7 +28,16 @@ export class AgregarUsuarioComponent {
 
   onSubmit(): void {
     if (this.validarFormulario()) {
-      this.registroEmpleadosService.updateEmpleado('', this.usuario).subscribe({
+      const nuevoUsuario = {
+        nombre: this.usuario.nombre,
+        identificacion: this.usuario.identificacion,
+        correo: this.usuario.correo,
+        Rol: this.usuario.Rol,
+        username: this.usuario.nombreDeUsuario,
+        contrasena: this.usuario.contrasena,
+        telefono: this.usuario.telefono
+      };
+      this.usuarioService.addUsuario(nuevoUsuario).subscribe({
         next: (response) => {
           alert('Usuario registrado correctamente');
           this.resetForm();
@@ -50,7 +60,8 @@ export class AgregarUsuarioComponent {
       this.usuario.correo.trim() !== '' &&
       this.usuario.Rol.trim() !== '' &&
       this.usuario.nombreDeUsuario.trim() !== '' &&
-      this.usuario.contrasena.trim() !== ''
+      this.usuario.contrasena.trim() !== '' &&
+      this.usuario.telefono.trim() != ''
     );
   }
 
@@ -61,7 +72,8 @@ export class AgregarUsuarioComponent {
       correo: '',
       Rol: '',
       nombreDeUsuario: '',
-      contrasena: ''
+      contrasena: '',
+      telefono: ''
     };
     this.mostrarContrasena = false;
   }
