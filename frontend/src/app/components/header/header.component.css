@@ -51,7 +51,7 @@
     flex-wrap: nowrap;
     position: relative;
     gap: 20px;
-    overflow-x: auto;
+    overflow-x: visible;
 }
 
 .navbar-nav {
@@ -89,6 +89,7 @@
 /* --------- USUARIO --------- */
 .user-menu {
     position: relative;
+    z-index: 1000;
 }
 
 .user-account {

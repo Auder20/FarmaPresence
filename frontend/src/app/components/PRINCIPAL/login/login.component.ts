@@ -62,7 +62,13 @@ export class LoginComponent implements OnInit {
 
           this.authService.notifyLogin(); // Notifica el evento de inicio de sesión
 
+          const userId = localStorage.getItem('usuarioid');
+          if (userId) {
+            this.loginService.getStudentInfo(userId).subscribe();
+          }
+
           this.router.navigate(['/informacionInicio']); // Redirige a la página principal
+
 
         } else {
           window.alert('Credenciales incorrectas. Por favor, intente de nuevo.');

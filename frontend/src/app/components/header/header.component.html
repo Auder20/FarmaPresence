@@ -33,17 +33,19 @@
                 <a class="nav-link" [routerLink]="['/registroAsistencia']" [class.active]="selectedNavItem === 'registroAsistencia'"
                     (click)="selectNavItem('registroAsistencia')">Registro de asistencia</a>
             </li>
-            <li class="nav-item user-menu" *ngIf="username">
-                <a class="nav-link user-account" href="#" (click)="$event.preventDefault()">
-                    <span class="user-icon">&#128100;</span>
-                    Mi cuenta
-                </a>
-                <ul class="dropdown-menu">
-                    <li><a href="#" (click)="editProfile()">Editar perfil</a></li>
-                    <li><a href="#" (click)="addUser()">Agregar usuario</a></li>
-                    <li><a href="#" (click)="logout()">Cerrar sesión</a></li>
-                </ul>
-            </li>
+          <li class="nav-item user-menu" *ngIf="username">
+  <a class="nav-link user-account" href="#" (click)="toggleDropdown(); $event.preventDefault()">
+    <span class="user-icon">&#x1F464;</span>
+    {{ username }}
+    <span class="caret">&#x25BE;</span>
+  </a>
+  <ul class="dropdown-menu" [style.display]="isDropdownOpen ? 'block' : 'none'">
+    <li><a href="#" (click)="editProfile()">Editar perfil</a></li>
+    <li><a href="#" (click)="addUser()">Agregar usuario</a></li>
+    <li><a href="#" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</li>
+
         </ul>
     </div>
 </nav>

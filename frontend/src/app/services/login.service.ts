@@ -207,19 +207,21 @@ changeFormVisibility(isVisible: boolean): void {
 //--------------------------------------------------------------------------
 //LOGICA PARA EL FORMULARIO DEL HEADER
 
-private estudianteApiUrl = "http://localhost:8080/estudiante/usuario";
+  private estudianteApiUrl = "http://localhost:8080/usuario";
 
-private estudianteUpdateUrl = "http://localhost:8080/estudiante"; // URL base para actualización
+  private estudianteUpdateUrl = "http://localhost:8080/estudiante"; // URL base para actualización
 
-private studentInfoSubject = new BehaviorSubject<any>(null);
-studentInfo$ = this.studentInfoSubject.asObservable();
+  private studentInfoSubject = new BehaviorSubject<any>(null);
+  studentInfo$ = this.studentInfoSubject.asObservable();
 
 
-  // Método para obtener la información del estudiante
+  // Método para obtener la información del usuario
   getStudentInfo(userId: string): Observable<any> {
     return this.httpClient.get<any>(`${this.estudianteApiUrl}/${userId}`).pipe(
-
-      tap(info => this.studentInfoSubject.next(info)),
+      tap(info => {
+        console.log('getStudentInfo response:', info);
+        this.studentInfoSubject.next(info);
+      }),
       catchError(error => {
         console.error('Error fetching student info', error);
         return of(null);
