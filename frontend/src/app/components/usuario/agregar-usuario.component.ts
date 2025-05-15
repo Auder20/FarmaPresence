@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { RegistroEmpleadosService } from '../../services/registro-empleados.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-agregar-usuario',
@@ -6,7 +8,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./agregar-usuario.component.css']
 })
 export class AgregarUsuarioComponent {
-  // Modelo de usuario basado en los campos del formulario HTML
   usuario = {
     nombre: '',
     identificacion: '',
@@ -16,26 +17,32 @@ export class AgregarUsuarioComponent {
     contrasena: ''
   };
 
-  // Controla si la contraseña se muestra o se oculta
   mostrarContrasena: boolean = false;
 
-  // Alternar visibilidad de la contraseña
+  constructor(private registroEmpleadosService: RegistroEmpleadosService, private router: Router) {}
+
   toggleMostrarContrasena(): void {
     this.mostrarContrasena = !this.mostrarContrasena;
   }
 
-  // Envío del formulario
   onSubmit(): void {
     if (this.validarFormulario()) {
-      console.log('Usuario registrado:', this.usuario);
-      alert('Usuario registrado correctamente');
-      this.resetForm();
+      this.registroEmpleadosService.updateEmpleado('', this.usuario).subscribe({
+        next: (response) => {
+          alert('Usuario registrado correctamente');
+          this.resetForm();
+          this.router.navigate(['/informacionInicio']);
+        },
+        error: (error) => {
+          console.error('Error al registrar usuario:', error);
+          alert('Error al registrar usuario. Intente nuevamente.');
+        }
+      });
     } else {
       alert('Por favor completa todos los campos obligatorios.');
     }
   }
 
-  // Validación básica de campos obligatorios
   validarFormulario(): boolean {
     return (
       this.usuario.nombre.trim() !== '' &&
@@ -47,7 +54,6 @@ export class AgregarUsuarioComponent {
     );
   }
 
-  // Restablecer el formulario a valores vacíos
   resetForm(): void {
     this.usuario = {
       nombre: '',

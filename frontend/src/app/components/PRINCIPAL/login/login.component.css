@@ -11,6 +11,14 @@
 
   .signin {
     display: flex;
+    background-attachment: absolute;
+    background: linear-gradient(to bottom, #c9c3c3, #f4f4f5);
+    width: 200%;
+    height: 100%;
+    left: auto;
+    top: auto;
+    position: absolute;
+    overflow: hidden;
   }
 
   .signin .avatar {

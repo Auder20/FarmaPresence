@@ -40,8 +40,8 @@
     <span class="caret">&#x25BE;</span>
   </a>
   <ul class="dropdown-menu" [style.display]="isDropdownOpen ? 'block' : 'none'">
-    <li><a href="#" (click)="editProfile()">Editar perfil</a></li>
-    <li><a href="#" (click)="addUser()">Agregar usuario</a></li>
+    <li><a (click)="editProfile(); $event.preventDefault()">Editar perfil</a></li>
+    <li><a (click)="addUser(); $event.preventDefault()">Agregar usuario</a></li>
     <li><a href="#" (click)="logout()">Cerrar sesión</a></li>
   </ul>
 </li>
