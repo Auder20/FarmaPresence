@@ -10,7 +10,7 @@
   }
 
   .signin {
-    display: none !important;
+    display: flex;
   }
 
   .signin .avatar {

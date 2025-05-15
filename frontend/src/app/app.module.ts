@@ -14,11 +14,12 @@ import { GraficasComponent } from './components/graficas/graficas.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
-//proporciona directivas y tuberías (pipes) comunes utilizadas 
+//proporciona directivas y tuberías (pipes) comunes utilizadas
 //en aplicaciones Angular, como ngClass, ngIf, ngFor, entre otras
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RegistroAsistenciaComponent } from './components/registro-asistencia/registro-asistencia.component'; // Importa ReactiveFormsModule y FormsModule
+import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { RegistroAsistenciaComponent } from './components/registro-asistencia/re
     InformacionInicioComponent,
     LoginComponent,
     GraficasComponent,
-    RegistroAsistenciaComponent
+    RegistroAsistenciaComponent,
+    AgregarUsuarioComponent
   ],
   imports: [
     BrowserModule,
