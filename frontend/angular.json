@@ -97,7 +97,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+  "scripts": [
+  "node_modules/xlsx/dist/xlsx.full.min.js",
+  "node_modules/file-saver/dist/FileSaver.min.js"
+  ]
           }
         }
       }
@@ -107,3 +110,4 @@
     "analytics": "6a149219-d0b7-435e-8649-349c03bdfa7e"
   }
 }
+

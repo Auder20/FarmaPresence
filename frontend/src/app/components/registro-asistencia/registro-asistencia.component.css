@@ -1,18 +1,36 @@
-/* registro-asistencia.component.css */
 .asistencia-container {
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 10px;
-    border: 1px solid #ccc;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.presente {
+  color: green;
+  font-weight: bold;
+}
+
+.tarde {
+  color: orange;
+  font-weight: bold;
+}
+
+.ausente {
+  color: red;
+  font-weight: bold;
+}
+
+form input, form select, form button {
+  margin-right: 10px;
+  padding: 6px;
+}

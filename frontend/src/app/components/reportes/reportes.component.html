@@ -1,25 +1,35 @@
-<!-- reportes.component.html -->
 <div class="reportes-container">
-    <h2>Reportes de Asistencia</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Simulación de 10 empleados con datos de asistencia -->
-        <tr>
-          <td>Juan Pérez</td>
-          <td>2024-11-06</td>
-          <td>08:00</td>
-          <td>Presente</td>
-        </tr>
-        <!-- Más empleados... -->
-      </tbody>
-    </table>
+  <h2>Reportes de Asistencia</h2>
+
+  <div style="margin-bottom: 15px;">
+    <input type="text" [(ngModel)]="filtroNombre" placeholder="Filtrar por nombre" />
+    <input type="date" [(ngModel)]="filtroFecha" />
+    <select [(ngModel)]="filtroEstado">
+      <option value="">-- Estado --</option>
+      <option value="Presente">Presente</option>
+      <option value="Tarde">Tarde</option>
+      <option value="Ausente">Ausente</option>
+    </select>
+    <button (click)="exportarExcel()">Exportar Excel</button>
+    <button (click)="exportarPDF()">Exportar PDF</button>
   </div>
-  
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let r of reportesFiltrados">
+        <td>{{ r.nombre }}</td>
+        <td>{{ r.fecha }}</td>
+        <td>{{ r.hora }}</td>
+        <td>{{ r.estado }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
