@@ -5,6 +5,7 @@ export interface Reporte {
   fecha: string;
   hora: string;
   estado: string;
+  motivo?: string;
 }
 
 @Injectable({

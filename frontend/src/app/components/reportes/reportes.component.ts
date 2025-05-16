@@ -16,6 +16,7 @@ export class ReportesComponent implements OnInit {
   filtroNombre: string = '';
   filtroFecha: string = '';
   filtroEstado: string = '';
+  motivoFiltro: string = '';
 
   constructor(private reporteService: ReporteService) {}
 

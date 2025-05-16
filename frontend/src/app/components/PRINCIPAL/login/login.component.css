@@ -374,3 +374,61 @@
     font-size: 16px; /* Tamaño de fuente ligeramente más grande para el botón Enviar */
   }
 
+/* Layout principal con dos columnas: login y bienvenida */
+.login-layout {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 100px 50px 50px 50px; /* Espaciado general y separación del header */
+  gap: 80px; /* Espacio entre login y bienvenida */
+}
+
+/* Caja del formulario */
+.login-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Botones en columna */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.remember-me {
+  margin-top: 10px;
+}
+
+/* Caja del texto de bienvenida */
+.welcome-box {
+  max-width: 700px;
+}
+
+.welcome-box h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.welcome-box h2 {
+  font-size: 1.5rem;
+  color: #222;
+  margin-bottom: 15px;
+}
+
+.welcome-box p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.welcome-box .btn {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}

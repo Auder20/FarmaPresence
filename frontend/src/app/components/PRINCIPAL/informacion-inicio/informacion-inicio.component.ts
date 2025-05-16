@@ -8,7 +8,9 @@ import { LoginService } from '../../../services/login.service';
   styleUrls: ['./informacion-inicio.component.css']
 })
 export class InformacionInicioComponent implements OnInit {
-  modalEstado: boolean = false; // Modal de calificaciones
+  usuarioAutenticado: boolean = false; // ← NUEVO
+
+  modalEstado: boolean = false;
   empleados: any[] = [];
 
   searchIdentificacion: string = '';
@@ -16,7 +18,6 @@ export class InformacionInicioComponent implements OnInit {
 
   horarios: any[] = [];
 
-  // Properties for update form binding
   idEmpleado: string = '';
   nombreEmpleado: string = '';
   rolEmpleado: string = '';
@@ -28,9 +29,16 @@ export class InformacionInicioComponent implements OnInit {
 
   userName: string = 'Usuario';
 
-  constructor(private registroEmpleadosService: RegistroEmpleadosService, private loginService: LoginService) {}
+  constructor(
+    private registroEmpleadosService: RegistroEmpleadosService,
+    private loginService: LoginService
+  ) {}
 
   ngOnInit(): void {
+    // Verifica si hay sesión activa
+    this.usuarioAutenticado = this.loginService.estaAutenticado(); // ← NUEVO
+
+    // Suscribirse a la info del estudiante
     this.loginService.studentInfo$.subscribe(info => {
       console.log('InformacionInicioComponent - user info received:', info);
       if (info && info.data && info.data.nombre) {
@@ -38,6 +46,7 @@ export class InformacionInicioComponent implements OnInit {
       }
     });
 
+    // Cargar horarios
     this.registroEmpleadosService.getAllHorarios().subscribe(
       (response) => {
         if (response && response.data) {
@@ -55,7 +64,7 @@ export class InformacionInicioComponent implements OnInit {
       (response) => {
         if (response && response.data) {
           this.empleados = response.data;
-          this.modalEmpleadosVisible = true; // Show modal with employees
+          this.modalEmpleadosVisible = true;
         }
       },
       (error) => {
@@ -99,7 +108,6 @@ export class InformacionInicioComponent implements OnInit {
   }
 
   guardarCambios() {
-    // Prepare employee data object
     const empleadoData = {
       nombre: this.nombreEmpleado,
       rol: this.rolEmpleado,
@@ -109,12 +117,14 @@ export class InformacionInicioComponent implements OnInit {
       horario: this.horarioEmpleado
     };
 
-    // Call update method in service using identificacion as identifier
-    this.registroEmpleadosService.updateEmpleadoByIdentificacion(this.identificacionEmpleado, empleadoData).subscribe(
+    this.registroEmpleadosService.updateEmpleadoByIdentificacion(
+      this.identificacionEmpleado,
+      empleadoData
+    ).subscribe(
       (response) => {
         console.log('Empleado actualizado:', response);
         this.cerrarModal();
-        this.consultarEmpleados(); // Refresh list
+        this.consultarEmpleados();
       },
       (error) => {
         console.error('Error al actualizar empleado:', error);

@@ -3,11 +3,15 @@
 
   <form (ngSubmit)="registrarAsistencia()" style="margin-bottom: 20px;">
     <input type="text" placeholder="Nombre" [(ngModel)]="nuevoNombre" name="nombre" required />
-    <select [(ngModel)]="nuevoEstado" name="estado">
+
+    <select [(ngModel)]="nuevoEstado" name="estado" (change)="onEstadoChange()">
       <option value="Presente">Presente</option>
       <option value="Tarde">Tarde</option>
       <option value="Ausente">Ausente</option>
     </select>
+
+    <input *ngIf="mostrarMotivo" type="text" placeholder="Ingrese motivo" [(ngModel)]="nuevoMotivo" name="motivo" required />
+
     <button type="submit">Registrar</button>
   </form>
 
@@ -21,6 +25,7 @@
       }">
         {{ r.estado }}
       </span>
+      <span *ngIf="r.motivo" class="motivo"> - Motivo: {{ r.motivo }}</span>
     </li>
   </ul>
 </div>

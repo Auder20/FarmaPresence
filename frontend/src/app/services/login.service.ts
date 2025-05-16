@@ -253,7 +253,10 @@ changeFormVisibility(isVisible: boolean): void {
   resetPassword(token: string, password: string): Observable<any> {
     return this.httpClient.post(`http://localhost:8080/usuario/reset-password?token=${token}`, { password });
   }
-
+  // Método para verificar si el usuario esta autenticado
+estaAutenticado(): boolean {
+  return localStorage.getItem('autenticado') === 'true';
+}
 
 }
 

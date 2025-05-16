@@ -34,3 +34,8 @@ form input, form select, form button {
   margin-right: 10px;
   padding: 6px;
 }
+.motivo {
+  font-style: italic;
+  color: #666;
+  margin-left: 10px;
+}
