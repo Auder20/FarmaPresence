@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { RegistroEmpleadosService } from '../../../services/registro-empleados.service';
 import { LoginService } from '../../../services/login.service';
 
@@ -7,13 +8,14 @@ import { LoginService } from '../../../services/login.service';
   templateUrl: './informacion-inicio.component.html',
   styleUrls: ['./informacion-inicio.component.css']
 })
-export class InformacionInicioComponent implements OnInit {
-  usuarioAutenticado: boolean = false; // ← NUEVO
+export class InformacionInicioComponent implements OnInit, OnDestroy {
+  usuarioAutenticado: boolean = false;
+  private authSubscription?: Subscription;
 
   modalEstado: boolean = false;
   empleados: any[] = [];
 
-  searchIdentificacion: string = '';
+  searchTerm: string = '';
   modalEmpleadosVisible: boolean = false;
 
   horarios: any[] = [];
@@ -31,22 +33,20 @@ export class InformacionInicioComponent implements OnInit {
 
   constructor(
     private registroEmpleadosService: RegistroEmpleadosService,
-    private loginService: LoginService
+    public loginService: LoginService
   ) {}
 
   ngOnInit(): void {
-    // Verifica si hay sesión activa
-    this.usuarioAutenticado = this.loginService.estaAutenticado(); // ← NUEVO
+    this.authSubscription = this.loginService.autenticado$.subscribe(isAuth => {
+      this.usuarioAutenticado = isAuth;
+    });
 
-    // Suscribirse a la info del estudiante
     this.loginService.studentInfo$.subscribe(info => {
-      console.log('InformacionInicioComponent - user info received:', info);
       if (info && info.data && info.data.nombre) {
         this.userName = info.data.nombre;
       }
     });
 
-    // Cargar horarios
     this.registroEmpleadosService.getAllHorarios().subscribe(
       (response) => {
         if (response && response.data) {
@@ -57,6 +57,10 @@ export class InformacionInicioComponent implements OnInit {
         console.error('Error al obtener horarios:', error);
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe();
   }
 
   consultarEmpleados() {
@@ -74,11 +78,14 @@ export class InformacionInicioComponent implements OnInit {
   }
 
   get empleadosFiltrados() {
-    if (!this.searchIdentificacion) {
+    if (!this.searchTerm) {
       return this.empleados;
     }
+    const term = this.searchTerm.toLowerCase();
     return this.empleados.filter(e =>
-      e.identificacion.toLowerCase().includes(this.searchIdentificacion.toLowerCase())
+      e.identificacion.toLowerCase().includes(term) ||
+      e.nombre.toLowerCase().includes(term) ||
+      e.rol.toLowerCase().includes(term)
     );
   }
 
@@ -92,7 +99,7 @@ export class InformacionInicioComponent implements OnInit {
 
   cerrarModalEmpleados() {
     this.modalEmpleadosVisible = false;
-    this.searchIdentificacion = '';
+    this.searchTerm = '';
   }
 
   cargarEmpleadoParaActualizar(empleado: any) {

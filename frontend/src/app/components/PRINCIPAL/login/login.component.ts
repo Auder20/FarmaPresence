@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { LoginService } from '../../../services/login.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
@@ -8,70 +9,75 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   formVisible: boolean = false;
   studentInfo: any;
   username: string = "";
   password: string = "";
-  rememberMe: boolean = false; // Valor por defecto
+  rememberMe: boolean = false;
 
   email: string = '';
   showRecoveryForm: boolean = false;
 
-  constructor(public loginService: LoginService, private authService: AuthService, private router: Router) { }
-
-  ngOnInit(): void {
-    this.loginService.currentFormVisibility.subscribe(isVisible => {
-      this.formVisible = isVisible;
-    });
-
-    // Suscripción a los cambios en la información del estudiante
-    this.loginService.studentInfo$.subscribe(info => {
-      this.studentInfo = info;
-    });
-
-    const userId = localStorage.getItem('usuarioid');
-    if (userId) {
-      this.loginService.getStudentInfo(userId).subscribe();
-    }
-  }
+  passwordFieldType: string = 'password';
 
   showRecoveryModal: boolean = false;
   validationMessage: string | null = null;
 
-  // Método para abrir el modal
-  openRecoveryModal() {
-    this.showRecoveryModal = true;
-    this.validationMessage = null; // Limpiar mensajes anteriores
+  showError: boolean = false;
+
+  private authSubscription?: Subscription;
+
+  constructor(public loginService: LoginService, private authService: AuthService, private router: Router) { }
+
+  ngOnInit(): void {
+    this.authSubscription = this.loginService.autenticado$.subscribe(isAuth => {
+      this.formVisible = !isAuth;
+      this.showError = false; // Limpiar error al cambiar estado
+
+      if (isAuth) {
+        const userId = localStorage.getItem('usuarioid');
+        if (userId) {
+          this.loginService.getStudentInfo(userId).subscribe(info => {
+            this.studentInfo = info;
+          });
+        }
+      } else {
+        this.studentInfo = null;
+      }
+    });
   }
 
-  // Método para cerrar el modal
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe();
+  }
+
+  togglePasswordVisibility() {
+    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
+  }
+
+  openRecoveryModal() {
+    this.showRecoveryModal = true;
+    this.validationMessage = null;
+  }
+
   closeRecoveryModal() {
     this.showRecoveryModal = false;
-    this.email = ''; // Limpiar el campo de email
-    this.validationMessage = null; // Limpiar mensajes anteriores
+    this.email = '';
+    this.validationMessage = null;
   }
 
   login(): void {
     this.loginService.login(this.username, this.password, this.rememberMe).subscribe(
       success => {
         if (success) {
+          this.showError = false;
           window.alert('Inicio de sesión exitoso. ¡Bienvenido!');
-
-          this.authService.notifyLogin(); // Notifica el evento de inicio de sesión
-
-          const userId = localStorage.getItem('usuarioid');
-          if (userId) {
-            this.loginService.getStudentInfo(userId).subscribe();
-          }
-
-          this.router.navigate(['/informacionInicio']); // Redirige a la página principal
-
-
+          this.authService.notifyLogin();
+          this.router.navigate(['/informacionInicio']);
         } else {
-          window.alert('Credenciales incorrectas. Por favor, intente de nuevo.');
+          this.showError = true;
         }
       },
       error => {
@@ -97,11 +103,10 @@ export class LoginComponent implements OnInit {
     this.loginService.sendRecoveryLink(this.email).subscribe(
       response => {
         alert('Enlace de recuperación enviado a su correo electrónico.');
-
-        this.showLogin(); // Método para mostrar el formulario de inicio de sesión o redirigir
+        this.showLogin();
       },
       error => {
-        alert('Error al enviar el enlsace de recuperación. Por favor, intente de nuevo más tarde.');
+        alert('Error al enviar el enlace de recuperación. Por favor, intente de nuevo más tarde.');
       }
     );
   }
@@ -111,21 +116,7 @@ export class LoginComponent implements OnInit {
     this.authService.logout();
     this.username = '';
     this.password = '';
+    this.router.navigate(['/login']);
   }
 
-  passwordFieldType: string = 'password'; // Default is to hide the password
-
-  togglePasswordVisibility() {
-    this.passwordFieldType = this.passwordFieldType === 'password' ? 'text' : 'password';
-  }
 }
-
-
-
-
-
-
-
-
-
-

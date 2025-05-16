@@ -1,18 +1,13 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { catchError, map ,tap} from 'rxjs/operators';
-import { of } from 'rxjs';
-import {  throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError, map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import {  HttpHeaders } from '@angular/common/http';
-
 
 @Injectable({
   providedIn: 'root'
 })
-
 export class LoginService {
 
   private API_SERVER = "http://localhost:8080/usuario";
@@ -20,8 +15,35 @@ export class LoginService {
   private usuarioidKey = 'usuarioid'; // Clave para almacenar el ID de usuario
   private estudianteidKey = 'estudianteid'; // Clave para almacenar el ID del estudiante
   private rememberMeKey = 'rememberMe'; // Clave para almacenar el estado de "recordar sesión"
+  private isLoggedInKey = 'isLoggedIn'; // Clave para estado de login
+
+  private isLoggedIn: boolean = localStorage.getItem(this.isLoggedInKey) === 'true';
+
+  // BehaviorSubject para estado de autenticación reactivo
+  private autenticadoSubject = new BehaviorSubject<boolean>(this.isLoggedIn);
+  autenticado$ = this.autenticadoSubject.asObservable();
+
+  // Otros BehaviorSubjects para visibilidad de formulario y botones
+  private mostrarFormularioSubject = new BehaviorSubject<boolean>(true);
+  mostrarFormulario$ = this.mostrarFormularioSubject.asObservable();
+
+  private botonesInicioKey = 'botonesInicio';
+  private botonesInicioSubject = new BehaviorSubject<boolean>(localStorage.getItem(this.botonesInicioKey) === 'true');
+  botonesInicio$ = this.botonesInicioSubject.asObservable();
+
+  private botonesHeaderKey = 'botonesHeader';
+  private botonesHeaderSubject = new BehaviorSubject<boolean>(localStorage.getItem(this.botonesHeaderKey) === 'true');
+  botonesHeader$ = this.botonesHeaderSubject.asObservable();
+
+  private formVisibleKey = 'formVisible';
+  private formVisibility = new BehaviorSubject<boolean>(localStorage.getItem(this.formVisibleKey) === 'true');
+  currentFormVisibility = this.formVisibility.asObservable();
+
+  private studentInfoSubject = new BehaviorSubject<any>(null);
+  studentInfo$ = this.studentInfoSubject.asObservable();
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) {
+    // Al crear el servicio, se inicializan los estados desde localStorage
     const mostrarFormulario = localStorage.getItem('mostrarFormulario');
     if (mostrarFormulario) {
       this.mostrarFormularioSubject.next(mostrarFormulario === 'true');
@@ -32,17 +54,18 @@ export class LoginService {
       this.botonesInicioSubject.next(botonesInicio === 'true');
     }
 
-    // Verificación del estado de "recordar sesión" y del estado de inicio de sesión
-    const rememberMe = localStorage.getItem(this.rememberMeKey) === 'true';
-    const isLoggedIn = localStorage.getItem(this.isLoggedInKey) === 'true';
+   const isLoggedIn = localStorage.getItem(this.isLoggedInKey) === 'true';
+this.isLoggedIn = isLoggedIn;
+this.autenticadoSubject.next(isLoggedIn); // 🔥 emite valor al reentrar a la app
 
-    if (rememberMe && isLoggedIn) {
-      const userId = localStorage.getItem(this.usuarioidKey);
-      if (userId) {
-        this.getStudentInfo(userId).subscribe();
-        this.changeFormVisibility(true);
-      }
-    }
+if (isLoggedIn) {
+  const userId = localStorage.getItem(this.usuarioidKey);
+  if (userId) {
+    this.getStudentInfo(userId).subscribe();
+    this.changeFormVisibility(true);
+  }
+}
+
   }
 
   login(username: string, password: string, rememberMe: boolean): Observable<boolean> {
@@ -52,7 +75,9 @@ export class LoginService {
       map(response => {
         if (response && response.code === "200" && response.message === "Login exitoso") {
           localStorage.setItem(this.isLoggedInKey, 'true');
+          localStorage.setItem('autenticado', 'true'); // para compatibilidad
           this.isLoggedIn = true;
+          this.autenticadoSubject.next(true); // Notificar a suscriptores
 
           this.setMostrarFormulario(false);
           this.unlockButtons();
@@ -62,9 +87,7 @@ export class LoginService {
           localStorage.setItem(this.usuarioidKey, userId);
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
-          // Llamada para obtener el ID del estudiante y almacenarlo
           this.getStudentInfo(userId).subscribe(estudiante => {
-
             if (estudiante && estudiante.data.id) {
               localStorage.setItem(this.estudianteidKey, estudiante.data.id.toString());
             }
@@ -89,28 +112,29 @@ export class LoginService {
     return this.httpClient.post(`${this.API_SERVER}`, usuario, { headers });
   }
 
-   // Método para simular el proceso de inicio de sesión
+  logout(): void {
+    this.isLoggedIn = false;
+    localStorage.removeItem(this.isLoggedInKey);
+    localStorage.removeItem('autenticado');
+    localStorage.removeItem(this.usuarioidKey);
+    localStorage.removeItem(this.estudianteidKey);
+    localStorage.removeItem(this.rememberMeKey);
 
+    this.autenticadoSubject.next(false); // Notificar a suscriptores
 
+    this.setMostrarFormulario(true);
+    this.lockButtons();
+    this.changeFormVisibility(false);
+    this.router.navigate(['/']);
+  }
 
-/*-------------------------------------------------------------*/
+  isAuthenticated(): boolean {
+    return this.isLoggedIn;
+  }
 
-  /* LOGICA PARA GAURDAR ESTADO*/
-  // Variable para almacenar la clave utilizada en el almacenamiento local
-  private isLoggedInKey = 'isLoggedIn';
-  // Variable que indica si el usuario está autenticado
-  private isLoggedIn: boolean = localStorage.getItem(this.isLoggedInKey) === 'true';
-
-  // BehaviorSubject para mantener el estado de visualización del formulario de inicio de sesión
-  private mostrarFormularioSubject = new BehaviorSubject<boolean>(true);
-  // Observable que emite el valor actual de mostrarFormularioSubject
-  mostrarFormulario$ = this.mostrarFormularioSubject.asObservable();
-
-  // Método para cambiar el estado de visualización del formulario
   toggleMostrarFormulario(): void {
     const currentValue = this.mostrarFormularioSubject.value;
     const newValue = !currentValue;
-    // Invertir el valor actual y actualizar en el almacenamiento local
     this.mostrarFormularioSubject.next(newValue);
     localStorage.setItem('mostrarFormulario', newValue.toString());
   }
@@ -120,110 +144,39 @@ export class LoginService {
     localStorage.setItem('mostrarFormulario', value.toString());
   }
 
-  // Método para cambiar el estado de autenticación del usuario
   toggleLoginStatus(): void {
     this.isLoggedIn = !this.isLoggedIn;
-    // Actualizar el estado en el almacenamiento local
     localStorage.setItem(this.isLoggedInKey, this.isLoggedIn ? 'true' : 'false');
   }
-
-
-
-  // Método para simular el proceso de cierre de sesión
-  // Método para cerrar sesión
-  logout(): void {
-    this.isLoggedIn = false;
-    localStorage.removeItem(this.isLoggedInKey);
-    localStorage.removeItem(this.usuarioidKey);
-    localStorage.removeItem(this.estudianteidKey); // Eliminar el ID del estudiante
-    localStorage.removeItem(this.rememberMeKey);
-
-
-    this.setMostrarFormulario(true);
-    this.lockButtons();
-    this.changeFormVisibility(false);
-    this.router.navigate(['/']);
-  }
-
-
-  // Método para verificar si el usuario está autenticado
-  isAuthenticated(): boolean {
-    // Recuperar estado de inicio de sesión del almacenamiento local
-    return this.isLoggedIn;
-  }
-
-
-//-----------------------------------------------------------------------
-  // LOGICA PRA DESBLOQUEAR LOS BOTONES DE INICIO
-
- private botonesInicioKey = 'botonesInicio';
-  private botonesInicioSubject = new BehaviorSubject<boolean>(localStorage.getItem(this.botonesInicioKey) === 'true');
-  botonesInicio$ = this.botonesInicioSubject.asObservable();
 
   unlockButtons(): void {
     this.botonesInicioSubject.next(false);
     localStorage.setItem(this.botonesInicioKey, 'false');
-
   }
 
   lockButtons(): void {
     this.botonesInicioSubject.next(true);
     localStorage.setItem(this.botonesInicioKey, 'true');
-
   }
 
-//-----------------------------------------------------------------------
-  // LOGICA PRA DESBLOQUEAR LOS BOTONES DE header
-  private botonesHeaderKey = 'botonesHeader';
-  private botonesHeaderSubject = new BehaviorSubject<boolean>(localStorage.getItem(this.botonesHeaderKey) === 'true');
-  botonesHeader$ = this.botonesHeaderSubject.asObservable();
-
   unlockButtonsH(): void {
-    this.botonesInicioSubject.next(false);
+    this.botonesHeaderSubject.next(false);
     localStorage.setItem(this.botonesHeaderKey, 'false');
   }
 
   lockButtonsH(): void {
-    this.botonesInicioSubject.next(true);
+    this.botonesHeaderSubject.next(true);
     localStorage.setItem(this.botonesHeaderKey, 'true');
   }
 
-  //LOGICA PARA FORUMALRIO INICIO SESION
-  // Clave para almacenar el estado de visibilidad del formulario en el almacenamiento local
-private formVisibleKey = 'formVisible';
+  changeFormVisibility(isVisible: boolean): void {
+    this.formVisibility.next(isVisible);
+    localStorage.setItem(this.formVisibleKey, isVisible.toString());
+  }
 
-// BehaviorSubject para el estado de visibilidad del formulario
-private formVisibility = new BehaviorSubject<boolean>(
-  localStorage.getItem(this.formVisibleKey) === 'true'
-);
-
-// Observable para el BehaviorSubject de visibilidad del formulario
-currentFormVisibility = this.formVisibility.asObservable();
-
-// Método para cambiar la visibilidad del formulario
-changeFormVisibility(isVisible: boolean): void {
-  // Actualizar el BehaviorSubject con el nuevo valor de visibilidad
-  this.formVisibility.next(isVisible);
-  // Guardar el nuevo estado de visibilidad en el almacenamiento local
-  localStorage.setItem(this.formVisibleKey, isVisible.toString());
-}
-
-//--------------------------------------------------------------------------
-//LOGICA PARA EL FORMULARIO DEL HEADER
-
-  private estudianteApiUrl = "http://localhost:8080/usuario";
-
-  private estudianteUpdateUrl = "http://localhost:8080/estudiante"; // URL base para actualización
-
-  private studentInfoSubject = new BehaviorSubject<any>(null);
-  studentInfo$ = this.studentInfoSubject.asObservable();
-
-
-  // Método para obtener la información del usuario
   getStudentInfo(userId: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.estudianteApiUrl}/${userId}`).pipe(
+    return this.httpClient.get<any>(`${this.API_SERVER}/${userId}`).pipe(
       tap(info => {
-        console.log('getStudentInfo response:', info);
         this.studentInfoSubject.next(info);
       }),
       catchError(error => {
@@ -233,9 +186,8 @@ changeFormVisibility(isVisible: boolean): void {
     );
   }
 
-  // Método para actualizar la información del estudiante
   updateStudentInfo(studentId: number, studentData: any): Observable<any> {
-    return this.httpClient.put<any>(`${this.estudianteUpdateUrl}/${studentId}`, studentData).pipe(
+    return this.httpClient.put<any>(`http://localhost:8080/estudiante/${studentId}`, studentData).pipe(
       catchError(error => {
         console.error('Error updating student info', error);
         return throwError(error);
@@ -243,20 +195,18 @@ changeFormVisibility(isVisible: boolean): void {
     );
   }
 
-
   sendRecoveryLink(email: string): Observable<any> {
     const body = {
       correosElectronicos: [email]
     };
     return this.httpClient.post(`${this.API_SERVER}/forgot-password`, body);
   }
+
   resetPassword(token: string, password: string): Observable<any> {
     return this.httpClient.post(`http://localhost:8080/usuario/reset-password?token=${token}`, { password });
   }
-  // Método para verificar si el usuario esta autenticado
-estaAutenticado(): boolean {
-  return localStorage.getItem('autenticado') === 'true';
-}
 
+  estaAutenticado(): boolean {
+    return localStorage.getItem('autenticado') === 'true';
+  }
 }
-

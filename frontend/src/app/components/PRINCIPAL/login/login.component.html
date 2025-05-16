@@ -1,67 +1,65 @@
-<!-- login.component.html -->
-
-<!-- Contenedor en forma de fila: login + bienvenida -->
-<div class="login-layout">
-  <!-- Columna izquierda: Login -->
+<div *ngIf="formVisible" class="login-container">
   <div class="login-box">
-    <div *ngIf="(loginService.mostrarFormulario$ | async)">
-      <form>
-        <div class="inputrow">
-          <input type="text" id="name1" name="username" [(ngModel)]="username" placeholder="Username" />
-          <label class="ion-person" for="name1"></label>
-        </div>
-
-        <div class="inputrow">
-          <input [type]="passwordFieldType" id="pass" name="password" [(ngModel)]="password" placeholder="Password" />
-          <label class="ion-locked" for="pass"></label>
-          <i class="toggle-password" (click)="togglePasswordVisibility()">
-            <span *ngIf="passwordFieldType === 'password'" class="ion-eye"></span>
-            <span *ngIf="passwordFieldType === 'text'" class="ion-eye-disabled"></span>
-          </i>
-        </div>
-
-        <div class="remember-me">
-          <input type="checkbox" name="remember" id="remember" [(ngModel)]="rememberMe" />
-          <label class="radio" for="remember">Stay Logged In</label>
-        </div>
-
-        <div class="button-group">
-          <button type="button" class="signin-submit" (click)="login()">Login</button>
-          <button type="button" class="signin-submit" (click)="openRecoveryModal()">Olvidé mi contraseña</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Columna derecha: Bienvenida -->
-  <div class="welcome-box">
-    <div class="welcome-text">
-      <h1>¡Bienvenido a FarmaPresence!</h1>
-      <h2>Por favor, inicie sesión para acceder a nuestra plataforma de asistencia.</h2>
-<!-- Modal recuperación -->
-<div *ngIf="showRecoveryModal" class="recovery-modal">
-  <div class="modal-content">
-    <span class="close" (click)="closeRecoveryModal()">&times;</span>
-    <h2>Recuperación de Contraseña</h2>
-    <p *ngIf="validationMessage"
-       [ngClass]="{
-         'text-success': validationMessage.includes('enviado'),
-         'text-danger': validationMessage.includes('Error')
-       }"
-       class="validation-message">
-      {{ validationMessage }}
-    </p>
-    <form (ngSubmit)="sendRecoveryLink()">
+    <form (ngSubmit)="login()">
       <div class="inputrow">
-        <input type="email" id="email" name="email" [(ngModel)]="email" placeholder="Correo electrónico" required />
-        <label class="ion-email" for="email"></label>
+        <input
+          type="text"
+          id="name1"
+          name="username"
+          [(ngModel)]="username"
+          placeholder="Username"
+          required
+        />
+        <label class="ion-person" for="name1"></label>
       </div>
-      <div class="modal-buttons">
-        <button type="button" class="btn btn-danger cancel-button" (click)="closeRecoveryModal()">Cancelar</button>
-        <button type="submit" class="btn btn-success send-button">Enviar enlace de recuperación</button>
+
+      <div class="inputrow">
+        <input
+          [type]="passwordFieldType"
+          id="pass"
+          name="password"
+          [(ngModel)]="password"
+          placeholder="Password"
+          required
+        />
+        <label class="ion-locked" for="pass"></label>
+        <i class="toggle-password" (click)="togglePasswordVisibility()">
+          <span *ngIf="passwordFieldType === 'password'" class="ion-eye"></span>
+          <span *ngIf="passwordFieldType === 'text'" class="ion-eye-disabled"></span>
+        </i>
+      </div>
+
+      <div class="remember-me">
+        <input
+          type="checkbox"
+          id="remember"
+          name="remember"
+          [(ngModel)]="rememberMe"
+        />
+        <label class="radio" for="remember">Stay Logged In</label>
+      </div>
+
+      <div *ngIf="showError" class="error-message">
+        Usuario o contraseña incorrectos.
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="signin-submit">
+          LOGIN
+        </button>
+        <button
+          type="button"
+          class="signin-submit"
+          (click)="openRecoveryModal()"
+        >
+          OLVIDÉ MI CONTRASEÑA
+        </button>
       </div>
     </form>
   </div>
-</div>
 
-<router-outlet></router-outlet>
+  <div class="welcome-message">
+    <h2>Bienvenido a FarmaPresence</h2>
+    <p>Por favor inicie sesión para poder usar nuestros servicios de asistencia.</p>
+  </div>
+</div>

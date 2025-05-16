@@ -432,3 +432,39 @@
   margin-bottom: 10px;
   font-weight: bold;
 }
+.error-message {
+  color: red;
+  margin-top: 10px;
+  font-weight: bold;
+}
+.login-container {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px;
+  padding: 20px;
+}
+
+.login-box {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  width: 350px;
+}
+
+.welcome-message {
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+}
+
+.welcome-message h2 {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.welcome-message p {
+  font-size: 1.1rem;
+  color: #444;
+}

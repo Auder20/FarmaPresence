@@ -1,6 +1,6 @@
 <!-- informacion-inicio.component.html -->
 
-<div *ngIf="usuarioAutenticado">
+<div *ngIf="loginService.autenticado$ | async">
   <div class="jumbotron">
     <h1 class="display-4">Bienvenido a FarmaPresence</h1>
     <h3 class="display-10">Optimiza tu farmacia con nuestra solución inteligente</h3>
@@ -24,7 +24,7 @@
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Buscar por identificación" [(ngModel)]="searchIdentificacion" />
+              <input type="text" class="form-control" placeholder="Buscar empleado por identificación, nombre o rol" [(ngModel)]="searchTerm" />
             </div>
             <table class="table table-striped">
               <thead>

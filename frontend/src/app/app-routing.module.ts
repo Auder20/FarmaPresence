@@ -11,8 +11,10 @@ import { RegistroAsistenciaComponent } from './components/registro-asistencia/re
 import { EditarPerfilComponent } from './components/usuario/editar-perfil.component';
 import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
 import { AuthGuard } from './guards/auth.guard';
+import { RedirectGuard } from './guards/redirect.guard';
 
 const routes: Routes = [
+  // Rutas protegidas por AuthGuard
   { path: 'header', component: HeaderComponent, canActivate: [AuthGuard] },
   { path: 'informacionInicio', component: InformacionInicioComponent, canActivate: [AuthGuard] },
   { path: 'reportes', component: ReportesComponent, canActivate: [AuthGuard] },
@@ -20,17 +22,16 @@ const routes: Routes = [
   { path: 'graficas', component: GraficasComponent, canActivate: [AuthGuard] },
   { path: 'editar-perfil', component: EditarPerfilComponent, canActivate: [AuthGuard] },
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
-  { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] }, // ✅ NUEVA RUTA INCLUIDA
+  { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },
 
-  {
-    path: 'login', component: LoginComponent,
-    children: [
-      { path: '', redirectTo: 'informacionInicio', pathMatch: 'full' },
-      { path: 'informacionInicio', component: InformacionInicioComponent }
-    ]
-  },
+  // Ruta pública para login
+  { path: 'login', component: LoginComponent },
 
-  { path: '', redirectTo: '/login', pathMatch: 'full' }
+  // Redirección condicional por defecto
+  { path: '', canActivate: [RedirectGuard], component: LoginComponent },
+
+  // Ruta comodín para cualquier ruta no definida
+  { path: '**', redirectTo: '/login' }
 ];
 
 @NgModule({
