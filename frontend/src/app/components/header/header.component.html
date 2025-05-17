@@ -1,51 +1,54 @@
 <header class="top-header">
-    <div class="header-content">
-        <div class="logo">
-            <div class="custom-icon"></div>
-        </div>
-        <div class="title">
-            <h5>DROGUERIA</h5>
-            <h2>FARMACENTER</h2>
-        </div>
+  <div class="header-content">
+    <div class="logo">
+      <div class="custom-icon"></div>
     </div>
+    <div class="title">
+      <h5>DROGUERIA</h5>
+      <h2>FARMACENTER</h2>
+    </div>
+  </div>
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-custom">
-    <div class="collapse navbar-collapse" id="navbarNav7">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/informacionInicio']" [class.active]="selectedNavItem === 'inicio'"
-                    (click)="selectNavItem('inicio')">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/reportes']" [class.active]="selectedNavItem === 'reportes'"
-                    (click)="selectNavItem('reportes')">Reportes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/graficas']" [class.active]="selectedNavItem === 'graficas'"
-                    (click)="selectNavItem('graficas')">Gráficas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/registros']" [class.active]="selectedNavItem === 'registros'"
-                    (click)="selectNavItem('registros')">Registro de Empleado</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" [routerLink]="['/registro-asistencia']" [class.active]="selectedNavItem === 'registroAsistencia'"
-                    (click)="selectNavItem('registroAsistencia')">Registro de asistencia</a>
-            </li>
-            <li class="nav-item user-menu" *ngIf="username">
-                <a class="nav-link user-account" href="#" (click)="toggleDropdown(); $event.preventDefault()">
-                    <span class="user-icon">&#x1F464;</span>
-                    {{ username }}
-                    <span class="caret">&#x25BE;</span>
-                </a>
-                <ul class="dropdown-menu" [class.show]="isDropdownOpen">
+  <div class="collapse navbar-collapse" id="navbarNav7">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/informacionInicio']" [class.active]="selectedNavItem === 'inicio'"
+          (click)="selectNavItem('inicio')">Inicio</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/reportes']" [class.active]="selectedNavItem === 'reportes'"
+          (click)="selectNavItem('reportes')">Reportes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/graficas']" [class.active]="selectedNavItem === 'graficas'"
+          (click)="selectNavItem('graficas')">Gráficas</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/registros']" [class.active]="selectedNavItem === 'registros'"
+          (click)="selectNavItem('registros')">Registro de Empleado</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]="['/registro-asistencia']" [class.active]="selectedNavItem === 'registroAsistencia'"
+          (click)="selectNavItem('registroAsistencia')">Registro de asistencia</a>
+      </li>
+
+      <!-- Mostrar menú solo si hay usuario -->
+     <li class="nav-item user-menu"
+    *ngIf="username && username !== 'undefined' && username.trim().length > 0">
+  <a class="nav-link user-account" href="#" (click)="toggleDropdown(); $event.preventDefault()">
+    <span class="user-icon">&#x1F464;</span>
+    {{ username }}
+    <span class="caret">&#x25BE;</span>
+  </a>
+  <ul class="dropdown-menu" [class.show]="isDropdownOpen">
     <li><a [routerLink]="['/editar-perfil']" (click)="closeDropdown()">Editar perfil</a></li>
     <li><a [routerLink]="['/agregar-usuario']" (click)="closeDropdown()">Agregar usuario</a></li>
     <li><a href="#" (click)="logout()">Cerrar sesión</a></li>
-    </ul>
+  </ul>
+</li>
 
-            </li>
-        </ul>
-    </div>
+    </ul>
+  </div>
 </nav>

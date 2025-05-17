@@ -12,18 +12,20 @@ export class LoginService {
 
   private API_SERVER = "http://localhost:8080/usuario";
 
-  private usuarioidKey = 'usuarioid'; // Clave para almacenar el ID de usuario
-  private estudianteidKey = 'estudianteid'; // Clave para almacenar el ID del estudiante
-  private rememberMeKey = 'rememberMe'; // Clave para almacenar el estado de "recordar sesión"
-  private isLoggedInKey = 'isLoggedIn'; // Clave para estado de login
+  private usuarioidKey = 'usuarioid';
+  private usernameKey = 'username';  // Nueva clave para nombre usuario
+  private estudianteidKey = 'estudianteid';
+  private rememberMeKey = 'rememberMe';
+  private isLoggedInKey = 'isLoggedIn';
 
   private isLoggedIn: boolean = localStorage.getItem(this.isLoggedInKey) === 'true';
 
-  // BehaviorSubject para estado de autenticación reactivo
   private autenticadoSubject = new BehaviorSubject<boolean>(this.isLoggedIn);
   autenticado$ = this.autenticadoSubject.asObservable();
 
-  // Otros BehaviorSubjects para visibilidad de formulario y botones
+  private usernameSubject = new BehaviorSubject<string | null>(localStorage.getItem(this.usernameKey));
+  username$ = this.usernameSubject.asObservable();
+
   private mostrarFormularioSubject = new BehaviorSubject<boolean>(true);
   mostrarFormulario$ = this.mostrarFormularioSubject.asObservable();
 
@@ -43,7 +45,6 @@ export class LoginService {
   studentInfo$ = this.studentInfoSubject.asObservable();
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) {
-    // Al crear el servicio, se inicializan los estados desde localStorage
     const mostrarFormulario = localStorage.getItem('mostrarFormulario');
     if (mostrarFormulario) {
       this.mostrarFormularioSubject.next(mostrarFormulario === 'true');
@@ -54,18 +55,17 @@ export class LoginService {
       this.botonesInicioSubject.next(botonesInicio === 'true');
     }
 
-   const isLoggedIn = localStorage.getItem(this.isLoggedInKey) === 'true';
-this.isLoggedIn = isLoggedIn;
-this.autenticadoSubject.next(isLoggedIn); // 🔥 emite valor al reentrar a la app
+    const isLoggedIn = localStorage.getItem(this.isLoggedInKey) === 'true';
+    this.isLoggedIn = isLoggedIn;
+    this.autenticadoSubject.next(isLoggedIn);
 
-if (isLoggedIn) {
-  const userId = localStorage.getItem(this.usuarioidKey);
-  if (userId) {
-    this.getStudentInfo(userId).subscribe();
-    this.changeFormVisibility(true);
-  }
-}
-
+    if (isLoggedIn) {
+      const userId = localStorage.getItem(this.usuarioidKey);
+      if (userId) {
+        this.getStudentInfo(userId).subscribe();
+        this.changeFormVisibility(true);
+      }
+    }
   }
 
   login(username: string, password: string, rememberMe: boolean): Observable<boolean> {
@@ -75,15 +75,18 @@ if (isLoggedIn) {
       map(response => {
         if (response && response.code === "200" && response.message === "Login exitoso") {
           localStorage.setItem(this.isLoggedInKey, 'true');
-          localStorage.setItem('autenticado', 'true'); // para compatibilidad
+          localStorage.setItem('autenticado', 'true');
           this.isLoggedIn = true;
-          this.autenticadoSubject.next(true); // Notificar a suscriptores
+          this.autenticadoSubject.next(true);
 
           this.setMostrarFormulario(false);
           this.unlockButtons();
           this.changeFormVisibility(true);
 
           const userId = response.data.id;
+          const userName = response.data && response.data.nombreCompleto ? response.data.nombreCompleto : '';
+          localStorage.setItem(this.usernameKey, userName);
+          this.usernameSubject.next(userName);
           localStorage.setItem(this.usuarioidKey, userId);
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
@@ -107,27 +110,31 @@ if (isLoggedIn) {
     );
   }
 
-  registerUser(usuario: any): Observable<any> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    return this.httpClient.post(`${this.API_SERVER}`, usuario, { headers });
-  }
-
   logout(): void {
     this.isLoggedIn = false;
     localStorage.removeItem(this.isLoggedInKey);
     localStorage.removeItem('autenticado');
     localStorage.removeItem(this.usuarioidKey);
+    localStorage.removeItem(this.usernameKey);  // ELIMINA EL NOMBRE
+    this.usernameSubject.next(null);
     localStorage.removeItem(this.estudianteidKey);
     localStorage.removeItem(this.rememberMeKey);
 
-    this.autenticadoSubject.next(false); // Notificar a suscriptores
+    this.autenticadoSubject.next(false);
 
     this.setMostrarFormulario(true);
     this.lockButtons();
     this.changeFormVisibility(false);
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);  // REDIRIGE AL LOGIN
   }
 
+getUsername(): string | null {
+  const username = this.usernameSubject.value || localStorage.getItem(this.usernameKey);
+  // Si es null, vacío, o string 'undefined', retorna null
+  return username && username !== 'undefined' ? username : null;
+}
+
+  // ... el resto de tus métodos sin cambios
   isAuthenticated(): boolean {
     return this.isLoggedIn;
   }
