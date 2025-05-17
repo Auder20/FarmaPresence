@@ -1,5 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ReporteService, Reporte } from '../../services/reporte.service';
+import { RegistroAsistenciaService } from '../../services/registro-asistencia.service';
+
+interface Reporte {
+  nombre: string;
+  fecha: string;
+  hora: string;
+  estado: 'Presente' | 'Tarde' | 'Ausente';
+  motivo?: string;
+}
 
 @Component({
   selector: 'app-registro-asistencia',
@@ -13,19 +21,24 @@ export class RegistroAsistenciaComponent implements OnInit {
   nuevoMotivo: string = '';
   mostrarMotivo: boolean = false;
 
-  constructor(private reporteService: ReporteService) {}
+  constructor(private registroAsistenciaService: RegistroAsistenciaService) {}
 
   ngOnInit(): void {
     this.actualizarRegistros();
   }
 
   actualizarRegistros(): void {
-    const datos = this.reporteService.getReportes();
-
-    this.registros = [...datos].sort((a, b) => {
-      const fechaHoraA = new Date(`${a.fecha}T${a.hora}`);
-      const fechaHoraB = new Date(`${b.fecha}T${b.hora}`);
-      return fechaHoraB.getTime() - fechaHoraA.getTime();
+    this.registroAsistenciaService.getRegistros().subscribe({
+      next: (datos) => {
+        this.registros = datos.sort((a, b) => {
+          const fechaHoraA = new Date(`${a.fecha}T${a.hora}`);
+          const fechaHoraB = new Date(`${b.fecha}T${b.hora}`);
+          return fechaHoraB.getTime() - fechaHoraA.getTime();
+        });
+      },
+      error: (error) => {
+        console.error('Error obteniendo registros:', error);
+      }
     });
   }
 
@@ -37,7 +50,10 @@ export class RegistroAsistenciaComponent implements OnInit {
   }
 
   registrarAsistencia(): void {
-    if (!this.nuevoNombre.trim()) return;
+    if (!this.nuevoNombre.trim()) {
+      alert('Por favor, ingrese el nombre.');
+      return;
+    }
     if (this.mostrarMotivo && !this.nuevoMotivo.trim()) {
       alert('Por favor, ingrese el motivo para el estado seleccionado.');
       return;
@@ -52,14 +68,19 @@ export class RegistroAsistenciaComponent implements OnInit {
       motivo: this.nuevoMotivo.trim() || undefined
     };
 
-    const actuales = this.reporteService.getReportes();
-    this.reporteService.setReportes([...actuales, nuevoRegistro]);
-
-    this.nuevoNombre = '';
-    this.nuevoEstado = 'Presente';
-    this.nuevoMotivo = '';
-    this.mostrarMotivo = false;
-
-    this.actualizarRegistros();
+    this.registroAsistenciaService.registrarAsistencia(nuevoRegistro).subscribe({
+      next: () => {
+        alert('Asistencia registrada correctamente');
+        this.nuevoNombre = '';
+        this.nuevoEstado = 'Presente';
+        this.nuevoMotivo = '';
+        this.mostrarMotivo = false;
+        this.actualizarRegistros();
+      },
+      error: (error) => {
+        console.error('Error al registrar asistencia:', error);
+        alert('Error al registrar asistencia');
+      }
+    });
   }
 }
