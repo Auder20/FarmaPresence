@@ -13,12 +13,12 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
   private authSubscription?: Subscription;
 
   modalEstado: boolean = false;
-  empleados: any[] = [];
-
-  searchTerm: string = '';
   modalEmpleadosVisible: boolean = false;
 
+  empleados: any[] = [];
   horarios: any[] = [];
+
+  searchTerm: string = '';
 
   idEmpleado: string = '';
   nombreEmpleado: string = '';
@@ -26,7 +26,7 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
   telefonoEmpleado: string = '';
   identificacionEmpleado: string = '';
   activoEmpleado: boolean = false;
-  horarioEmpleado: string = '';
+  horarioEmpleado: string = '';  // Aquí guardaremos el idHorario
   huellaEmpleado: string = '';
 
   userName: string = 'Usuario';
@@ -89,7 +89,15 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
     );
   }
 
-  abrirModalActualizar() {
+  cargarEmpleadoParaActualizar(empleado: any) {
+    this.idEmpleado = empleado.id || '';
+    this.nombreEmpleado = empleado.nombre || '';
+    this.rolEmpleado = empleado.rol || '';
+    this.telefonoEmpleado = empleado.telefono || '';
+    this.identificacionEmpleado = empleado.identificacion || '';
+    this.activoEmpleado = empleado.activo || false;
+    this.horarioEmpleado = empleado.idHorario || '';  // Aquí el cambio importante
+    this.huellaEmpleado = empleado.huellaDactilar || '';
     this.modalEstado = true;
   }
 
@@ -102,18 +110,6 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
     this.searchTerm = '';
   }
 
-  cargarEmpleadoParaActualizar(empleado: any) {
-    this.idEmpleado = empleado.id || '';
-    this.nombreEmpleado = empleado.nombre || '';
-    this.rolEmpleado = empleado.rol || '';
-    this.telefonoEmpleado = empleado.telefono || '';
-    this.identificacionEmpleado = empleado.identificacion || '';
-    this.activoEmpleado = empleado.activo || false;
-    this.horarioEmpleado = empleado.horario || '';
-    this.huellaEmpleado = empleado.huellaDactilar || '';
-    this.abrirModalActualizar();
-  }
-
   guardarCambios() {
     const empleadoData = {
       nombre: this.nombreEmpleado,
@@ -121,7 +117,7 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
       telefono: this.telefonoEmpleado,
       identificacion: this.identificacionEmpleado,
       activo: this.activoEmpleado,
-      horario: this.horarioEmpleado
+      idHorario: this.horarioEmpleado  // Aquí también el cambio importante
     };
 
     this.registroEmpleadosService.updateEmpleadoByIdentificacion(
@@ -137,5 +133,14 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
         console.error('Error al actualizar empleado:', error);
       }
     );
+  }
+
+  getDescripcionHorario(idHorario: string): string {
+    for (let i = 0; i < this.horarios.length; i++) {
+      if (this.horarios[i].id === idHorario) {
+        return this.horarios[i].descripcion;
+      }
+    }
+    return 'N/A';
   }
 }

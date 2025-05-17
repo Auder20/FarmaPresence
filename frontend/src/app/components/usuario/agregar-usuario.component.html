@@ -32,49 +32,52 @@
         </div>
       </div>
 
-      <!-- Fila 2: Correo / contraseña -->
+      <!-- Fila 2: Correo / Contraseña -->
       <div class="form-row">
-           <div class="form-column">
+        <div class="form-column">
           <div class="form-group">
-            <label for="correo">correo electrónico:</label>
+            <label for="correo">Correo electrónico:</label>
             <input
-              type="text"
+              type="email"
               id="correo"
               [(ngModel)]="usuario.correo"
               name="correo"
-              placeholder="correo electrónico"
+              placeholder="Correo electrónico"
               required
             />
           </div>
         </div>
-        <div class="form-group">
-    <label for="contrasena">Contraseña:</label>
-    <div class="password-wrapper">
-      <input
-        [type]="mostrarContrasena ? 'text' : 'password'"
-        id="contrasena"
-        [(ngModel)]="usuario.contrasena"
-        name="contrasena"
-        placeholder="Contraseña del usuario"
-      />
-      <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
-        {{ mostrarContrasena ? '🙈' : '👁️' }}
-      </button>
-    </div>
-  </div>
+        <div class="form-column">
+          <div class="form-group">
+            <label for="contrasena">Contraseña:</label>
+            <div class="password-wrapper">
+              <input
+                [type]="mostrarContrasena ? 'text' : 'password'"
+                id="contrasena"
+                [(ngModel)]="usuario.contrasena"
+                name="contrasena"
+                placeholder="Contraseña del usuario"
+                required
+              />
+              <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn" type="button">
+                {{ mostrarContrasena ? '🙈' : '👁️' }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <!-- Fila 3: Usuario / Rol -->
+      <!-- Fila 3: Nombre de usuario / Rol -->
       <div class="form-row">
         <div class="form-column">
           <div class="form-group">
-            <label for="Nombre de usuario">nombre de usuario:</label>
+            <label for="nombreDeUsuario">Nombre de usuario:</label>
             <input
               type="text"
-              id="Nombre de usuario"
+              id="nombreDeUsuario"
               [(ngModel)]="usuario.nombreDeUsuario"
               name="nombreDeUsuario"
-              placeholder="nombre de usuario"
+              placeholder="Nombre de usuario"
               required
             />
           </div>
@@ -82,25 +85,18 @@
 
         <div class="form-column">
           <div class="form-group">
-            <label for="Rol">Rol:</label>
-            <select
-              id="Rol"
-              [(ngModel)]="usuario.Rol"
-              name="Rol"
-              required
-            >
+            <label for="rol">Rol:</label>
+            <select id="rol" [(ngModel)]="usuario.Rol" name="Rol" required>
               <option value="Admin">Administrador</option>
-              <option value="User">Usuario Comun</option>
+              <option value="User">Usuario Común</option>
             </select>
           </div>
         </div>
-
-
       </div>
 
-      <!-- ✅ Nueva fila: Teléfono /?? -->
+      <!-- Fila 4: Teléfono -->
       <div class="form-row">
-<div class="form-column">
+        <div class="form-column">
           <div class="form-group">
             <label for="telefono">Teléfono:</label>
             <input

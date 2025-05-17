@@ -182,6 +182,27 @@ public class Empleado_Controller {
 
                 // Verificar si los datos proporcionados son iguales a los existentes
                 boolean cambiosRealizados = false;
+                // NUEVO: Actualizar nombre
+if (empleadoData.getNombre() != null
+        && !empleadoData.getNombre().equals(empleado.getNombre())) {
+    empleado.setNombre(empleadoData.getNombre());
+    cambiosRealizados = true;
+}
+
+// NUEVO: Actualizar telefono
+if (empleadoData.getTelefono() != null
+        && !empleadoData.getTelefono().equals(empleado.getTelefono())) {
+    empleado.setTelefono(empleadoData.getTelefono());
+    cambiosRealizados = true;
+}
+
+// NUEVO: Actualizar identificacion
+if (empleadoData.getIdentificacion() != null
+        && !empleadoData.getIdentificacion().equals(empleado.getIdentificacion())) {
+    empleado.setIdentificacion(empleadoData.getIdentificacion());
+    cambiosRealizados = true;
+}
+
 
                 if (empleadoData.getFechaContratacion() != null
                         && !empleadoData.getFechaContratacion().equals(empleado.getFechaContratacion())) {

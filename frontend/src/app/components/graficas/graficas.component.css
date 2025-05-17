@@ -1,12 +1,60 @@
-/* graficas.component.css */
 .graficas-container {
-    max-width: 800px;
-    margin: 20px auto;
-    text-align: center;
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 30px 40px;
+  background: #ffffffee; /* Fondo blanco con ligera transparencia */
+  border-radius: 20px;
+  box-shadow: 0 12px 30px rgba(46, 101, 164, 0.3);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #003366;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+}
+
+.graficas-container:hover {
+  box-shadow: 0 16px 40px rgba(46, 101, 164, 0.45);
+}
+
+.graficas-container h2 {
+  font-weight: 900;
+  font-size: 2.6rem;
+  margin-bottom: 40px;
+  color: #2e65a4;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.chart {
+  width: 100%;
+  height: 450px; /* un poco más alto para mejor visibilidad */
+  position: relative;
+  background: #f9fcff; /* fondo muy suave para destacar la gráfica */
+  border-radius: 16px;
+  box-shadow: inset 0 0 15px rgba(46, 101, 164, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease;
+}
+
+.chart:hover {
+  transform: scale(1.02);
+}
+
+/* Para que el canvas se adapte al contenedor */
+.chart canvas {
+  border-radius: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .graficas-container {
+    max-width: 95%;
+    padding: 20px 25px;
   }
-  
+  .graficas-container h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
   .chart {
-    width: 100%;
-    height: 400px;
+    height: 320px;
+    padding: 10px;
   }
-  
+}

@@ -1,112 +1,169 @@
-<!-- informacion-inicio.component.html -->
-
 <div *ngIf="loginService.autenticado$ | async">
-  <div class="jumbotron">
-    <h1 class="display-4">Bienvenido a FarmaPresence</h1>
-    <h3 class="display-10">Optimiza tu farmacia con nuestra solución inteligente</h3>
-    <p class="lead">
-      Controla asistencia, gestiona empleados y supervisa a los empleados desde un solo lugar. ¡Empieza ahora!
-    </p>
-    <hr class="my-4" />
-
-    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-      <button class="nav-link" id="v-pills-empleados-tab" (click)="consultarEmpleados()">Consultar Empleados</button>
-      <button class="nav-link" id="v-pills-actualizar-empleados-tab" (click)="abrirModalActualizar()">Actualizar Datos de Empleados</button>
+  <div class="container-main">
+    <!-- Bienvenido -->
+    <div class="jumbotron">
+      <h1 class="display-4">Bienvenido a FarmaPresence</h1>
+      <h3 class="display-10">Optimiza tu farmacia con nuestra solución inteligente</h3>
+      <p class="lead">
+        Controla asistencia, gestiona empleados y supervisa a los empleados desde un solo lugar. ¡Empieza ahora!
+      </p>
+      <hr class="my-4" />
     </div>
 
-    <!-- Modal: Lista de empleados -->
-    <div *ngIf="modalEmpleadosVisible" class="modal fade show" tabindex="-1" style="display: block; background-color: rgba(0,0,0,0.5);">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Lista de Empleados</h5>
-            <button type="button" class="btn-close" (click)="cerrarModalEmpleados()"></button>
-          </div>
-          <div class="modal-body">
-            <div class="mb-3">
-              <input type="text" class="form-control" placeholder="Buscar empleado por identificación, nombre o rol" [(ngModel)]="searchTerm" />
-            </div>
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Identificación</th>
-                  <th>Rol</th>
-                  <th>Activo</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let empleado of empleadosFiltrados">
-                  <td>{{ empleado.id }}</td>
-                  <td>{{ empleado.nombre }}</td>
-                  <td>{{ empleado.identificacion }}</td>
-                  <td>{{ empleado.rol }}</td>
-                  <td>{{ empleado.activo ? 'Sí' : 'No' }}</td>
-                  <td><button class="btn btn-sm btn-primary" (click)="cargarEmpleadoParaActualizar(empleado); cerrarModalEmpleados()">Editar</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    <!-- Botón para consultar empleados -->
+    <button class="btn btn-primary mb-4" (click)="consultarEmpleados()">
+      Consultar empleados
+    </button>
+  </div>
+
+  <!-- Tabla de empleados con filtro -->
+  <div *ngIf="modalEmpleadosVisible" class="tabla-empleados-container">
+    <input
+      type="text"
+      placeholder="Buscar empleado..."
+      [(ngModel)]="searchTerm"
+      class="form-control mb-3"
+    />
+
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Rol</th>
+          <th>Teléfono</th>
+          <th>Identificación</th>
+          <th>Activo</th>
+          <th>Horario</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let empleado of empleadosFiltrados">
+          <td>{{ empleado.id }}</td>
+          <td>{{ empleado.nombre }}</td>
+          <td>{{ empleado.rol }}</td>
+          <td>{{ empleado.telefono }}</td>
+          <td>{{ empleado.identificacion }}</td>
+          <td>{{ empleado.activo ? 'Sí' : 'No' }}</td>
+          <td>{{ getDescripcionHorario(empleado.horario) }}</td>
+          <td>
+            <button
+              class="btn btn-sm btn-primary"
+              (click)="cargarEmpleadoParaActualizar(empleado)"
+            >
+              Editar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="btn btn-secondary mt-3" (click)="cerrarModalEmpleados()">
+      Cerrar lista
+    </button>
+  </div>
+
+  <!-- Modal actualizar empleado -->
+  <div *ngIf="modalEstado" class="modal fade show" tabindex="-1" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Actualizar Datos de Empleados</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModal()">&times;</button>
         </div>
-      </div>
-    </div>
-
-    <!-- Modal: Actualizar empleado -->
-    <div *ngIf="modalEstado" class="modal fade show" tabindex="-1" style="display: block;">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Actualizar Datos de Empleados</h5>
-            <button type="button" class="btn-close" (click)="cerrarModal()"></button>
-          </div>
-          <div class="modal-body">
-            <form (ngSubmit)="guardarCambios()">
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <label for="idEmpleado"><strong>ID del Empleado</strong></label>
-                  <input type="text" class="form-control form-control-sm" id="idEmpleado" required readonly [value]="idEmpleado">
-                </div>
-                <div class="col-md-6 form-group">
-                  <label for="nombreEmpleado"><strong>Nombre</strong></label>
-                  <input type="text" class="form-control form-control-sm" id="nombreEmpleado" required [(ngModel)]="nombreEmpleado" name="nombreEmpleado">
-                </div>
+        <div class="modal-body">
+          <form (ngSubmit)="guardarCambios()">
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="idEmpleado"><strong>ID del Empleado</strong></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="idEmpleado"
+                  required
+                  readonly
+                  [value]="idEmpleado"
+                />
               </div>
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <label for="rolEmpleado"><strong>Rol</strong></label>
-                  <input type="text" class="form-control form-control-sm" id="rolEmpleado" required [(ngModel)]="rolEmpleado" name="rolEmpleado">
-                </div>
-                <div class="col-md-6 form-group">
-                  <label for="telefonoEmpleado"><strong>Teléfono</strong></label>
-                  <input type="text" class="form-control form-control-sm" id="telefonoEmpleado" required [(ngModel)]="telefonoEmpleado" name="telefonoEmpleado">
-                </div>
+              <div class="col-md-6 form-group">
+                <label for="nombreEmpleado"><strong>Nombre</strong></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="nombreEmpleado"
+                  required
+                  [(ngModel)]="nombreEmpleado"
+                  name="nombreEmpleado"
+                />
               </div>
-              <div class="row mt-2">
-                <div class="col-md-6 form-group">
-                  <label for="identificacionEmpleado"><strong>Identificación</strong></label>
-                  <input type="text" class="form-control form-control-sm" id="identificacionEmpleado" required [(ngModel)]="identificacionEmpleado" name="identificacionEmpleado">
-                </div>
-                <div class="col-md-6 form-group">
-                  <label for="activoEmpleado"><strong>Activo</strong></label>
-                  <select class="form-control form-control-sm" id="activoEmpleado" [(ngModel)]="activoEmpleado" name="activoEmpleado" required>
-                    <option [ngValue]="true">Sí</option>
-                    <option [ngValue]="false">No</option>
-                  </select>
-                </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 form-group">
+                <label for="rolEmpleado"><strong>Rol</strong></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="rolEmpleado"
+                  required
+                  [(ngModel)]="rolEmpleado"
+                  name="rolEmpleado"
+                />
               </div>
-              <div class="row mt-2">
-                <div class="col-md-6 form-group">
-                  <label for="horarioEmpleado"><strong>Horario</strong></label>
-                  <select class="form-control form-control-sm" id="horarioEmpleado" [(ngModel)]="horarioEmpleado" name="horarioEmpleado" required>
-                    <option *ngFor="let horario of horarios" [value]="horario.id">{{ horario.descripcion }}</option>
-                  </select>
-                </div>
+              <div class="col-md-6 form-group">
+                <label for="telefonoEmpleado"><strong>Teléfono</strong></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="telefonoEmpleado"
+                  required
+                  [(ngModel)]="telefonoEmpleado"
+                  name="telefonoEmpleado"
+                />
               </div>
-              <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
-            </form>
-          </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6 form-group">
+                <label for="identificacionEmpleado"><strong>Identificación</strong></label>
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="identificacionEmpleado"
+                  required
+                  [(ngModel)]="identificacionEmpleado"
+                  name="identificacionEmpleado"
+                />
+              </div>
+              <div class="col-md-6 form-group">
+                <label for="activoEmpleado"><strong>Activo</strong></label>
+                <select
+                  class="form-control form-control-sm"
+                  id="activoEmpleado"
+                  [(ngModel)]="activoEmpleado"
+                  name="activoEmpleado"
+                  required
+                >
+                  <option [ngValue]="true">Sí</option>
+                  <option [ngValue]="false">No</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-6 form-group">
+                <label for="horarioEmpleado"><strong>Horario</strong></label>
+                <select
+                  class="form-control form-control-sm"
+                  id="horarioEmpleado"
+                  [(ngModel)]="horarioEmpleado"
+                  name="horarioEmpleado"
+                  required
+                >
+                  <option *ngFor="let horario of horarios" [value]="horario.id">{{ horario.descripcion }}</option>
+                </select>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Guardar Cambios</button>
+          </form>
         </div>
       </div>
     </div>

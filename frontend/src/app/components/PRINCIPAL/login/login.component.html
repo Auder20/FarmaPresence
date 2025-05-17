@@ -1,65 +1,67 @@
-<div *ngIf="formVisible" class="login-container">
-  <div class="login-box">
-    <form (ngSubmit)="login()">
-      <div class="inputrow">
-        <input
-          type="text"
-          id="name1"
-          name="username"
-          [(ngModel)]="username"
-          placeholder="Username"
-          required
-        />
-        <label class="ion-person" for="name1"></label>
-      </div>
+<div *ngIf="formVisible" class="logins-container">
+  <div class="login-layout">
+    <div class="login-box">
+      <form (ngSubmit)="login()">
+        <div class="inputrow">
+          <input
+            type="text"
+            id="name1"
+            name="username"
+            [(ngModel)]="username"
+            placeholder="Username"
+            required
+          />
+          <label class="ion-person" for="name1"></label>
+        </div>
 
-      <div class="inputrow">
-        <input
-          [type]="passwordFieldType"
-          id="pass"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Password"
-          required
-        />
-        <label class="ion-locked" for="pass"></label>
-        <i class="toggle-password" (click)="togglePasswordVisibility()">
-          <span *ngIf="passwordFieldType === 'password'" class="ion-eye"></span>
-          <span *ngIf="passwordFieldType === 'text'" class="ion-eye-disabled"></span>
-        </i>
-      </div>
+        <div class="inputrow">
+          <input
+            [type]="passwordFieldType"
+            id="pass"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Password"
+            required
+          />
+          <label class="ion-locked" for="pass"></label>
+          <i class="toggle-password" (click)="togglePasswordVisibility()">
+            <span *ngIf="passwordFieldType === 'password'" class="ion-eye"></span>
+            <span *ngIf="passwordFieldType === 'text'" class="ion-eye-disabled"></span>
+          </i>
+        </div>
 
-      <div class="remember-me">
-        <input
-          type="checkbox"
-          id="remember"
-          name="remember"
-          [(ngModel)]="rememberMe"
-        />
-        <label class="radio" for="remember">Stay Logged In</label>
-      </div>
+        <div class="remember-me">
+          <input
+            type="checkbox"
+            id="remember"
+            name="remember"
+            [(ngModel)]="rememberMe"
+          />
+          <label class="radio" for="remember">Stay Logged In</label>
+        </div>
 
-      <div *ngIf="showError" class="error-message">
-        Usuario o contraseña incorrectos.
-      </div>
+        <div *ngIf="showError" class="error-message">
+          Usuario o contraseña incorrectos.
+        </div>
 
-      <div class="button-group">
-        <button type="submit" class="signin-submit">
-          LOGIN
-        </button>
-        <button
-          type="button"
-          class="signin-submit"
-          (click)="openRecoveryModal()"
-        >
-          OLVIDÉ MI CONTRASEÑA
-        </button>
-      </div>
-    </form>
-  </div>
+        <div class="button-group">
+          <button type="submit" class="signin-submit">
+            LOGIN
+          </button>
+          <button
+            type="button"
+            class="signin-submit"
+            (click)="openRecoveryModal()"
+          >
+            OLVIDÉ MI CONTRASEÑA
+          </button>
+        </div>
+      </form>
+    </div>
 
-  <div class="welcome-message">
-    <h2>Bienvenido a FarmaPresence</h2>
-    <p>Por favor inicie sesión para poder usar nuestros servicios de asistencia.</p>
+    <div class="welcome-box">
+      <h1>Bienvenido a FarmaPresence</h1>
+      <p>Por favor inicie sesión para poder usar nuestros servicios de asistencia.</p>
+    </div>
   </div>
 </div>

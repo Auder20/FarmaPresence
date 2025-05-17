@@ -52,20 +52,22 @@
           </div>
         </div>
       </div>
-       <label for="contrasena">Contraseña:</label>
-    <div class="password-wrapper">
-      <input
-        [type]="mostrarContrasena ? 'text' : 'password'"
-        id="contrasena"
-        [(ngModel)]="contrasena"
-        name="contrasena"
-        placeholder="Contraseña del usuario"
-      />
-      <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
-        {{ mostrarContrasena ? '🙈' : '👁️' }}
-      </button>
-    </div>
+
+      <label for="contrasena">Contraseña:</label>
+      <div class="password-wrapper">
+        <input
+          [type]="mostrarContrasena ? 'text' : 'password'"
+          id="contrasena"
+          [(ngModel)]="contrasena"
+          name="contrasena"
+          placeholder="Contraseña del usuario"
+        />
+        <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
+          {{ mostrarContrasena ? '🙈' : '👁️' }}
+        </button>
+      </div>
+
       <button type="submit" class="submit-btn">Guardar Cambios</button>
     </form>
   </div>
-  </div>
+</div>

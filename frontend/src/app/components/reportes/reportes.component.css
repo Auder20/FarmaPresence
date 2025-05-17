@@ -1,23 +1,143 @@
-/* reportes.component.css */
 .reportes-container {
-    max-width: 800px;
-    margin: 20px auto;
-    border: 1px solid #ddd;
-    padding: 10px;
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px 30px;
+  background: #ffffffdd;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #00407a;
+}
+
+.reportes-container h2 {
+  text-align: center;
+  font-weight: 900;
+  font-size: 2rem;
+  margin-bottom: 25px;
+  color: #2e65a4;
+}
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+
+.filtros input[type="text"],
+.filtros input[type="date"],
+.filtros select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #4caf50;
+  font-size: 1rem;
+  min-width: 180px;
+  outline-color: #50e3c2;
+  transition: border-color 0.3s ease;
+}
+
+.filtros input[type="text"]:focus,
+.filtros input[type="date"]:focus,
+.filtros select:focus {
+  border-color: #31708f;
+}
+
+.filtros button {
+  padding: 10px 25px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  min-width: 140px;
+}
+
+.filtros button:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+  box-shadow: 0 0 8px rgb(0 0 0 / 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 15px 20px;
+  text-align: left;
+  border-bottom: 1px solid #4caf50;
+}
+
+th {
+  background-color: #50e3c2;
+  color: #00407a;
+  font-weight: 700;
+  user-select: none;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9fdfd;
+}
+
+tbody tr:hover {
+  background-color: #d9f0f5;
+  cursor: default;
+}
+
+/* Estados con subrayado y color */
+
+/* Presente: verde oliva claro */
+.presente {
+  color: #3a3a00;
+  background-image: linear-gradient(to bottom, transparent 80%, #9ACD32 80%);
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: bottom;
+}
+
+/* Ausente: subrayado rojo bonito, texto claro con fondo oscuro */
+.ausente {
+  color: #fff5f5;
+  background-image: linear-gradient(to bottom, transparent 80%, #E74C3C 80%);
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: bottom;
+  background-color: #7B241C;
+}
+
+/* Tarde: azul esmeralda */
+.tarde {
+  color: #e0f7f4; /* texto claro */
+  background-image: linear-gradient(to bottom, transparent 80%, #20B2AA 80%);
+  background-repeat: no-repeat;
+  background-size: 100% 3px;
+  background-position: bottom;
+  background-color: #004D40; /* fondo oscuro para contraste */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reportes-container {
+    padding: 15px 20px;
   }
-  
-  table {
+  .filtros {
+    flex-direction: column;
+    align-items: center;
+  }
+  .filtros input[type="text"],
+  .filtros input[type="date"],
+  .filtros select,
+  .filtros button {
     width: 100%;
-    border-collapse: collapse;
+    max-width: 350px;
   }
-  
-  th, td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
+  table, th, td {
+    font-size: 0.9rem;
   }
-  
-  th {
-    background-color: #f8f9fa;
-  }
-  
+}

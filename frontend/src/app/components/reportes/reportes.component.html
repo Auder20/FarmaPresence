@@ -1,7 +1,7 @@
 <div class="reportes-container">
   <h2>Reportes de Asistencia</h2>
 
-  <div style="margin-bottom: 15px;">
+  <div class="filtros">
     <input type="text" [(ngModel)]="filtroNombre" placeholder="Filtrar por nombre" />
     <input type="date" [(ngModel)]="filtroFecha" />
     <select [(ngModel)]="filtroEstado">
@@ -28,7 +28,11 @@
         <td>{{ r.nombre }}</td>
         <td>{{ r.fecha }}</td>
         <td>{{ r.hora }}</td>
-        <td>{{ r.estado }}</td>
+        <td [ngClass]="{
+          'presente': r.estado === 'Presente',
+          'ausente': r.estado === 'Ausente',
+          'tarde': r.estado === 'Tarde'
+        }">{{ r.estado }}</td>
       </tr>
     </tbody>
   </table>

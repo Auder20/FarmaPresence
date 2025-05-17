@@ -1,100 +1,175 @@
-/* Estilos para el contenedor principal que incluye el componente de inicio de sesión */
-.signin.cf {
-    margin: 0 auto; /* Centra el contenedor si es necesario */
-    width: 100%; /* Ajusta el ancho según sea necesario */
-    padding: 20px; /* Añade padding si es necesario */
-  }
-
-  /* Estilos para el componente jumbotron */
-  .jumbotron {
-    position: relative; /* Cambia de fixed a relative si no deseas que esté siempre en la pantalla */
-    top: 10%; /* Mantener la posición vertical */
-    left: 10%; /* Centrar horizontalmente */
-    width: 70%;
-    margin: 0 auto; /* Centra el componente en el contenedor */
-    padding: 20px;
-    background:none; /* Gradiente lineal */
-    border-radius: 5px; /* Bordes redondeados */
-    box-shadow: inset 1px 1px 0 0 rgba(255,255,255,0.2), inset -1px -1px 0 0 rgba(0,0,0,0.2); /* Sombra */
-  }
-
-  /* Estilos para las pastillas de navegación */
-  .nav-pills {
-    position: relative; /* Cambia de fixed a relative si no deseas que esté siempre en la pantalla */
-    display: flex;
-    flex-direction: column;
-    margin-left: 0; /* Elimina el margen izquierdo */
-    padding: 0; /* Elimina el padding si es necesario */
-    max-height: auto;
-    overflow-y: auto; /* Agrega un scrollbar si el contenido es mayor que el contenedor */
-    align-items: flex-start; /* Alinea las pastillas a la izquierda */
-    background: none !important; /* Quitar fondo azul */
-    box-shadow: none !important; /* Quitar sombra */
-  }
-
-  /* Estilos para cada pastilla de navegación */
-.nav-link {
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  display: inline-flex;
+/* Contenedor principal para centrar el bloque principal */
+.container-main {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 300px;
-  padding: 10px;
-  margin-bottom: 10px;
-  color: white;
-  background: #0047b3;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+/* Contenedor principal */
+.signin.cf {
+  margin: 0 auto;
+  width: 100%;
+  padding: 25px;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  background: linear-gradient(135deg, #3a9d9d, #2e65a4);
+  min-height: 100vh;
+}
+
+/* Jumbotron estilo moderno */
+.jumbotron {
+  position: relative;
+  width: 80%;
+  max-width: 900px;
+  margin: 60px auto 40px auto;
+  padding: 30px 40px;
+  background: #ffffffdd;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.3);
+  color: #00407a;
   text-align: center;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
 }
 
-.nav-link:hover {
+.jumbotron h1.display-4 {
+  font-weight: 900;
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+}
+
+.jumbotron h3.display-10 {
+  font-weight: 600;
+  font-size: 1.6rem;
+  margin-bottom: 15px;
+  color: #31708f;
+}
+
+.jumbotron p.lead {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.jumbotron hr.my-4 {
+  border-top: 2px solid #4caf50;
+  width: 60%;
+  margin: 25px auto 0 auto;
+}
+
+/* Botón consultar empleados */
+.btn-primary {
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  border: none;
+  font-weight: 700;
+  padding: 12px 40px;
+  border-radius: 30px;
+  transition: background 0.3s ease;
+  cursor: pointer;
   color: white;
-  background: #003a8c;
-  transform: none;
+  font-size: 1.1rem;
+  display: block;
+  margin: 40px auto 50px auto;
+  max-width: 220px;
+  text-align: center;
 }
 
-  /* Estilos para la tabla dentro de jumbotron */
-  .jumbotron table {
-    width: 100%; /* La tabla ocupa todo el ancho del jumbotron */
-    max-height: 500px;
-    overflow-y: auto;
-    border: 1px solid #ddd; /* Bordes de la tabla */
-    padding: 8px; /* Espacio interno de la tabla */
-    margin-top: 20px; /* Espacio entre la tabla y el encabezado */
-    border-collapse: collapse; /* Colapsar los bordes de las celdas */
-  }
+.btn-primary:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+}
 
-  .jumbotron th,
-  .jumbotron td {
-    border: 1px solid black; /* Bordes de las celdas */
-    padding: 8px; /* Espacio interno de las celdas */
-    text-align: left; /* Alinear el texto a la izquierda */
-  }
+/* Contenedor tabla empleados */
+.tabla-empleados-container {
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.1);
+  width: 90%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  .jumbotron th {
-    background-color: #71ee60; /* Color de fondo para el encabezado */
-  }
+/* Tabla empleados */
+.tabla-empleados-container table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
 
-  .pdf-container {
-    position: fixed; /* Asegura que el contenedor esté fijo en la pantalla */
-    top: 0;
-    left: 0;
+.tabla-empleados-container th,
+.tabla-empleados-container td {
+  padding: 12px 15px;
+  border: 1px solid #4caf50;
+  text-align: left;
+  vertical-align: middle;
+  word-wrap: break-word;
+}
+
+.tabla-empleados-container th {
+  background-color: #50e3c2;
+  color: #00407a;
+  font-weight: 700;
+}
+
+.tabla-empleados-container tr:nth-child(even) {
+  background-color: #f9fdfd;
+}
+
+/* Botones dentro de la tabla */
+.tabla-empleados-container button {
+  padding: 8px 18px;
+  border-radius: 30px;
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  border: none;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.tabla-empleados-container button:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+}
+
+/* Botón cerrar lista */
+.btn-cerrar-lista {
+  display: block;
+  margin: 15px auto 0 auto;
+  max-width: 150px;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 30px;
+  background: #dc3545;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  border: none;
+}
+
+.btn-cerrar-lista:hover {
+  background: #a71d2a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .jumbotron {
+    width: 95%;
+    padding: 20px;
+  }
+  .tabla-empleados-container {
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente para oscurecer la página */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999; /* Asegura que el contenedor esté sobre otros elementos */
+    padding: 10px 10px;
   }
-
-  .pdf-container iframe {
-    border: none; /* Quita el borde del iframe */
+  .tabla-empleados-container th,
+  .tabla-empleados-container td {
+    font-size: 0.9rem;
+    padding: 8px 10px;
   }
-
-  .pdf-container .btn-secondary {
-    margin-top: 20px; /* Espacio entre el iframe y el botón */
-  }
+}

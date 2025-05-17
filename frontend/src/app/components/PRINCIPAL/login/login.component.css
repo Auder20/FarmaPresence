@@ -1,470 +1,208 @@
-/* Estilo general para el contenedor principal del LoginsComponent */
+/* Contenedor principal con fondo degradado azul-verde */
 .logins-container {
-    width: 100%; /* Asegúrate de que ocupe todo el ancho del contenedor */
-    height: 100%; /* Ocupa toda la altura de la ventana */
-    display: flex;
-    justify-content: center; /* Centra el contenido horizontalmente */
-    align-items: center; /* Centra el contenido verticalmente */
-    background: linear-gradient(to bottom, #f0f0f0, #ffffff); /* Fondo claro */
-    overflow: hidden; /* Evita el desbordamiento del contenido */
-  }
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #3a9d9d, #2e65a4);
+  padding: 20px;
+  padding-top: 100px; /* separa todo del header */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
+}
 
-  .signin {
-    display: flex;
-    background-attachment: absolute;
-    background: linear-gradient(to bottom, #c9c3c3, #f4f4f5);
-    width: 200%;
-    height: 100%;
-    left: auto;
-    top: auto;
-    position: absolute;
-    overflow: hidden;
-  }
-
-  .signin .avatar {
-    width: 100px;
-    height: 100px;
-    margin: 0 auto 35px auto;
-    border: 5px solid #fff;
-    border-radius: 100%;
-    pointer-events: none;
-  }
-
-  .signin .inputrow {
-    position: relative;
-  }
-
-  .signin .inputrow label {
-    position: absolute;
-    top: 20px;
-    left: 10px;
-  }
-
-  .signin .inputrow label:before {
-    color: #538a9a;
-    opacity: 0.4;
-    transition: opacity 300ms ease;
-  }
-
-  .signin input[type="text"],
-  .signin input[type="password"] {
-    padding: 10px 12px 10px 32px;
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    border: 1px solid rgba(255,255,255,0.5);
-    background-color: #fff;
-    color: #333;
-    font-size: 1em;
-    font-weight: 300;
-    outline: none;
-    border-radius: 5px;
-    transition: border-color 300ms ease;
-    box-sizing: border-box;
-  }
-
-  .signin input[type="text"]:focus + label:before,
-  .signin input[type="password"]:focus + label:before {
-    opacity: 1;
-  }
-
-  .signin-submit {
-    height: 40px;
-    padding: 10px 12px;
-    margin-bottom: 10px;
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    background: linear-gradient(to bottom, #06ee06, #77fc77);
-    text-transform: uppercase;
-    color: #0e0101;
-    border: 0px;
-    float: right;
-    outline: none;
-    border-radius: 5px;
-  }
-
-  .signin-submit:hover {
-    background: linear-gradient(to bottom, #307e3a, #77fc77);
-  }
-
-  input[type="checkbox"] {
-    display: none;
-  }
-
-  input[type="checkbox"] + label {
-    position: relative;
-    padding-left: 36px;
-    font-size: 0.6em;
-    font-weight: normal;
-    line-height: 16px;
-    opacity: 0.8;
-    text-transform: uppercase;
-    user-select: none;
-  }
-
-  input[type="checkbox"] + label:before,
-  input[type="checkbox"] + label:after {
-    content: "";
-    position: absolute;
-    display: block;
-    height: 16px;
-    border-radius: 30px;
-  }
-
-  input[type="checkbox"] + label:before {
-    left: 0;
-    top: -2px;
-    width: 30px;
-    background: rgba(0,0,0,0.3);
-    box-shadow: inset 1px 1px 1px 1px rgba(0,0,0,0.3);
-  }
-
-  input[type="checkbox"] + label:after {
-    opacity: 0.3;
-    background: #fff;
-    top: 0px;
-    left: 2px;
-    height: 12px;
-    width: 12px;
-    transition: all 200ms ease;
-  }
-
-  input[type="checkbox"]:checked + label {
-    opacity: 1;
-  }
-
-  input[type="checkbox"]:checked + label:after {
-    opacity: 1;
-    left: 16px;
-  }
-
-  .cf:before,
-  .cf:after {
-    content: " ";
-    display: table;
-  }
-
-  .cf:after {
-    clear: both;
-  }
-
-  .cf {
-    zoom: 1;
-  }
-
-  .custom-icon {
-    width: 200px;
-    height: 150px;
-    background-image: url('DROG.png');
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-bottom: 20px;
-    margin-left: 20px;
-  }
-
-  .jumbotron.login {
-    padding: 19px;
-  }
-
-  .btn-danger {
-    background: linear-gradient(to bottom right, #f15252, #ff9999, #f15252);
-    color: black;
-    font-weight: bold;
-    border: none;
-    transition: background-color 0.3s ease;
-  }
-
-  .btn-danger:hover {
-    background: linear-gradient(to bottom right, #f15252, #f15252);
-    color: black;
-    font-weight: bold;
-  }
-
-  /* Ejemplo de estilos para el ícono de visibilidad */
-  .toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
-
-  .ion-eye,
-  .ion-eye-disabled {
-    font-size: 1.2rem;
-  }
-
-  .ion-eye-disabled {
-    opacity: 0.5;
-  }
-
-  /* Estilo para la opción "Olvidé mi contraseña" */
-  .forgot-password {
-    display: block;
-    margin-top: 10px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .forgot-password:hover {
-    text-decoration: none;
-  }
-
-  /* Estilo para el modal */
-  .recovery-modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
-  }
-
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .validation-message {
-    margin-bottom: 10px;
-  }
-
-  /* Estilo para la opción "Olvidé mi contraseña" */
-
-  /* Estilo para la opción "Olvidé mi contraseña" */
-  .forgot-password {
-    display: block;
-    margin-top: 10px;
-    color: #007bff;
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  .forgot-password:hover {
-    text-decoration: none;
-  }
-
-  /* Estilo para el modal */
-  /* Estilo para el modal */
-  .recovery-modal {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0, 0, 0);
-    background-color: rgba(0, 0, 0, 0.4);
-  }
-
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 400px;
-    border-radius: 5px;
-    position: relative; /* Necesario para posicionar los botones en las esquinas */
-  }
-
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: black;
-    text-decoration: none;
-  }
-
-  h2 {
-    margin-top: 0;
-  }
-
-  .validation-message {
-    margin-bottom: 20px;
-  }
-
-  .inputrow {
-    position: relative;
-    margin-bottom: 15px;
-  }
-
-  .inputrow input {
-    width: 100%; /* Ajusta el ancho del input para ocupar todo el espacio disponible */
-    padding: 10px 10px 10px 35px; /* Espacio adicional para el ícono dentro del input */
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-
-  .inputrow label {
-    position: absolute;
-    left: 10px; /* Espacio desde el borde izquierdo */
-    top: 50%;
-    transform: translateY(-50%);
-    color: #aaa;
-    font-size: 20px;
-  }
-
-  .modal-button {
-    padding: 10px 15px;
-    margin: 10px 5px;
-  }
-
-  .btn-success {
-    background-color: #28a745;
-    border: none;
-    color: black;
-    cursor: pointer;
-  }
-
-  .btn-danger {
-    background-color: #dc3545;
-    border: none;
-    color: black;
-    cursor: pointer;
-  }
-
-  /* Estilo para los botones en las esquinas */
-  .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .cancel-button {
-    font-size: 14px; /* Tamaño de fuente más pequeño para el botón Cancelar */
-  }
-
-  .send-button {
-    font-size: 16px; /* Tamaño de fuente ligeramente más grande para el botón Enviar */
-  }
-
-/* Layout principal con dos columnas: login y bienvenida */
+/* Layout para login + bienvenida al lado */
 .login-layout {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 100px 50px 50px 50px; /* Espaciado general y separación del header */
-  gap: 80px; /* Espacio entre login y bienvenida */
-}
-
-/* Caja del formulario */
-.login-box {
-  background-color: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  gap: 80px;
+  max-width: 1000px;
   width: 100%;
-  max-width: 400px;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  box-sizing: border-box;
+  margin-top: 0; /* ya está separado con padding-top de contenedor */
 }
 
-/* Botones en columna */
-.button-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+/* Caja del login con tonos azul-verde y blanco */
+.login-box {
+  background: #ffffffdd;
+  padding: 40px 35px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  width: 360px;
+  max-width: 100%;
+  text-align: center;
+  border: 2px solid #2e65a4; /* borde azul */
+  transition: box-shadow 0.3s ease;
+  flex-shrink: 0; /* no se achica */
+  color: #1a1a1a; /* texto oscuro para buena legibilidad */
 }
 
+/* Título principal login */
+.login-box h2 {
+  margin-bottom: 25px;
+  font-size: 1.9rem;
+  color: #2e65a4;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Inputs estilizados con iconos */
+.inputrow {
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.inputrow input[type="text"],
+.inputrow input[type="password"] {
+  width: 100%;
+  padding: 14px 18px 14px 44px; /* espacio para icono a la izquierda */
+  border-radius: 10px;
+  border: 1.5px solid #3a9d9d;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  color: #1a1a1a; /* texto input oscuro */
+}
+
+/* Placeholder de inputs */
+.login-box input::placeholder {
+  color: #666666; /* gris medio para placeholder */
+  opacity: 1;
+}
+
+.inputrow input[type="text"]:focus,
+.inputrow input[type="password"]:focus {
+  border-color: #2e65a4;
+  box-shadow: 0 0 8px rgba(46,101,164,0.5);
+}
+
+/* Iconos dentro del input */
+.inputrow label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2e65a4; /* azul fuerte para iconos */
+  font-size: 1.3rem; /* aumenté tamaño icono */
+  pointer-events: none;
+}
+
+/* Checkbox "Stay logged in" con tamaño más grande */
 .remember-me {
-  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 25px;
+  font-size: 1rem;
+  color: #333333; /* texto negro suave */
+  cursor: pointer;
+  user-select: none;
+  opacity: 1;
 }
 
-/* Caja del texto de bienvenida */
+.remember-me input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Texto para checkbox */
+.remember-me label {
+  color: #333333;
+  opacity: 1;
+  font-weight: 600;
+}
+
+/* Botones con degradado azul-verde */
+.signin-submit,
+.forgot-password-btn {
+  background: linear-gradient(45deg, #3a9d9d, #2e65a4);
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 14px;
+  width: 100%;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.4s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 12px rgba(46,101,164,0.4);
+  margin-bottom: 18px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.signin-submit:hover,
+.forgot-password-btn:hover {
+  background: linear-gradient(45deg, #2e65a4, #3a9d9d);
+  box-shadow: 0 8px 20px rgba(58,157,157,0.6);
+}
+
+/* Contenedor del texto de bienvenida */
 .welcome-box {
-  max-width: 700px;
+  flex-grow: 1;
+  max-width: 600px;
+  color: white;
+  text-align: left;
+  font-weight: 400;
 }
 
 .welcome-box h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
-
-.welcome-box h2 {
-  font-size: 1.5rem;
-  color: #222;
+  font-size: 2.8rem;
   margin-bottom: 15px;
+  font-weight: 900;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 .welcome-box p {
-  font-size: 1rem;
-  color: #555;
-  margin-bottom: 20px;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.4);
 }
 
-.welcome-box .btn {
-  display: block;
-  margin-bottom: 10px;
-  font-weight: bold;
-}
-.error-message {
-  color: red;
-  margin-top: 10px;
-  font-weight: bold;
-}
-.login-container {
-  display: flex;
-  gap: 50px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 100px;
-  padding: 20px;
+/* Avatar o logo */
+.signin .avatar {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 30px auto;
+  border-radius: 50%;
+  border: 4px solid white;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  background: url('DROG.png') center center no-repeat;
+  background-size: contain;
+  pointer-events: none;
 }
 
-.login-box {
-  background-color: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  width: 350px;
-}
+/* Responsive para móviles */
+@media (max-width: 900px) {
+  .logins-container {
+    padding-top: 50px;
+  }
+  .login-layout {
+    flex-direction: column;
+    padding: 20px;
+    gap: 30px;
+    margin-top: 0;
+  }
 
-.welcome-message {
-  max-width: 400px;
-  font-family: Arial, sans-serif;
-}
+  .login-box {
+    width: 100%;
+    max-width: 400px;
+  }
 
-.welcome-message h2 {
-  font-weight: bold;
-  margin-bottom: 15px;
-}
+  .welcome-box {
+    max-width: 100%;
+    text-align: center;
+  }
 
-.welcome-message p {
-  font-size: 1.1rem;
-  color: #444;
+  .welcome-box h1 {
+    font-size: 2.2rem;
+  }
+
+  .welcome-box p {
+    font-size: 1rem;
+  }
 }

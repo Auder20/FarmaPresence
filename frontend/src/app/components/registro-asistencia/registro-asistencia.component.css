@@ -1,41 +1,125 @@
 .asistencia-container {
-  max-width: 500px;
-  margin: 20px auto;
-  padding: 10px;
-  border: 1px solid #ccc;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 25px 30px;
+  background: #ffffffdd;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.2);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #00407a;
+}
+
+.asistencia-container h2 {
+  text-align: center;
+  font-weight: 900;
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #2e65a4;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+form input[type="text"],
+form select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #4caf50;
+  font-size: 1rem;
+  min-width: 150px;
+  outline-color: #50e3c2;
+  transition: border-color 0.3s ease;
+}
+
+form input[type="text"]:focus,
+form select:focus {
+  border-color: #31708f;
+}
+
+form button {
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  border: none;
+  padding: 12px 40px;
+  border-radius: 30px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  min-width: 160px;
+}
+
+form button:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
 }
 
 ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+  border-top: 2px solid #4caf50;
+  border-radius: 0 0 16px 16px;
 }
 
 li {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e0f2f1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
 }
 
+li:last-child {
+  border-bottom: none;
+}
+
+/* Estados con color y negrita */
 .presente {
-  color: green;
-  font-weight: bold;
+  color: #556b2f; /* verde oliva oscuro */
+  font-weight: 700;
 }
 
 .tarde {
-  color: orange;
-  font-weight: bold;
+  color: #00796b; /* azul esmeralda */
+  font-weight: 700;
 }
 
 .ausente {
-  color: red;
-  font-weight: bold;
+  color: #b71c1c; /* rojo oscuro */
+  font-weight: 700;
 }
 
-form input, form select, form button {
-  margin-right: 10px;
-  padding: 6px;
-}
+/* Motivo en cursiva y color gris */
 .motivo {
   font-style: italic;
   color: #666;
   margin-left: 10px;
+  flex-basis: 100%;
+  margin-top: 5px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  form {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  form input[type="text"],
+  form select,
+  form button {
+    min-width: 100%;
+  }
+
+  li {
+    font-size: 0.95rem;
+  }
 }

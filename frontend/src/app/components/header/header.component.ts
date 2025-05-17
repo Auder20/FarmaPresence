@@ -1,53 +1,43 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
-import { LoginService } from '../../services/login.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
-
-  selectedNavItem: string = "";
-  botonesHeader: boolean = true;
-  username: string = "";
+export class HeaderComponent {
+  username: string = 'Auder Gonzalez Martinez'; // ejemplo, asigna dinámicamente
   isDropdownOpen: boolean = false;
+  selectedNavItem: string = 'inicio';
 
-  constructor(private router: Router, private loginService: LoginService) {}
-
-  ngOnInit(): void {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        this.selectedNavItem = event.urlAfterRedirects.split('/')[1];
-      }
-    });
-
-   this.loginService.studentInfo$.subscribe((info: any) => {
-      if (info && info.data && info.data.nombreCompleto) {
-        this.username = info.data.nombreCompleto;
-      } else {
-        this.username = "";
-      }
-    });
-  }
-    toggleDropdown(): void {
+  toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  selectNavItem(navItem: string): void {
-    this.selectedNavItem = navItem;
+  selectNavItem(item: string) {
+    this.selectedNavItem = item;
+    this.isDropdownOpen = false; // cerrar menú al seleccionar opción
   }
 
-  editProfile(): void {
-    this.router.navigate(['/editar-perfil']);
+  editProfile() {
+    // lógica para editar perfil
+    alert('Editar perfil');
+    this.isDropdownOpen = false;
   }
 
-  addUser(): void {
-    this.router.navigate(['/agregar-usuario']);
+  addUser() {
+    // lógica para agregar usuario
+    alert('Agregar usuario');
+    this.isDropdownOpen = false;
   }
 
-  logout(): void {
-    this.loginService.logout();
+  logout() {
+    // lógica para cerrar sesión
+    alert('Sesión cerrada');
+    this.isDropdownOpen = false;
   }
+  closeDropdown() {
+  this.isDropdownOpen = false;
+}
+
 }

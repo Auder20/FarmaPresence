@@ -1,31 +1,47 @@
 <div class="asistencia-container">
-  <h2>Registro de Asistencia en Tiempo Real</h2>
+  <h2>Registro de Asistencia</h2>
 
-  <form (ngSubmit)="registrarAsistencia()" style="margin-bottom: 20px;">
-    <input type="text" placeholder="Nombre" [(ngModel)]="nuevoNombre" name="nombre" required />
+  <form (ngSubmit)="registrarAsistencia()">
+    <input
+      type="text"
+      placeholder="Nombre"
+      [(ngModel)]="nuevoNombre"
+      name="nuevoNombre"
+      required
+    />
 
-    <select [(ngModel)]="nuevoEstado" name="estado" (change)="onEstadoChange()">
+    <select [(ngModel)]="nuevoEstado" name="nuevoEstado" (change)="onEstadoChange()" required>
+      <option value="" disabled selected>Estado</option>
       <option value="Presente">Presente</option>
       <option value="Tarde">Tarde</option>
       <option value="Ausente">Ausente</option>
     </select>
 
-    <input *ngIf="mostrarMotivo" type="text" placeholder="Ingrese motivo" [(ngModel)]="nuevoMotivo" name="motivo" required />
+    <input
+      *ngIf="mostrarMotivo"
+      type="text"
+      placeholder="Motivo (opcional)"
+      [(ngModel)]="nuevoMotivo"
+      name="nuevoMotivo"
+      required
+    />
 
     <button type="submit">Registrar</button>
   </form>
 
   <ul>
-    <li *ngFor="let r of registros">
-      <strong>{{ r.nombre }}</strong> - {{ r.hora }} -
-      <span [ngClass]="{
-        'presente': r.estado === 'Presente',
-        'tarde': r.estado === 'Tarde',
-        'ausente': r.estado === 'Ausente'
-      }">
-        {{ r.estado }}
+    <li *ngFor="let registro of registros">
+      <span>{{ registro.nombre }}</span>
+      <span
+        [ngClass]="{
+          'presente': registro.estado === 'Presente',
+          'tarde': registro.estado === 'Tarde',
+          'ausente': registro.estado === 'Ausente'
+        }"
+      >
+        {{ registro.estado }}
       </span>
-      <span *ngIf="r.motivo" class="motivo"> - Motivo: {{ r.motivo }}</span>
+      <span class="motivo" *ngIf="registro.motivo">Motivo: {{ registro.motivo }}</span>
     </li>
   </ul>
 </div>
