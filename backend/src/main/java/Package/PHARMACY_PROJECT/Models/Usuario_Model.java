@@ -20,17 +20,19 @@ public class Usuario_Model {
     private String correoElectronico;
     private String rol; //ADMIN o usuario
     private String token;
+    private String telefono;
 
     // Constructor vacío
     public Usuario_Model() {
     }
 
-    public Usuario_Model(String correoElectronico, String nombreCompleto, String password, String rol, String token, String username) {
+    public Usuario_Model(String correoElectronico, String nombreCompleto, String password, String rol, String token, String username, String telefono) {
         this.correoElectronico = correoElectronico;
         this.nombreCompleto = nombreCompleto;
         this.password = password;
         this.rol = rol;
         this.token = token;
         this.username = username;
+        this.telefono = telefono;
     }
 }

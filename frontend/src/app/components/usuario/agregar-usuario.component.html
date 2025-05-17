@@ -2,16 +2,16 @@
   <div class="usuario-container">
     <h2>Registro de Usuario</h2>
     <form class="usuario-form" (ngSubmit)="onSubmit()">
-      <!-- Fila 1: Nombre / Identificación -->
+      <!-- Fila 1: Nombre Completo / Identificación -->
       <div class="form-row">
         <div class="form-column">
           <div class="form-group">
-            <label for="nombre">Nombre:</label>
+            <label for="nombreCompleto">Nombre completo:</label>
             <input
               type="text"
-              id="nombre"
-              [(ngModel)]="usuario.nombre"
-              name="nombre"
+              id="nombreCompleto"
+              [(ngModel)]="usuario.nombreCompleto"
+              name="nombreCompleto"
               placeholder="Nombre completo"
               required
             />
@@ -36,12 +36,12 @@
       <div class="form-row">
         <div class="form-column">
           <div class="form-group">
-            <label for="correo">Correo electrónico:</label>
+            <label for="correoElectronico">Correo electrónico:</label>
             <input
               type="email"
-              id="correo"
-              [(ngModel)]="usuario.correo"
-              name="correo"
+              id="correoElectronico"
+              [(ngModel)]="usuario.correoElectronico"
+              name="correoElectronico"
               placeholder="Correo electrónico"
               required
             />
@@ -49,17 +49,17 @@
         </div>
         <div class="form-column">
           <div class="form-group">
-            <label for="contrasena">Contraseña:</label>
+            <label for="password">Contraseña:</label>
             <div class="password-wrapper">
               <input
                 [type]="mostrarContrasena ? 'text' : 'password'"
-                id="contrasena"
-                [(ngModel)]="usuario.contrasena"
-                name="contrasena"
+                id="password"
+                [(ngModel)]="usuario.password"
+                name="password"
                 placeholder="Contraseña del usuario"
                 required
               />
-              <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn" type="button">
+              <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
                 {{ mostrarContrasena ? '🙈' : '👁️' }}
               </button>
             </div>
@@ -71,12 +71,12 @@
       <div class="form-row">
         <div class="form-column">
           <div class="form-group">
-            <label for="nombreDeUsuario">Nombre de usuario:</label>
+            <label for="username">Nombre de usuario:</label>
             <input
               type="text"
-              id="nombreDeUsuario"
-              [(ngModel)]="usuario.nombreDeUsuario"
-              name="nombreDeUsuario"
+              id="username"
+              [(ngModel)]="usuario.username"
+              name="username"
               placeholder="Nombre de usuario"
               required
             />
@@ -86,26 +86,10 @@
         <div class="form-column">
           <div class="form-group">
             <label for="rol">Rol:</label>
-            <select id="rol" [(ngModel)]="usuario.Rol" name="Rol" required>
-              <option value="Admin">Administrador</option>
-              <option value="User">Usuario Común</option>
+            <select id="rol" [(ngModel)]="usuario.rol" name="rol" required>
+              <option value="ADMIN">Administrador</option>
+              <option value="USER">Usuario Común</option>
             </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Fila 4: Teléfono -->
-      <div class="form-row">
-        <div class="form-column">
-          <div class="form-group">
-            <label for="telefono">Teléfono:</label>
-            <input
-              type="text"
-              id="telefono"
-              [(ngModel)]="usuario.telefono"
-              name="telefono"
-              placeholder="Teléfono del usuario"
-            />
           </div>
         </div>
       </div>

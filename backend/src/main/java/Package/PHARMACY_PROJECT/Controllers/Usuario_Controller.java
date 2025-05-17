@@ -66,67 +66,66 @@ public class Usuario_Controller {
     }
 
 
-    @PostMapping
-    public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario_Model usuario) {
-        try {
-            if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El nombre no puede ser nulo", null, "NOMBRE_NULO"));
-            }
+   @PostMapping
+public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario_Model usuario) {
+    // Log para verificar que teléfono llega
+    logger.info("Telefono recibido: {}", usuario.getTelefono());
 
-            if (usuario.getCorreoElectronico() == null || usuario.getCorreoElectronico().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El correo electrónico no puede ser nulo", null, "CORREO_NULO"));
-            }
-
-            // Verificar que todos los atributos requeridos, excepto token, no sean nulos
-            if (usuario.getUsername() == null || usuario.getUsername().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El ussername no puede ser nulo", null, "USERNAME_NULO"));
-            }
-
-            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "la contraseña no puede ser nulo", null, "NOMBRE_NULO"));
-            }
-            if (usuario.getRol() == null || usuario.getRol().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El rol no puede ser nulo", null, "NOMBRE_NULO"));
-            }
-
-            // Verificar si el nombre de usuario ya existe en la base de datos
-            Optional<Usuario_Model> usuarioExistentePorUsername = usersServices.findByUsername(usuario.getUsername());
-            if (usuarioExistentePorUsername.isPresent()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El nombre de usuario ya está en uso", null, "USERNAME_DUPLICADO"));
-            }
-
-            // Validar el formato del correo
-            if (!esCorreoValido(usuario.getCorreoElectronico())) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El formato del correo es inválido", null, "CORREO_INVALIDO"));
-            }
-
-            // Verificar si el correo ya está registrado
-            Optional<Usuario_Model> usuarioExistentePorCorreo = usersServices.findByCorreoElectronico(usuario.getCorreoElectronico());
-            if (usuarioExistentePorCorreo.isPresent()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "El correo electrónico ya está en uso", null, "CORREO_DUPLICADO"));
-            }
-
-            // Si todo es válido, guardar el usuario
-            Usuario_Model usuarioNuevo = usersServices.save(usuario);
-            Response<Usuario_Model> response = new Response<>("200", "Usuario creado satisfactoriamente", usuarioNuevo, "USUARIO_INSERT_OK");
-            return ResponseEntity.created(new URI("/usuario/" + usuarioNuevo.getId())).body(response);
-
-        } catch (DataIntegrityViolationException e) {
+    try {
+        if (usuario.getNombreCompleto() == null || usuario.getNombreCompleto().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new Response<>("400", "Error al crear usuario: " + e.getMessage(), null, "USUARIO_INSERT_ERROR"));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new Response<>("500", "Error interno del servidor: " + e.getMessage(), null, "INTERNAL_SERVER_ERROR"));
+                    .body(new Response<>("400", "El nombre no puede ser nulo", null, "NOMBRE_NULO"));
         }
+
+        if (usuario.getCorreoElectronico() == null || usuario.getCorreoElectronico().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El correo electrónico no puede ser nulo", null, "CORREO_NULO"));
+        }
+
+        if (usuario.getUsername() == null || usuario.getUsername().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El ussername no puede ser nulo", null, "USERNAME_NULO"));
+        }
+
+        if (usuario.getPassword() == null || usuario.getPassword().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "la contraseña no puede ser nulo", null, "NOMBRE_NULO"));
+        }
+        if (usuario.getRol() == null || usuario.getRol().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El rol no puede ser nulo", null, "NOMBRE_NULO"));
+        }
+
+        Optional<Usuario_Model> usuarioExistentePorUsername = usersServices.findByUsername(usuario.getUsername());
+        if (usuarioExistentePorUsername.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El nombre de usuario ya está en uso", null, "USERNAME_DUPLICADO"));
+        }
+
+        if (!esCorreoValido(usuario.getCorreoElectronico())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El formato del correo es inválido", null, "CORREO_INVALIDO"));
+        }
+
+        Optional<Usuario_Model> usuarioExistentePorCorreo = usersServices.findByCorreoElectronico(usuario.getCorreoElectronico());
+        if (usuarioExistentePorCorreo.isPresent()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", "El correo electrónico ya está en uso", null, "CORREO_DUPLICADO"));
+        }
+
+        Usuario_Model usuarioNuevo = usersServices.save(usuario);
+        Response<Usuario_Model> response = new Response<>("200", "Usuario creado satisfactoriamente", usuarioNuevo, "USUARIO_INSERT_OK");
+        return ResponseEntity.created(new URI("/usuario/" + usuarioNuevo.getId())).body(response);
+
+    } catch (DataIntegrityViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new Response<>("400", "Error al crear usuario: " + e.getMessage(), null, "USUARIO_INSERT_ERROR"));
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new Response<>("500", "Error interno del servidor: " + e.getMessage(), null, "INTERNAL_SERVER_ERROR"));
     }
+}
+
 
 
     public boolean esCorreoValido(String correo) {

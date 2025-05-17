@@ -9,13 +9,12 @@ import { Router } from '@angular/router';
 })
 export class AgregarUsuarioComponent {
   usuario = {
-    nombre: '',
+    nombreCompleto: '',
     identificacion: '',
-    correo: '',
-    Rol: '',
-    nombreDeUsuario: '',
-    contrasena: '',
-    telefono: ''
+    correoElectronico: '',
+    rol: '',
+    username: '',
+    password: ''
   };
 
   mostrarContrasena: boolean = false;
@@ -28,16 +27,8 @@ export class AgregarUsuarioComponent {
 
   onSubmit(): void {
     if (this.validarFormulario()) {
-      const nuevoUsuario = {
-        nombre: this.usuario.nombre,
-        identificacion: this.usuario.identificacion,
-        correo: this.usuario.correo,
-        Rol: this.usuario.Rol,
-        username: this.usuario.nombreDeUsuario,
-        contrasena: this.usuario.contrasena,
-        telefono: this.usuario.telefono
-      };
-      this.usuarioService.addUsuario(nuevoUsuario).subscribe({
+      // El objeto ya tiene las propiedades correctas para el backend
+      this.usuarioService.addUsuario(this.usuario).subscribe({
         next: (response) => {
           alert('Usuario registrado correctamente');
           this.resetForm();
@@ -55,25 +46,23 @@ export class AgregarUsuarioComponent {
 
   validarFormulario(): boolean {
     return (
-      this.usuario.nombre.trim() !== '' &&
+      this.usuario.nombreCompleto.trim() !== '' &&
       this.usuario.identificacion.trim() !== '' &&
-      this.usuario.correo.trim() !== '' &&
-      this.usuario.Rol.trim() !== '' &&
-      this.usuario.nombreDeUsuario.trim() !== '' &&
-      this.usuario.contrasena.trim() !== '' &&
-      this.usuario.telefono.trim() != ''
+      this.usuario.correoElectronico.trim() !== '' &&
+      this.usuario.rol.trim() !== '' &&
+      this.usuario.username.trim() !== '' &&
+      this.usuario.password.trim() !== ''
     );
   }
 
   resetForm(): void {
     this.usuario = {
-      nombre: '',
+      nombreCompleto: '',
       identificacion: '',
-      correo: '',
-      Rol: '',
-      nombreDeUsuario: '',
-      contrasena: '',
-      telefono: ''
+      correoElectronico: '',
+      rol: '',
+      username: '',
+      password: ''
     };
     this.mostrarContrasena = false;
   }
