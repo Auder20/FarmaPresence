@@ -36,4 +36,10 @@ export class UsuarioService {
     const url = `${this.apiUrl}/${id}`;
     return this.http.delete<any>(url);
   }
+
+  // Método nuevo para actualizar la contraseña con validación de la actual
+  updatePassword(id: number | string, passwords: { contrasenaActual: string; nuevaContrasena: string }): Observable<any> {
+    const url = `${this.apiUrl}/change-password/${id}`;
+    return this.http.put<any>(url, passwords, this.httpOptions);
+  }
 }

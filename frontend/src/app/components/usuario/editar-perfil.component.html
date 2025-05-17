@@ -1,73 +1,113 @@
 <div class="panel-container">
-  <div class="editar-perfil-container">
-    <h2>Editar Perfil de Usuario</h2>
+  <h2>Editar Perfil</h2>
+  <form class="perfil-form" (ngSubmit)="guardarCambios()">
+    <!-- ID de Usuario (solo lectura) -->
+    <div class="form-group">
+      <label for="id">ID de Usuario:</label>
+      <input type="text" id="id" [(ngModel)]="idusuario" name="id" readonly />
+    </div>
 
-    <form (ngSubmit)="guardarCambios()">
-      <div class="form-row">
-        <div class="form-column">
-          <div class="form-group">
-            <label for="idusuario"><strong>ID del usuario</strong></label>
-            <input type="text" id="idusuario" class="form-control" [value]="idusuario" readonly>
-          </div>
-        </div>
-
-        <div class="form-column">
-          <div class="form-group">
-            <label for="nombreUsuario"><strong>Nombre</strong></label>
-            <input type="text" id="nombreUsuario" class="form-control" required [(ngModel)]="nombreDeUsuario" name="nombreDeUsuario">
-          </div>
-        </div>
+    <!-- Nombre completo y Nombre de usuario -->
+    <div class="form-row">
+      <div class="form-column">
+        <label for="nombreCompleto">Nombre completo:</label>
+        <input
+          type="text"
+          id="nombreCompleto"
+          [(ngModel)]="nombreCompleto"
+          name="nombreCompleto"
+          required
+        />
       </div>
-
-      <div class="form-row">
-        <div class="form-column">
-          <div class="form-group">
-            <label for="Rolusuario"><strong>Rol</strong></label>
-            <select id="Rolusuario" class="form-control" required [(ngModel)]="Rolusuario" name="Rolusuario">
-              <option value="Admin">Administrador</option>
-              <option value="User">Usuario común</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-column">
-          <div class="form-group">
-            <label for="telefonousuario"><strong>Teléfono</strong></label>
-            <input type="text" id="telefonousuario" class="form-control" required [(ngModel)]="telefonousuario" name="telefonousuario">
-          </div>
-        </div>
+      <div class="form-column">
+        <label for="username">Nombre de usuario:</label>
+        <input
+          type="text"
+          id="username"
+          [(ngModel)]="username"
+          name="username"
+          required
+        />
       </div>
+    </div>
 
-      <div class="form-row">
-        <div class="form-column">
-          <div class="form-group">
-            <label for="correoUSUARIO"><strong>Correo electrónico</strong></label>
-            <input type="text" id="correoUSUARIO" class="form-control" required [(ngModel)]="correoUSUARIO" name="correoUSUARIO">
-          </div>
-        </div>
-        <div class="form-column">
-          <div class="form-group">
-            <label for="UserName"><strong>Nombre de Usuario</strong></label>
-            <input type="text" id="UserName" class="form-control" required [(ngModel)]="UserName" name="UserName">
-          </div>
-        </div>
+    <!-- Rol y Teléfono -->
+    <div class="form-row">
+      <div class="form-column">
+        <label for="rol">Rol:</label>
+        <select id="rol" [(ngModel)]="rol" name="rol" required>
+          <option value="ADMIN">Administrador</option>
+          <option value="USER">Usuario Común</option>
+        </select>
       </div>
+      <div class="form-column">
+        <label for="telefono">Teléfono:</label>
+        <input
+          type="text"
+          id="telefono"
+          [(ngModel)]="telefono"
+          name="telefono"
+          placeholder="Teléfono del usuario"
+        />
+      </div>
+    </div>
 
-      <label for="contrasena">Contraseña:</label>
-      <div class="password-wrapper">
+    <!-- Correo electrónico -->
+    <div class="form-group">
+      <label for="correoElectronico">Correo electrónico:</label>
+      <input
+        type="email"
+        id="correoElectronico"
+        [(ngModel)]="correoElectronico"
+        name="correoElectronico"
+        required
+      />
+    </div>
+
+    <!-- Botón para mostrar formulario cambio de contraseña -->
+    <button type="button" (click)="toggleMostrarContrasena()" class="btn-cambiar-pass">
+      {{ mostrarFormularioCambioContrasena ? 'Cancelar cambio de contraseña' : 'Cambiar contraseña' }}
+    </button>
+
+    <!-- Formulario cambio de contraseña (oculto/visible) -->
+    <div *ngIf="mostrarFormularioCambioContrasena" class="form-cambio-contrasena">
+      <div class="form-group">
+        <label for="contrasenaActual">Contraseña Actual:</label>
         <input
           [type]="mostrarContrasena ? 'text' : 'password'"
-          id="contrasena"
-          [(ngModel)]="contrasena"
-          name="contrasena"
-          placeholder="Contraseña del usuario"
+          id="contrasenaActual"
+          [(ngModel)]="contrasenaActual"
+          name="contrasenaActual"
+          placeholder="Escribe tu contraseña actual"
+          required
         />
-        <button type="button" (click)="toggleMostrarContrasena()" class="toggle-btn">
-          {{ mostrarContrasena ? '🙈' : '👁️' }}
-        </button>
       </div>
+      <div class="form-group">
+        <label for="nuevaContrasena">Nueva Contraseña:</label>
+        <input
+          [type]="mostrarContrasena ? 'text' : 'password'"
+          id="nuevaContrasena"
+          [(ngModel)]="nuevaContrasena"
+          name="nuevaContrasena"
+          placeholder="Escribe la nueva contraseña"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="confirmarContrasena">Confirmar Nueva Contraseña:</label>
+        <input
+          [type]="mostrarContrasena ? 'text' : 'password'"
+          id="confirmarContrasena"
+          [(ngModel)]="confirmarContrasena"
+          name="confirmarContrasena"
+          placeholder="Confirma la nueva contraseña"
+          required
+        />
+      </div>
+      <button type="button" (click)="cambiarContrasena()" class="btn-guardar-pass">Guardar Nueva Contraseña</button>
+    </div>
 
-      <button type="submit" class="submit-btn">Guardar Cambios</button>
-    </form>
-  </div>
+    <!-- Botón para guardar cambios -->
+    <button type="submit" class="btn-guardar-cambios">Guardar Cambios</button>
+  </form>
 </div>

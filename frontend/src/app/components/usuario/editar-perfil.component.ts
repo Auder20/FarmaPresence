@@ -1,64 +1,130 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UsuarioService } from '../../services/usuario.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-editar-perfil',
   templateUrl: './editar-perfil.component.html',
   styleUrls: ['./editar-perfil.component.css']
 })
-export class EditarPerfilComponent {
-  // Estado del modal
-  modalEstado: boolean = false;
+export class EditarPerfilComponent implements OnInit {
 
-  // Datos del perfil del usuario
-  @Input() idusuario: number | string = '';
-  nombreDeUsuario: string = '';
-  Rolusuario: string = 'User'; // valor por defecto
-  telefonousuario: string = '';
-  correoUSUARIO: string = '';
-  UserName: string = '';
-  contrasena: string ='';
+  idusuario: number | null = null;
 
-  // Evento para notificar al componente padre
-  @Output() perfilActualizado = new EventEmitter<any>();
+  nombreCompleto: string = '';
+  username: string = '';
+  rol: string = '';
+  telefono: string = '';
+  correoElectronico: string = '';
+  password: string = ''; // No mostrar contraseña por seguridad
+  mostrarContrasena: boolean = false;
 
-  // Método para abrir el modal y cargar datos
-  abrirModal(usuario: any) {
-    this.idusuario = usuario.id;
-    this.nombreDeUsuario = usuario.nombre;
-    this.Rolusuario = usuario.rol;
-    this.telefonousuario = usuario.telefono;
-    this.correoUSUARIO = usuario.correo;
-    this.modalEstado = true;
-    this.UserName = usuario.UserName;
-    this.contrasena= usuario.contrasena;
+  // Para el formulario de cambio de contraseña (opcional)
+  mostrarFormularioCambioContrasena: boolean = false;
+  contrasenaActual: string = '';
+  nuevaContrasena: string = '';
+  confirmarContrasena: string = '';
+
+  constructor(
+    private usuarioService: UsuarioService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const routeId = this.route.snapshot.paramMap.get('id');
+    if (routeId && !isNaN(Number(routeId))) {
+      this.idusuario = Number(routeId);
+      this.cargarDatosUsuario(this.idusuario);
+    } else {
+      alert('ID de usuario inválido o no proporcionado');
+      this.router.navigate(['/informacionInicio']);
+    }
   }
 
-   mostrarContrasena: boolean = false;
- toggleMostrarContrasena(): void {
+  cargarDatosUsuario(id: number): void {
+    this.usuarioService.getUsuarioById(id).subscribe({
+      next: (response) => {
+        const usuario = response.data;
+        this.nombreCompleto = usuario.nombreCompleto ?? '';
+        this.username = usuario.username ?? '';
+        this.rol = usuario.rol ?? '';
+        this.telefono = usuario.telefono ?? '';
+        this.correoElectronico = usuario.correoElectronico ?? '';
+        this.password = ''; // No mostrar la contraseña
+      },
+      error: (error) => {
+        console.error('Error al cargar usuario:', error);
+        alert('Error al cargar datos del usuario.');
+        this.router.navigate(['/informacionInicio']);
+      }
+    });
+  }
+
+  toggleMostrarContrasena(): void {
     this.mostrarContrasena = !this.mostrarContrasena;
   }
 
-  // Método para cerrar el modal
-  cerrarModal() {
-    this.modalEstado = false;
+  toggleMostrarFormulario(): void {
+    this.mostrarFormularioCambioContrasena = !this.mostrarFormularioCambioContrasena;
+    if (!this.mostrarFormularioCambioContrasena) {
+      this.contrasenaActual = '';
+      this.nuevaContrasena = '';
+      this.confirmarContrasena = '';
+    }
   }
 
-  // Guardar cambios y emitir al componente padre
-  guardarCambios() {
-    const perfilActualizado = {
+  guardarCambios(): void {
+    if (!this.idusuario) {
+      alert('ID de usuario inválido');
+      return;
+    }
+
+    const usuarioActualizado = {
       id: this.idusuario,
-      nombre: this.nombreDeUsuario,
-      rol: this.Rolusuario,
-      telefono: this.telefonousuario,
-      correo: this.correoUSUARIO,
-      UserName: this.UserName,
-      contrasena: this.contrasena
+      nombreCompleto: this.nombreCompleto.trim(),
+      username: this.username.trim(),
+      rol: this.rol.trim(),
+      telefono: this.telefono.trim(),
+      correoElectronico: this.correoElectronico.trim(),
+      password: this.password // vacío si no se cambia aquí
     };
 
-    // Emitir evento al padre
-    this.perfilActualizado.emit(perfilActualizado);
+    this.usuarioService.updateUsuario(this.idusuario, usuarioActualizado).subscribe({
+      next: () => {
+        alert('Perfil actualizado correctamente');
+        this.router.navigate(['/informacionInicio']);
+      },
+      error: (error) => {
+        console.error('Error al actualizar perfil:', error);
+        alert('Error al actualizar perfil');
+      }
+    });
+  }
 
-    // Cerrar modal
-    this.cerrarModal();
+  cambiarContrasena(): void {
+    if (!this.contrasenaActual || !this.nuevaContrasena || !this.confirmarContrasena) {
+      alert('Por favor, completa todos los campos del cambio de contraseña.');
+      return;
+    }
+
+    if (this.nuevaContrasena !== this.confirmarContrasena) {
+      alert('La nueva contraseña y la confirmación no coinciden.');
+      return;
+    }
+
+    this.usuarioService.updatePassword(this.idusuario!, {
+      contrasenaActual: this.contrasenaActual,
+      nuevaContrasena: this.nuevaContrasena
+    }).subscribe({
+      next: () => {
+        alert('Contraseña cambiada correctamente');
+        this.toggleMostrarFormulario();
+      },
+      error: (error) => {
+        console.error('Error al cambiar contraseña:', error);
+        alert('Error al cambiar la contraseña. Verifica tu contraseña actual.');
+      }
+    });
   }
 }

@@ -10,7 +10,7 @@ import { InformacionInicioComponent } from './components/PRINCIPAL/informacion-i
 import { RegistroAsistenciaComponent } from './components/registro-asistencia/registro-asistencia.component';
 import { EditarPerfilComponent } from './components/usuario/editar-perfil.component';
 import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './services/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
 
 const routes: Routes = [
@@ -20,7 +20,7 @@ const routes: Routes = [
   { path: 'reportes', component: ReportesComponent, canActivate: [AuthGuard] },
   { path: 'registros', component: RegistrosComponent, canActivate: [AuthGuard] },
   { path: 'graficas', component: GraficasComponent, canActivate: [AuthGuard] },
-  { path: 'editar-perfil', component: EditarPerfilComponent, canActivate: [AuthGuard] },
+  { path: 'editar-perfil/:id', component: EditarPerfilComponent, canActivate: [AuthGuard] },
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
   { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 
@@ -12,8 +12,9 @@ export class LoginService {
 
   private API_SERVER = "http://localhost:8080/usuario";
 
+  // Claves para localStorage
   private usuarioidKey = 'usuarioid';
-  private usernameKey = 'username';  // Nueva clave para nombre usuario
+  private usernameKey = 'username';
   private estudianteidKey = 'estudianteid';
   private rememberMeKey = 'rememberMe';
   private isLoggedInKey = 'isLoggedIn';
@@ -25,6 +26,10 @@ export class LoginService {
 
   private usernameSubject = new BehaviorSubject<string | null>(localStorage.getItem(this.usernameKey));
   username$ = this.usernameSubject.asObservable();
+
+  // NUEVO: BehaviorSubject para el usuarioid
+  private usuarioidSubject = new BehaviorSubject<number | null>(this.getStoredUsuarioid());
+  usuarioid$ = this.usuarioidSubject.asObservable();
 
   private mostrarFormularioSubject = new BehaviorSubject<boolean>(true);
   mostrarFormulario$ = this.mostrarFormularioSubject.asObservable();
@@ -45,6 +50,7 @@ export class LoginService {
   studentInfo$ = this.studentInfoSubject.asObservable();
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) {
+    // Inicializa estados y sujetos con localStorage
     const mostrarFormulario = localStorage.getItem('mostrarFormulario');
     if (mostrarFormulario) {
       this.mostrarFormularioSubject.next(mostrarFormulario === 'true');
@@ -60,12 +66,18 @@ export class LoginService {
     this.autenticadoSubject.next(isLoggedIn);
 
     if (isLoggedIn) {
-      const userId = localStorage.getItem(this.usuarioidKey);
+      const userId = this.getStoredUsuarioid();
       if (userId) {
-        this.getStudentInfo(userId).subscribe();
+        this.getStudentInfo(userId.toString()).subscribe();
         this.changeFormVisibility(true);
       }
     }
+  }
+
+  // Método auxiliar para obtener usuarioid desde localStorage parseado a number o null
+  private getStoredUsuarioid(): number | null {
+    const stored = localStorage.getItem(this.usuarioidKey);
+    return stored !== null && !isNaN(+stored) ? +stored : null;
   }
 
   login(username: string, password: string, rememberMe: boolean): Observable<boolean> {
@@ -84,14 +96,18 @@ export class LoginService {
           this.changeFormVisibility(true);
 
           const userId = response.data.id;
-          const userName = response.data && response.data.nombreCompleto ? response.data.nombreCompleto : '';
+          const userName = response.data.nombreCompleto ?? '';
+
           localStorage.setItem(this.usernameKey, userName);
           this.usernameSubject.next(userName);
-          localStorage.setItem(this.usuarioidKey, userId);
+
+          localStorage.setItem(this.usuarioidKey, userId.toString());
+          this.usuarioidSubject.next(userId);  // EMITE el nuevo usuarioid aquí
+
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
           this.getStudentInfo(userId).subscribe(estudiante => {
-            if (estudiante && estudiante.data.id) {
+            if (estudiante?.data?.id) {
               localStorage.setItem(this.estudianteidKey, estudiante.data.id.toString());
             }
           });
@@ -115,8 +131,9 @@ export class LoginService {
     localStorage.removeItem(this.isLoggedInKey);
     localStorage.removeItem('autenticado');
     localStorage.removeItem(this.usuarioidKey);
-    localStorage.removeItem(this.usernameKey);  // ELIMINA EL NOMBRE
+    localStorage.removeItem(this.usernameKey);
     this.usernameSubject.next(null);
+    this.usuarioidSubject.next(null);  // EMITE null al cerrar sesión
     localStorage.removeItem(this.estudianteidKey);
     localStorage.removeItem(this.rememberMeKey);
 
@@ -125,16 +142,14 @@ export class LoginService {
     this.setMostrarFormulario(true);
     this.lockButtons();
     this.changeFormVisibility(false);
-    this.router.navigate(['/login']);  // REDIRIGE AL LOGIN
+    this.router.navigate(['/login']);
   }
 
-getUsername(): string | null {
-  const username = this.usernameSubject.value || localStorage.getItem(this.usernameKey);
-  // Si es null, vacío, o string 'undefined', retorna null
-  return username && username !== 'undefined' ? username : null;
-}
+  getUsername(): string | null {
+    const username = this.usernameSubject.value || localStorage.getItem(this.usernameKey);
+    return username && username !== 'undefined' ? username : null;
+  }
 
-  // ... el resto de tus métodos sin cambios
   isAuthenticated(): boolean {
     return this.isLoggedIn;
   }
@@ -149,11 +164,6 @@ getUsername(): string | null {
   setMostrarFormulario(value: boolean): void {
     this.mostrarFormularioSubject.next(value);
     localStorage.setItem('mostrarFormulario', value.toString());
-  }
-
-  toggleLoginStatus(): void {
-    this.isLoggedIn = !this.isLoggedIn;
-    localStorage.setItem(this.isLoggedInKey, this.isLoggedIn ? 'true' : 'false');
   }
 
   unlockButtons(): void {
@@ -183,9 +193,7 @@ getUsername(): string | null {
 
   getStudentInfo(userId: string): Observable<any> {
     return this.httpClient.get<any>(`${this.API_SERVER}/${userId}`).pipe(
-      tap(info => {
-        this.studentInfoSubject.next(info);
-      }),
+      tap(info => this.studentInfoSubject.next(info)),
       catchError(error => {
         console.error('Error fetching student info', error);
         return of(null);
@@ -203,9 +211,7 @@ getUsername(): string | null {
   }
 
   sendRecoveryLink(email: string): Observable<any> {
-    const body = {
-      correosElectronicos: [email]
-    };
+    const body = { correosElectronicos: [email] };
     return this.httpClient.post(`${this.API_SERVER}/forgot-password`, body);
   }
 

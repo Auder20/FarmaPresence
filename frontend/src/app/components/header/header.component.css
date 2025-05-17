@@ -61,7 +61,7 @@
     border-bottom: none;
     flex-wrap: nowrap;
     gap: 25px;
-    overflow: visible !important; /* Importante para dropdown */
+    overflow: visible !important;
     position: relative;
     z-index: 1000;
     scrollbar-width: thin;
@@ -118,7 +118,7 @@
 
 /* --------- USUARIO --------- */
 .user-menu {
-    position: relative; /* necesario para dropdown */
+    position: relative;
     z-index: 2000;
 }
 
@@ -198,20 +198,80 @@
     color: #0047b3;
 }
 
-/* Adaptación responsive */
+/* ----------- Responsive ---------- */
+
+/* Botón hamburguesa */
+.menu-toggle {
+  display: none;
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  z-index: 4000;
+  flex-direction: column;
+  justify-content: space-around;
+  background: transparent;
+  border: none;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 4px;
+  background-color: white;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* Cuando se active el botón hamburguesa */
+.menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(6px, 6px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* Ocultar menu por defecto en móvil */
 @media (max-width: 768px) {
-    .header-content {
-        flex-direction: column;
-        gap: 15px;
-    }
+  .navbar-custom {
+    padding: 10px 15px;
+    gap: 15px;
+    overflow-x: hidden !important;
+  }
 
-    .navbar-custom {
-        padding: 10px 15px;
-        gap: 15px;
-        overflow-x: auto;
-    }
+  /* Mostrar el botón hamburguesa */
+  .menu-toggle {
+    display: flex;
+  }
 
-    .navbar-nav {
-        gap: 15px;
-    }
+  /* Ocultar lista de navegación */
+  .navbar-nav {
+    display: none;
+    flex-direction: column;
+    background-color: #0047b3;
+    position: absolute;
+    top: 62px;
+    left: 0;
+    width: 100%;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    z-index: 3000;
+  }
+
+  /* Mostrar menú cuando el botón hamburguesa esté activo */
+  .navbar-nav.show {
+    display: flex;
+  }
+
+  .nav-link {
+    white-space: normal;
+    padding: 15px 20px;
+  }
 }

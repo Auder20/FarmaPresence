@@ -157,36 +157,34 @@ public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
-        // Verificar si el ID no es nulo
-        if (id == null) {
-            // Si el ID es nulo, retornar un ResponseEntity con un mensaje de error
-            Response<Usuario_Model> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
-            return ResponseEntity.badRequest().body(response);
-        }
-
-        // Recuperar el usuario existente por su ID
-        Optional<Usuario_Model> optionalUser = usersServices.findById(id);
-
-        if (optionalUser.isPresent()) {
-            Usuario_Model existingUser = optionalUser.get();
-
-            // Actualizar los atributos del usuario existente con los nuevos valores
-            existingUser.setUsername(newUser.getUsername());
-            existingUser.setPassword(newUser.getPassword());
-
-            // Guardar el usuario actualizado en el repositorio
-            Usuario_Model updatedUser = usersServices.save(existingUser);
-
-            // Crear un objeto Response con el usuario actualizado y retornarlo
-            Response<Usuario_Model> response = new Response<>("200", "Usuario actualizado satisfactoriamente", updatedUser, "USUARIO_UPDATE_OK");
-            return ResponseEntity.ok(response);
-        } else {
-            // Si el usuario no existe, retornar un ResponseEntity con un mensaje de error
-            Response<Usuario_Model> response = new Response<>("404", "Usuario no encontrado con ID: " + id, null, "USER_NOT_FOUND");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
+public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
+    if (id == null) {
+        Response<Usuario_Model> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
+        return ResponseEntity.badRequest().body(response);
     }
+
+    Optional<Usuario_Model> optionalUser = usersServices.findById(id);
+
+    if (optionalUser.isPresent()) {
+        Usuario_Model existingUser = optionalUser.get();
+
+        // Actualizar todos los campos necesarios
+        existingUser.setUsername(newUser.getUsername());
+        existingUser.setPassword(newUser.getPassword());
+        existingUser.setNombreCompleto(newUser.getNombreCompleto());
+        existingUser.setTelefono(newUser.getTelefono());
+        existingUser.setCorreoElectronico(newUser.getCorreoElectronico());
+        existingUser.setRol(newUser.getRol());
+
+        Usuario_Model updatedUser = usersServices.save(existingUser);
+
+        Response<Usuario_Model> response = new Response<>("200", "Usuario actualizado satisfactoriamente", updatedUser, "USUARIO_UPDATE_OK");
+        return ResponseEntity.ok(response);
+    } else {
+        Response<Usuario_Model> response = new Response<>("404", "Usuario no encontrado con ID: " + id, null, "USER_NOT_FOUND");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+}
 
     @PostMapping("/forgot-password")
     public ResponseEntity<Response<List<String>>> forgotPassword(@RequestBody Map<String, Object> payload) {
@@ -388,5 +386,40 @@ public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario
                     .body(new Response<>("500", "Error al actualizar la contraseña: " + e.getMessage(), null, "UPDATE_ERROR"));
         }
     }
+    @PutMapping("/change-password/{id}")
+public ResponseEntity<Response<String>> changePassword(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> passwords) {
+
+    String contrasenaActual = passwords.get("contrasenaActual");
+    String nuevaContrasena = passwords.get("nuevaContrasena");
+
+    if (contrasenaActual == null || nuevaContrasena == null || contrasenaActual.isEmpty() || nuevaContrasena.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new Response<>("400", "Las contraseñas no pueden estar vacías", null, "EMPTY_PASSWORDS"));
+    }
+
+    Optional<Usuario_Model> userOptional = usersServices.findById(id);
+
+    if (userOptional.isPresent()) {
+        Usuario_Model user = userOptional.get();
+
+        // Validar que la contraseña actual coincida
+        if (!user.getPassword().equals(contrasenaActual)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new Response<>("401", "La contraseña actual es incorrecta", null, "INVALID_CURRENT_PASSWORD"));
+        }
+
+        // Actualizar la contraseña
+        user.setPassword(nuevaContrasena);
+        usersServices.save(user);
+
+        return ResponseEntity.ok(new Response<>("200", "Contraseña actualizada correctamente", null, "PASSWORD_UPDATED_SUCCESS"));
+    } else {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND"));
+    }
+}
+
 
 }
