@@ -32,7 +32,8 @@ export class ReportesComponent implements OnInit {
       { nombre: 'Andrés Suárez', fecha: '2025-05-10', hora: '-', estado: 'Ausente' },
       { nombre: 'Carlos Ruiz', fecha: '2025-05-09', hora: '9:00', estado: 'Tarde' },
       { nombre: 'Laura Gómez', fecha: '2025-05-10', hora: '7:50', estado: 'Presente' },
-      { nombre: 'Juan Pérez', fecha: '2025-05-11', hora: '-', estado: 'Ausente' }
+      { nombre: 'Juan Pérez', fecha: '2025-05-11', hora: '-', estado: 'Ausente' },
+      { nombre: 'Guillermo Humanez', fecha: '2025-05-20', hora: '-', estado: 'Ausente' },
     ];
 
     // Guardar en el servicio para que GraficasComponent lo use
