@@ -197,7 +197,6 @@
     background-color: #50e3c2;
     color: #0047b3;
 }
-
 /* ----------- Responsive ---------- */
 
 /* Desktop: menú siempre visible */
@@ -266,7 +265,9 @@
 
   /* Mostrar menú si está abierto */
   .navbar-nav.mobile-open {
-    display: flex;
+    display: flex !important;
+    /* Borde para testeo visual */
+    /* border: 3px solid yellow !important; */
   }
 
   .nav-link {

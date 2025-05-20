@@ -12,7 +12,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userId: number | null = null;
   isDropdownOpen: boolean = false;
   selectedNavItem: string = 'inicio';
-
   mobileMenuOpen: boolean = false;
 
   private authSubscription?: Subscription;
@@ -65,16 +64,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.mobileMenuOpen = false;
   }
 
-  selectNavItem(item: string) {
+  onMenuItemClick(item: string) {
     this.selectedNavItem = item;
+    this.isDropdownOpen = false;
     this.closeMobileMenu();
-    this.closeDropdown();
   }
 
   logout() {
     this.loginService.logout();
-    this.closeMobileMenu();
-    this.closeDropdown();
+    this.isDropdownOpen = false;
+    this.mobileMenuOpen = false;
     this.userId = null;
   }
 
@@ -83,9 +82,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
       return null;
     }
     return name;
-  }
-
-  get editarPerfilLink(): string {
-    return this.userId ? `/editar-perfil/${this.userId}` : '/editar-perfil';
   }
 }
