@@ -11,52 +11,90 @@
 </header>
 
 <nav class="navbar navbar-expand-lg navbar-custom">
+
   <!-- Botón hamburguesa para móvil -->
-  <button class="menu-toggle" (click)="toggleMobileMenu()" [class.active]="mobileMenuOpen" aria-label="Toggle menu">
+  <button
+    class="menu-toggle"
+    (click)="toggleMobileMenu()"
+    [class.active]="mobileMenuOpen"
+    aria-label="Toggle menu"
+  >
     <span></span>
     <span></span>
     <span></span>
   </button>
 
-  <div class="collapse navbar-collapse" [class.show]="mobileMenuOpen" id="navbarNav7">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/informacionInicio']" [class.active]="selectedNavItem === 'inicio'"
-          (click)="selectNavItem('inicio')">Inicio</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/reportes']" [class.active]="selectedNavItem === 'reportes'"
-          (click)="selectNavItem('reportes')">Reportes</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/graficas']" [class.active]="selectedNavItem === 'graficas'"
-          (click)="selectNavItem('graficas')">Gráficas</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/registros']" [class.active]="selectedNavItem === 'registros'"
-          (click)="selectNavItem('registros')">Registro de Empleado</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [routerLink]="['/registro-asistencia']" [class.active]="selectedNavItem === 'registroAsistencia'"
-          (click)="selectNavItem('registroAsistencia')">Registro de asistencia</a>
-      </li>
+  <!-- Menú: visible según mobileMenuOpen en móvil, siempre visible en desktop -->
+  <ul
+    class="navbar-nav"
+    [class.mobile-open]="mobileMenuOpen"
+  >
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [routerLink]="['/informacionInicio']"
+        (click)="onMenuItemClick('inicio')"
+        [class.active]="selectedNavItem === 'inicio'"
+      >Inicio</a>
+    </li>
+       <li class="nav-item">
+      <a
+        class="nav-link"
+        [routerLink]="['/registro-asistencia']"
+        (click)="onMenuItemClick('registroAsistencia')"
+        [class.active]="selectedNavItem === 'registroAsistencia'"
+      >Registro de asistencia</a>
+    </li>
 
-      <!-- Mostrar menú solo si hay usuario -->
-      <li class="nav-item user-menu"
-          *ngIf="username && username !== 'undefined' && username.trim().length > 0">
-        <a class="nav-link user-account" href="#" (click)="toggleDropdown(); $event.preventDefault()">
-          <span class="user-icon">&#x1F464;</span>
-          {{ username }}
-          <span class="caret">&#x25BE;</span>
-        </a>
-        <ul class="dropdown-menu" [class.show]="isDropdownOpen">
-          <li *ngIf="userId !== null">
-            <a [routerLink]="['/editar-perfil', userId]" (click)="closeDropdown()">Editar perfil</a>
-          </li>
-          <li><a [routerLink]="['/agregar-usuario']" (click)="closeDropdown()">Agregar usuario</a></li>
-          <li><a href="#" (click)="logout()">Cerrar sesión</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [routerLink]="['/reportes']"
+        (click)="onMenuItemClick('reportes')"
+        [class.active]="selectedNavItem === 'reportes'"
+      >Reportes</a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [routerLink]="['/graficas']"
+        (click)="onMenuItemClick('graficas')"
+        [class.active]="selectedNavItem === 'graficas'"
+      >Gráficas</a>
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        [routerLink]="['/registros']"
+        (click)="onMenuItemClick('registros')"
+        [class.active]="selectedNavItem === 'registros'"
+      >Registro de Empleado</a>
+    </li>
+
+    <!-- Mostrar menú solo si hay usuario -->
+    <li class="nav-item user-menu" *ngIf="username && username.trim().length > 0">
+      <a
+        class="nav-link user-account"
+        href="#"
+        (click)="toggleDropdown(); $event.preventDefault()"
+      >
+        <span class="user-icon">&#x1F464;</span>
+        {{ username }}
+        <span class="caret">&#x25BE;</span>
+      </a>
+      <ul class="dropdown-menu" [class.show]="isDropdownOpen">
+        <li *ngIf="userId !== null">
+          <a [routerLink]="['/editar-perfil', userId]" (click)="closeDropdown(); closeMobileMenu()">
+            Editar perfil
+          </a>
+        </li>
+        <li>
+          <a [routerLink]="['/agregar-usuario']" (click)="closeDropdown(); closeMobileMenu()">
+            Agregar usuario
+          </a>
+        </li>
+        <li><a href="#" (click)="logout(); closeMobileMenu()">Cerrar sesión</a></li>
+      </ul>
+    </li>
+  </ul>
 </nav>

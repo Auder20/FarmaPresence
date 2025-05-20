@@ -10,20 +10,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class EditarPerfilComponent implements OnInit {
 
   idusuario: number | null = null;
-
   nombreCompleto: string = '';
   username: string = '';
   rol: string = '';
   telefono: string = '';
   correoElectronico: string = '';
-  password: string = ''; // No mostrar contraseña por seguridad
+  password: string = ''; // Campo para la nueva contraseña si el usuario quiere cambiarla
   mostrarContrasena: boolean = false;
 
-  // Para el formulario de cambio de contraseña (opcional)
+  // Para el formulario de cambio de contraseña
   mostrarFormularioCambioContrasena: boolean = false;
   contrasenaActual: string = '';
   nuevaContrasena: string = '';
   confirmarContrasena: string = '';
+
+  // Guardamos internamente la contraseña original (nunca se muestra)
+  private passwordOriginal: string = '';
 
   constructor(
     private usuarioService: UsuarioService,
@@ -46,23 +48,19 @@ export class EditarPerfilComponent implements OnInit {
     this.usuarioService.getUsuarioById(id).subscribe({
       next: (response) => {
         const usuario = response.data;
-        this.nombreCompleto = usuario.nombreCompleto ?? '';
-        this.username = usuario.username ?? '';
-        this.rol = usuario.rol ?? '';
-        this.telefono = usuario.telefono ?? '';
-        this.correoElectronico = usuario.correoElectronico ?? '';
-        this.password = ''; // No mostrar la contraseña
+        this.nombreCompleto = usuario.nombreCompleto || '';
+        this.username = usuario.username || '';
+        this.rol = usuario.rol || '';
+        this.telefono = usuario.telefono || '';
+        this.correoElectronico = usuario.correoElectronico || '';
+        this.passwordOriginal = usuario.password || ''; // Guardamos la original
+        this.password = ''; // No mostramos la contraseña real
       },
       error: (error) => {
         console.error('Error al cargar usuario:', error);
         alert('Error al cargar datos del usuario.');
-        this.router.navigate(['/informacionInicio']);
       }
     });
-  }
-
-  toggleMostrarContrasena(): void {
-    this.mostrarContrasena = !this.mostrarContrasena;
   }
 
   toggleMostrarFormulario(): void {
@@ -80,15 +78,25 @@ export class EditarPerfilComponent implements OnInit {
       return;
     }
 
-    const usuarioActualizado = {
+    // Por defecto usamos la contraseña original
+    let passwordToSend = this.passwordOriginal;
+
+    // Si el usuario escribió una nueva contraseña, la usamos en lugar de la original
+    if (this.password && this.password.trim() !== '') {
+      passwordToSend = this.password.trim();
+    }
+
+    const usuarioActualizado: any = {
       id: this.idusuario,
-      nombreCompleto: this.nombreCompleto.trim(),
-      username: this.username.trim(),
-      rol: this.rol.trim(),
-      telefono: this.telefono.trim(),
-      correoElectronico: this.correoElectronico.trim(),
-      password: this.password // vacío si no se cambia aquí
+      nombreCompleto: this.nombreCompleto,
+      username: this.username,
+      rol: this.rol,
+      telefono: this.telefono,
+      correoElectronico: this.correoElectronico,
+      password: passwordToSend
     };
+
+    console.log('Usuario actualizado que se enviará:', usuarioActualizado);
 
     this.usuarioService.updateUsuario(this.idusuario, usuarioActualizado).subscribe({
       next: () => {
@@ -102,29 +110,34 @@ export class EditarPerfilComponent implements OnInit {
     });
   }
 
-  cambiarContrasena(): void {
-    if (!this.contrasenaActual || !this.nuevaContrasena || !this.confirmarContrasena) {
-      alert('Por favor, completa todos los campos del cambio de contraseña.');
-      return;
-    }
-
-    if (this.nuevaContrasena !== this.confirmarContrasena) {
-      alert('La nueva contraseña y la confirmación no coinciden.');
-      return;
-    }
-
-    this.usuarioService.updatePassword(this.idusuario!, {
-      contrasenaActual: this.contrasenaActual,
-      nuevaContrasena: this.nuevaContrasena
-    }).subscribe({
-      next: () => {
-        alert('Contraseña cambiada correctamente');
-        this.toggleMostrarFormulario();
-      },
-      error: (error) => {
-        console.error('Error al cambiar contraseña:', error);
-        alert('Error al cambiar la contraseña. Verifica tu contraseña actual.');
-      }
-    });
+ cambiarContrasena(): void {
+  if (!this.contrasenaActual || !this.nuevaContrasena || !this.confirmarContrasena) {
+    alert('Por favor, completa todos los campos del cambio de contraseña.');
+    return;
   }
+
+  if (this.nuevaContrasena !== this.confirmarContrasena) {
+    alert('La nueva contraseña y la confirmación no coinciden.');
+    return;
+  }
+
+  console.log('Contraseña actual enviada:', this.contrasenaActual);
+  console.log('Nueva contraseña enviada:', this.nuevaContrasena);
+
+  this.usuarioService.updatePassword(this.idusuario!, {
+    contrasenaActual: this.contrasenaActual,
+    nuevaContrasena: this.nuevaContrasena
+  }).subscribe({
+    next: () => {
+      alert('Contraseña cambiada correctamente');
+      this.passwordOriginal = this.nuevaContrasena;
+      this.toggleMostrarFormulario();
+    },
+    error: (error) => {
+      console.error('Error al cambiar contraseña:', error);
+      alert('Error al cambiar la contraseña. Verifica tu contraseña actual.');
+    }
+  });
+}
+
 }

@@ -156,7 +156,7 @@ public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario
         }
     }
 
-    @PutMapping("/{id}")
+   @PutMapping("/{id}")
 public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
     if (id == null) {
         Response<Usuario_Model> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
@@ -168,9 +168,13 @@ public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @Re
     if (optionalUser.isPresent()) {
         Usuario_Model existingUser = optionalUser.get();
 
-        // Actualizar todos los campos necesarios
         existingUser.setUsername(newUser.getUsername());
-        existingUser.setPassword(newUser.getPassword());
+
+        // Solo actualiza la contraseña si NO viene vacía ni nula
+        if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+            existingUser.setPassword(newUser.getPassword());
+        }
+
         existingUser.setNombreCompleto(newUser.getNombreCompleto());
         existingUser.setTelefono(newUser.getTelefono());
         existingUser.setCorreoElectronico(newUser.getCorreoElectronico());
@@ -404,11 +408,14 @@ public ResponseEntity<Response<String>> changePassword(
     if (userOptional.isPresent()) {
         Usuario_Model user = userOptional.get();
 
-        // Validar que la contraseña actual coincida
-        if (!user.getPassword().equals(contrasenaActual)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new Response<>("401", "La contraseña actual es incorrecta", null, "INVALID_CURRENT_PASSWORD"));
-        }
+        // Validar que la contraseña actual coincida (ignorando mayúsculas y espacios)
+       if (!user.getPassword().equals(contrasenaActual)) {
+    logger.info("Contraseña en base: {}", user.getPassword());
+    logger.info("Contraseña recibida: {}", contrasenaActual);
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            .body(new Response<>("401", "La contraseña actual es incorrecta", null, "INVALID_CURRENT_PASSWORD"));
+}
+
 
         // Actualizar la contraseña
         user.setPassword(nuevaContrasena);
@@ -420,6 +427,5 @@ public ResponseEntity<Response<String>> changePassword(
                 .body(new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND"));
     }
 }
-
 
 }

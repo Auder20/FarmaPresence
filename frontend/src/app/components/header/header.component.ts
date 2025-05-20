@@ -9,20 +9,19 @@ import { Subscription } from 'rxjs';
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   username: string | null = null;
-  userId: number | null = null;  // <-- nuevo
+  userId: number | null = null;
   isDropdownOpen: boolean = false;
   selectedNavItem: string = 'inicio';
 
-  mobileMenuOpen: boolean = false;  // <-- para menú hamburguesa móvil
+  mobileMenuOpen: boolean = false;
 
   private authSubscription?: Subscription;
   private usernameSubscription?: Subscription;
-  private usuarioidSubscription?: Subscription;  // Suscripción nueva
+  private usuarioidSubscription?: Subscription;
 
   constructor(private loginService: LoginService) {}
 
   ngOnInit(): void {
-    // Leer userId inicial desde localStorage (por si ya está guardado)
     const storedUserId = localStorage.getItem('usuarioid');
     this.userId = storedUserId !== null && !isNaN(+storedUserId) ? +storedUserId : null;
 
@@ -31,7 +30,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.authSubscription = this.loginService.autenticado$.subscribe(loggedIn => {
       if (!loggedIn) {
         this.username = null;
-        this.userId = null; // Limpiar userId al logout
+        this.userId = null;
       }
     });
 
@@ -39,7 +38,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
       this.username = this.normalizeUsername(newName);
     });
 
-    // Suscribirse al observable para recibir actualizaciones del usuarioid
     this.usuarioidSubscription = this.loginService.usuarioid$.subscribe(newId => {
       this.userId = newId !== null && !isNaN(+newId) ? +newId : null;
     });
@@ -55,19 +53,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  selectNavItem(item: string) {
-    this.selectedNavItem = item;
-    this.isDropdownOpen = false;
-    this.mobileMenuOpen = false; // Cerrar menú móvil al seleccionar opción
-  }
-
-  logout() {
-    this.loginService.logout();
-    this.isDropdownOpen = false;
-    this.userId = null;
-    this.mobileMenuOpen = false; // Asegurar que el menú se cierra al hacer logout
-  }
-
   closeDropdown() {
     this.isDropdownOpen = false;
   }
@@ -76,7 +61,23 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  // Evitar mostrar "undefined" literal
+  closeMobileMenu() {
+    this.mobileMenuOpen = false;
+  }
+
+  selectNavItem(item: string) {
+    this.selectedNavItem = item;
+    this.closeMobileMenu();
+    this.closeDropdown();
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.closeMobileMenu();
+    this.closeDropdown();
+    this.userId = null;
+  }
+
   private normalizeUsername(name: string | null | undefined): string | null {
     if (!name || name === 'undefined' || name.trim().length === 0) {
       return null;
@@ -84,7 +85,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     return name;
   }
 
-  // Construir ruta al perfil de usuario para usar en el HTML
   get editarPerfilLink(): string {
     return this.userId ? `/editar-perfil/${this.userId}` : '/editar-perfil';
   }
