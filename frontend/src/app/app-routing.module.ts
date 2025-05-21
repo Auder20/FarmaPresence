@@ -5,7 +5,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { LoginComponent } from './components/PRINCIPAL/login/login.component';
 import { RegistrosComponent } from './components/registros-Empleados/registros.component';
 import { ReportesComponent } from './components/reportes/reportes.component';
-import { GraficasComponent } from './components/graficas/graficas.component';
 import { InformacionInicioComponent } from './components/PRINCIPAL/informacion-inicio/informacion-inicio.component';
 import { RegistroAsistenciaComponent } from './components/registro-asistencia/registro-asistencia.component';
 import { EditarPerfilComponent } from './components/usuario/editar-perfil.component';
@@ -19,7 +18,6 @@ const routes: Routes = [
   { path: 'informacionInicio', component: InformacionInicioComponent, canActivate: [AuthGuard] },
   { path: 'reportes', component: ReportesComponent, canActivate: [AuthGuard] },
   { path: 'registros', component: RegistrosComponent, canActivate: [AuthGuard] },
-  { path: 'graficas', component: GraficasComponent, canActivate: [AuthGuard] },
   { path: 'editar-perfil/:id', component: EditarPerfilComponent, canActivate: [AuthGuard] },
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
   { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },

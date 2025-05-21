@@ -8,7 +8,7 @@ import { RegistrosComponent } from './components/registros-Empleados/registros.c
 import { HeaderComponent } from './components/header/header.component';
 import { InformacionInicioComponent } from './components/PRINCIPAL/informacion-inicio/informacion-inicio.component';
 import { LoginComponent } from './components/PRINCIPAL/login/login.component';
-import { GraficasComponent } from './components/graficas/graficas.component';
+
 
 
 import { HttpClientModule } from '@angular/common/http';
@@ -30,7 +30,6 @@ import { EditarPerfilComponent } from './components/usuario/editar-perfil.compon
     HeaderComponent,
     InformacionInicioComponent,
     LoginComponent,
-    GraficasComponent,
     RegistroAsistenciaComponent,
     AgregarUsuarioComponent,
     EditarPerfilComponent

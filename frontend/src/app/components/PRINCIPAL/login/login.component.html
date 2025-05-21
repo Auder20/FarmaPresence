@@ -1,3 +1,4 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 <div *ngIf="formVisible" class="logins-container">
   <div class="login-layout">
     <div class="login-box">
@@ -11,7 +12,7 @@
             placeholder="Username"
             required
           />
-          <label class="ion-person" for="name1"></label>
+          <i class="bi bi-person"></i>
         </div>
 
         <div class="inputrow">
@@ -65,3 +66,23 @@
     </div>
   </div>
 </div>
+
+<!-- Modal recuperación contraseña -->
+<div *ngIf="showRecoveryModal" class="recovery-modal">
+  <form (ngSubmit)="sendRecoveryLink()">
+    <h2>Recuperar Contraseña</h2>
+    <input
+      type="email"
+      [(ngModel)]="email"
+      name="email"
+      placeholder="Ingrese su correo electrónico"
+      required
+    />
+    <div class="button-group">
+      <button type="submit" class="signin-submit">Enviar enlace de recuperación</button>
+      <button type="button" class="signin-submit" (click)="closeRecoveryModal()">Cancelar</button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="validationMessage" class="info-message">{{ validationMessage }}</div>

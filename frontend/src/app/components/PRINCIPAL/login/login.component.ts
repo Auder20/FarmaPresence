@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   passwordFieldType: string = 'password';
 
-  showRecoveryModal: boolean = false;
+  showRecoveryModal: boolean = false;  // Modal recuperación
   validationMessage: string | null = null;
 
   showError: boolean = false;
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authSubscription = this.loginService.autenticado$.subscribe(isAuth => {
       this.formVisible = !isAuth;
-      this.showError = false; // Limpiar error al cambiar estado
+      this.showError = false;
 
       if (isAuth) {
         const userId = localStorage.getItem('usuarioid');
@@ -60,12 +60,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   openRecoveryModal() {
     this.showRecoveryModal = true;
     this.validationMessage = null;
+    this.email = '';  // limpiar email cada vez que abre modal
   }
 
   closeRecoveryModal() {
     this.showRecoveryModal = false;
-    this.email = '';
     this.validationMessage = null;
+    this.email = '';
   }
 
   login(): void {
@@ -86,13 +87,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
-  showForgotPassword(): void {
-    this.showRecoveryForm = true;
-  }
-
-  showLogin(): void {
-    this.showRecoveryForm = false;
-  }
+  // No usaremos showForgotPassword ni showLogin porque usas modal, no views separadas
 
   sendRecoveryLink(): void {
     if (!this.email) {
@@ -103,7 +98,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginService.sendRecoveryLink(this.email).subscribe(
       response => {
         alert('Enlace de recuperación enviado a su correo electrónico.');
-        this.showLogin();
+        this.closeRecoveryModal();  // cerrar modal al enviar
       },
       error => {
         alert('Error al enviar el enlace de recuperación. Por favor, intente de nuevo más tarde.');
@@ -118,5 +113,4 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.password = '';
     this.router.navigate(['/login']);
   }
-
 }

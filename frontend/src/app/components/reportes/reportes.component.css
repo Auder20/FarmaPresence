@@ -141,3 +141,35 @@ tbody tr:hover {
     font-size: 0.9rem;
   }
 }
+/* Contenedor para las gráficas */
+.graficas {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+/* Estilo para cada gráfica individual */
+.grafica-item {
+  background: #ffffffdd; /* mismo fondo semi-transparente que .reportes-container */
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.2);
+  padding: 20px;
+  width: 400px;
+  max-width: 100%;
+  text-align: center;
+}
+
+/* Título de cada gráfica */
+.grafica-item h3 {
+  color: #2e65a4;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* Canvas ocupa el ancho disponible */
+.grafica-item canvas {
+  width: 100% !important;
+  height: auto !important;
+}
