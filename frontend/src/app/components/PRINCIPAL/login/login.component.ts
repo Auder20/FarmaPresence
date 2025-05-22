@@ -17,13 +17,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   password: string = "";
   rememberMe: boolean = false;
 
-  email: string = '';
-  showRecoveryForm: boolean = false;
+  recoveryEmail: string = '';
+  showRecoveryModal: boolean = false;
+  validationMessage: string | null = null;
+  sendingRecovery: boolean = false;
 
   passwordFieldType: string = 'password';
-
-  showRecoveryModal: boolean = false;  // Modal recuperación
-  validationMessage: string | null = null;
 
   showError: boolean = false;
 
@@ -60,13 +59,14 @@ export class LoginComponent implements OnInit, OnDestroy {
   openRecoveryModal() {
     this.showRecoveryModal = true;
     this.validationMessage = null;
-    this.email = '';  // limpiar email cada vez que abre modal
+    this.recoveryEmail = '';
   }
 
   closeRecoveryModal() {
     this.showRecoveryModal = false;
     this.validationMessage = null;
-    this.email = '';
+    this.recoveryEmail = '';
+    this.sendingRecovery = false;
   }
 
   login(): void {
@@ -87,23 +87,24 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
   }
 
-  // No usaremos showForgotPassword ni showLogin porque usas modal, no views separadas
-
-  sendRecoveryLink(): void {
-    if (!this.email) {
-      alert('Por favor, ingrese su correo electrónico.');
+  sendRecoveryLink() {
+    if (!this.recoveryEmail) {
+      this.validationMessage = 'Por favor ingrese su correo electrónico.';
       return;
     }
 
-    this.loginService.sendRecoveryLink(this.email).subscribe(
-      response => {
-        alert('Enlace de recuperación enviado a su correo electrónico.');
-        this.closeRecoveryModal();  // cerrar modal al enviar
+    this.sendingRecovery = true;
+    this.loginService.sendRecoveryLink(this.recoveryEmail).subscribe({
+      next: () => {
+        this.validationMessage = 'Enlace de recuperación enviado a su correo.';
+        this.sendingRecovery = false;
+        setTimeout(() => this.closeRecoveryModal(), 3000);
       },
-      error => {
-        alert('Error al enviar el enlace de recuperación. Por favor, intente de nuevo más tarde.');
+      error: () => {
+        this.validationMessage = 'Error al enviar el enlace, intente más tarde.';
+        this.sendingRecovery = false;
       }
-    );
+    });
   }
 
   logout(): void {

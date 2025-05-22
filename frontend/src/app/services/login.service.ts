@@ -27,7 +27,6 @@ export class LoginService {
   private usernameSubject = new BehaviorSubject<string | null>(localStorage.getItem(this.usernameKey));
   username$ = this.usernameSubject.asObservable();
 
-  // NUEVO: BehaviorSubject para el usuarioid
   private usuarioidSubject = new BehaviorSubject<number | null>(this.getStoredUsuarioid());
   usuarioid$ = this.usuarioidSubject.asObservable();
 
@@ -50,7 +49,6 @@ export class LoginService {
   studentInfo$ = this.studentInfoSubject.asObservable();
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) {
-    // Inicializa estados y sujetos con localStorage
     const mostrarFormulario = localStorage.getItem('mostrarFormulario');
     if (mostrarFormulario) {
       this.mostrarFormularioSubject.next(mostrarFormulario === 'true');
@@ -74,7 +72,6 @@ export class LoginService {
     }
   }
 
-  // Método auxiliar para obtener usuarioid desde localStorage parseado a number o null
   private getStoredUsuarioid(): number | null {
     const stored = localStorage.getItem(this.usuarioidKey);
     return stored !== null && !isNaN(+stored) ? +stored : null;
@@ -102,7 +99,7 @@ export class LoginService {
           this.usernameSubject.next(userName);
 
           localStorage.setItem(this.usuarioidKey, userId.toString());
-          this.usuarioidSubject.next(userId);  // EMITE el nuevo usuarioid aquí
+          this.usuarioidSubject.next(userId);
 
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
@@ -133,7 +130,7 @@ export class LoginService {
     localStorage.removeItem(this.usuarioidKey);
     localStorage.removeItem(this.usernameKey);
     this.usernameSubject.next(null);
-    this.usuarioidSubject.next(null);  // EMITE null al cerrar sesión
+    this.usuarioidSubject.next(null);
     localStorage.removeItem(this.estudianteidKey);
     localStorage.removeItem(this.rememberMeKey);
 
@@ -210,16 +207,14 @@ export class LoginService {
     );
   }
 
+  // >>> NUEVA LÓGICA AÑADIDA >>>
+
   sendRecoveryLink(email: string): Observable<any> {
     const body = { correosElectronicos: [email] };
     return this.httpClient.post(`${this.API_SERVER}/forgot-password`, body);
   }
 
   resetPassword(token: string, password: string): Observable<any> {
-    return this.httpClient.post(`http://localhost:8080/usuario/reset-password?token=${token}`, { password });
-  }
-
-  estaAutenticado(): boolean {
-    return localStorage.getItem('autenticado') === 'true';
+    return this.httpClient.post(`${this.API_SERVER}/reset-password?token=${token}`, { password });
   }
 }

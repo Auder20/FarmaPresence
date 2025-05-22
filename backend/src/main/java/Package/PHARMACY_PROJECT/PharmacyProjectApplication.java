@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 @SpringBootApplication
-public class PharmacyProjectApplication {
+public class PharmacyProjectApplication {	
 
 	public static void main(String[] args) {
 		// Obteniendo el contexto de Spring

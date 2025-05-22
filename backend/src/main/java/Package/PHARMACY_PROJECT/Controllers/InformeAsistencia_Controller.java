@@ -6,7 +6,7 @@ import Package.PHARMACY_PROJECT.Models.InformeAsistencia_Model;
 import Package.PHARMACY_PROJECT.Models.Reportes.ComparativaAsistencia_DTO;
 import Package.PHARMACY_PROJECT.Models.Reportes.ReporteEmpleado_DTO;
 import Package.PHARMACY_PROJECT.Models.Reportes.ReporteMensual_DTO;
-import Package.PHARMACY_PROJECT.PRUEBACORREOS.EmailService;
+import Package.PHARMACY_PROJECT.Services.EmailService;
 import Package.PHARMACY_PROJECT.Services.Asistencia_Services;
 import Package.PHARMACY_PROJECT.Services.Empleado_Services;
 import Package.PHARMACY_PROJECT.Services.InformeAsistencia_PDF_Services;

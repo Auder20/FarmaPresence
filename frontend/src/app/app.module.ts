@@ -8,6 +8,7 @@ import { RegistrosComponent } from './components/registros-Empleados/registros.c
 import { HeaderComponent } from './components/header/header.component';
 import { InformacionInicioComponent } from './components/PRINCIPAL/informacion-inicio/informacion-inicio.component';
 import { LoginComponent } from './components/PRINCIPAL/login/login.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 
 
@@ -32,7 +33,8 @@ import { EditarPerfilComponent } from './components/usuario/editar-perfil.compon
     LoginComponent,
     RegistroAsistenciaComponent,
     AgregarUsuarioComponent,
-    EditarPerfilComponent
+    EditarPerfilComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,6 @@
-package Package.PHARMACY_PROJECT.PRUEBACORREOS;
+package Package.PHARMACY_PROJECT.Controllers;
 
+import Package.PHARMACY_PROJECT.Services.EmailService;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -53,4 +54,9 @@ public class EmailController {
                     .body("Error al enviar correo con adjunto: " + e.getMessage());
         }
     }
+    @GetMapping("/test")
+public String test() {
+    return "Controlador Email funcionando";
+}
+
 }

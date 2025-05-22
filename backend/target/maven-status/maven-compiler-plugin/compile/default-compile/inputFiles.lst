@@ -2,6 +2,7 @@ C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\co
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\Asistencia_Controller.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\AsistenciaHuellaController.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\AsistenciaManualController.java
+C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\AuthController.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\EmailController.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\Empleado_Controller.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Controllers\Horario_Controller.java
@@ -20,8 +21,6 @@ C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Mo
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Models\TurnoProgramado_Model.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Models\Usuario_Model.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\PharmacyProjectApplication.java
-C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\PRUEBACORREOS\EmailService.java
-C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\PRUEBACORREOS\MailConfigs.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Repository\Asistencia_Repository.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Repository\Empleado_Repository.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Repository\Horario_Repository.java
@@ -30,9 +29,13 @@ C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Re
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Repository\Usuario_Repository.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Response.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\Asistencia_Services.java
+C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\AuthService.java
+C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\EmailService.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\Empleado_Services.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\Horario_Services.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\InformeAsistencia_PDF_Services.java
+C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\MailConfigs.java
+C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\SecurityConfig.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\SerialReaderService.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\TurnoProgramado_Services.java
 C:\Users\AUDER\Desktop\proyect\backend\src\main\java\Package\PHARMACY_PROJECT\Services\Usuario_Services.java

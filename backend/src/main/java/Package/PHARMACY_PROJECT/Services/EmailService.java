@@ -1,4 +1,4 @@
-package Package.PHARMACY_PROJECT.PRUEBACORREOS;
+package Package.PHARMACY_PROJECT.Services;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -44,12 +44,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itext-core</artifactId>
-			<version>${itext.version}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
@@ -107,6 +101,18 @@
 			<type>pom</type>
 		</dependency>
 
+		<!-- Jakarta Validation API para @Valid -->
+<dependency>
+    <groupId>jakarta.validation</groupId>
+    <artifactId>jakarta.validation-api</artifactId>
+    <version>3.0.2</version>
+</dependency>
+
+<!-- Spring Boot Starter Security para PasswordEncoder -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
 
 	</dependencies>
 

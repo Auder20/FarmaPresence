@@ -1,4 +1,4 @@
-package Package.PHARMACY_PROJECT.PRUEBACORREOS;
+package Package.PHARMACY_PROJECT.Services;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

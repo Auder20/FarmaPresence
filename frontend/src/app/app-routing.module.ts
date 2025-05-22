@@ -9,6 +9,7 @@ import { InformacionInicioComponent } from './components/PRINCIPAL/informacion-i
 import { RegistroAsistenciaComponent } from './components/registro-asistencia/registro-asistencia.component';
 import { EditarPerfilComponent } from './components/usuario/editar-perfil.component';
 import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AuthGuard } from './services/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
 
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'editar-perfil/:id', component: EditarPerfilComponent, canActivate: [AuthGuard] },
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
   { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [AuthGuard] },
 
   // Ruta pública para login
   { path: 'login', component: LoginComponent },
