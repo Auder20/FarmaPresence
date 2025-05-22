@@ -254,43 +254,60 @@ export class ReportesComponent implements OnInit, AfterViewInit {
     saveAs(blob, 'reportes.xlsx');
   }
 
-  exportarPDF(): void {
-    const doc = new jsPDF();
-    let yPos = 10;
+exportarPDF(): void {
+  const doc = new jsPDF();
+  const margin = 10;  // espacio entre imágenes
+  const imgWidth = 80;  // ancho fijo de imagen
+  const startX = 15;  // margen izquierdo
+  let yPos = 15;       // margen arriba
 
-    if (this.estadoCanvas) {
-      const estadoImg = this.estadoCanvas.nativeElement.toDataURL('image/png');
-      const imgWidth = 180;
-      const imgHeight = (this.estadoCanvas.nativeElement.height * imgWidth) / this.estadoCanvas.nativeElement.width;
-      doc.addImage(estadoImg, 'PNG', 15, yPos, imgWidth, imgHeight);
-      yPos += imgHeight + 10;
-    }
-
-    if (this.asistenciaCanvas) {
-      const asistenciaImg = this.asistenciaCanvas.nativeElement.toDataURL('image/png');
-      const imgWidth = 180;
-      const imgHeight = (this.asistenciaCanvas.nativeElement.height * imgWidth) / this.asistenciaCanvas.nativeElement.width;
-      doc.addImage(asistenciaImg, 'PNG', 15, yPos, imgWidth, imgHeight);
-      yPos += imgHeight + 10;
-    }
-
-    if (this.comparacionCanvas) {
-      const comparacionImg = this.comparacionCanvas.nativeElement.toDataURL('image/png');
-      const imgWidth = 180;
-      const imgHeight = (this.comparacionCanvas.nativeElement.height * imgWidth) / this.comparacionCanvas.nativeElement.width;
-      doc.addImage(comparacionImg, 'PNG', 15, yPos, imgWidth, imgHeight);
-      yPos += imgHeight + 10;
-    }
-
-    autoTable(doc, {
-      startY: yPos,
-      head: [['Nombre', 'Fecha', 'Hora', 'Estado']],
-      body: this.reportesFiltrados.map(r => [r.nombre, r.fecha, r.hora, r.estado]),
-      theme: 'grid',
-      headStyles: { fillColor: [46, 101, 164] },
-      styles: { fontSize: 9 }
-    });
-
-    doc.save('reportes_completos.pdf');
+  // Función para calcular altura con proporción
+  function getImgHeight(canvas: HTMLCanvasElement | undefined): number {
+    if (!canvas) return 0;
+    const ratio = canvas.height / canvas.width;
+    return imgWidth * ratio;
   }
+
+  // Agregar primera gráfica (estado)
+  if (this.estadoCanvas) {
+    const estadoImg = this.estadoCanvas.nativeElement.toDataURL('image/png');
+    const imgHeight = getImgHeight(this.estadoCanvas.nativeElement);
+    doc.addImage(estadoImg, 'PNG', startX, yPos, imgWidth, imgHeight);
+  }
+
+  // Agregar segunda gráfica (asistencia) al lado derecho de la primera
+  if (this.asistenciaCanvas) {
+    const asistenciaImg = this.asistenciaCanvas.nativeElement.toDataURL('image/png');
+    const imgHeight = getImgHeight(this.asistenciaCanvas.nativeElement);
+    const secondX = startX + imgWidth + margin;
+    doc.addImage(asistenciaImg, 'PNG', secondX, yPos, imgWidth, imgHeight);
+  }
+
+  // Calcular el Y para la siguiente fila, toma la mayor altura de las dos primeras
+  const estadoHeight = getImgHeight(this.estadoCanvas?.nativeElement);
+  const asistenciaHeight = getImgHeight(this.asistenciaCanvas?.nativeElement);
+  yPos += Math.max(estadoHeight, asistenciaHeight) + margin;
+
+  // Agregar tercera gráfica (comparación) debajo de la primera
+  if (this.comparacionCanvas) {
+    const comparacionImg = this.comparacionCanvas.nativeElement.toDataURL('image/png');
+    const imgHeight = getImgHeight(this.comparacionCanvas.nativeElement);
+    doc.addImage(comparacionImg, 'PNG', startX, yPos, imgWidth, imgHeight);
+    yPos += imgHeight + margin;
+  }
+
+  // Finalmente la tabla debajo de todo
+  autoTable(doc, {
+    startY: yPos,
+    head: [['Nombre', 'Fecha', 'Hora', 'Estado']],
+    body: this.reportesFiltrados.map(r => [r.nombre, r.fecha, r.hora, r.estado]),
+    theme: 'grid',
+    headStyles: { fillColor: [46, 101, 164] },
+    styles: { fontSize: 9 }
+  });
+
+  doc.save('reportes.pdf');
+}
+
+
 }

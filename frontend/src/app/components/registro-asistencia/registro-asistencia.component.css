@@ -123,3 +123,39 @@ li:last-child {
     font-size: 0.95rem;
   }
 }
+/* Ajustes para inputs y botones */
+select, input[type="text"], button {
+  border: 1px solid #4CAF50; /* verde suave */
+}
+
+button {
+  background-color: #2E7D32; /* verde oscuro */
+  color: white;
+}
+
+button:disabled {
+  background-color: #a5d6a7; /* verde muy claro */
+}
+
+button:hover:not(:disabled) {
+  background-color: #1B5E20; /* verde más oscuro */
+}
+
+/* Tabla asistencias */
+.tabla-asistencias th {
+  background-color: #C8E6C9; /* verde muy claro para encabezado */
+  color: #1B5E20; /* verde oscuro para texto */
+}
+
+.tabla-asistencias td {
+  background-color: #F1F8E9; /* fondo muy suave verde */
+}
+
+/* Botón limpiar tabla */
+.tabla-asistencias button {
+  background-color: #C62828; /* rojo oscuro */
+}
+
+.tabla-asistencias button:hover {
+  background-color: #B71C1C; /* rojo más intenso */
+}

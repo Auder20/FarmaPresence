@@ -8,11 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 import static Package.PHARMACY_PROJECT.Controllers.Asistencia_Controller.*;
 
@@ -38,7 +35,6 @@ public class Asistencia_Model {
     @Column(name = "hora_entrada")
     private LocalTime horaEntrada; // Hora de entrada
 
-
     @Transient
     private LocalTime horaEntrada2;
 
@@ -46,24 +42,25 @@ public class Asistencia_Model {
     private String estado; // Estado de la asistencia (temprano, puntual, tarde)
 
     @Column(name = "tipoRegistro", nullable = false, length = 20)
-    private String tipoRegistro; // Estado de la asistencia (temprano, puntual, tarde)
+    private String tipoRegistro; // Tipo de registro (ENTRADA_1, ENTRADA_2, etc.)
 
     @Column(name = "diferencia_tiempo_entrada", nullable = true)
     private String diferenciaTiempoEntrada; // Diferencia de tiempo, no persistente en la base de datos
 
+    @Column(name = "motivo", nullable = true, length = 255)
+    private String motivo; // Motivo para estados como Tarde o Ausente
 
     // Constructor vacío
     public Asistencia_Model() {}
 
     // Constructor para registrar entrada
-    public Asistencia_Model(Empleado_Model empleado, LocalDate fecha, LocalTime horaEntrada, String estado,String tipoRegistro) {
+    public Asistencia_Model(Empleado_Model empleado, LocalDate fecha, LocalTime horaEntrada, String estado, String tipoRegistro) {
         this.empleado = empleado;
         this.fecha = fecha;
         this.horaEntrada = horaEntrada;
         this.estado = estado;
-        this.tipoRegistro =tipoRegistro;
+        this.tipoRegistro = tipoRegistro;
     }
-
 
     public String calcularDiferenciaTiempoEntrada(LocalTime horaReferenciaEntrada1, LocalTime horaReferenciaEntrada2) {
         // Verifica si horaEntrada o horaEntrada2 están registradas y calcula en cada caso.
@@ -74,7 +71,6 @@ public class Asistencia_Model {
         }
         return "No disponible";
     }
-
 
     // Método privado para calcular la diferencia de tiempo
     private String calcularDiferencia(LocalTime referencia, LocalTime actual) {
@@ -98,9 +94,4 @@ public class Asistencia_Model {
             return "Puntual";
         }
     }
-
-
-
-
 }
-

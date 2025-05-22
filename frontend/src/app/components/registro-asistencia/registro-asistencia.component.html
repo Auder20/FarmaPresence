@@ -1,47 +1,77 @@
 <div class="asistencia-container">
   <h2>Registro de Asistencia</h2>
 
-  <form (ngSubmit)="registrarAsistencia()">
-    <input
-      type="text"
-      placeholder="Nombre"
-      [(ngModel)]="nuevoNombre"
-      name="nuevoNombre"
+  <form (ngSubmit)="registrarAsistencia()" #formAsistencia="ngForm">
+    <select
+      [(ngModel)]="nuevoEmpleadoId"
+      name="nuevoEmpleadoId"
       required
-    />
+      #empleadoSelect="ngModel"
+    >
+      <option [ngValue]="null" disabled>Selecciona un empleado</option>
+      <option *ngFor="let empleado of empleados" [ngValue]="empleado.id">
+        {{ empleado.nombre }}
+      </option>
+    </select>
+    <div *ngIf="empleadoSelect.invalid && empleadoSelect.touched" class="error">
+      Debes seleccionar un empleado
+    </div>
 
-    <select [(ngModel)]="nuevoEstado" name="nuevoEstado" (change)="onEstadoChange()" required>
-      <option value="" disabled selected>Estado</option>
+    <select
+      [(ngModel)]="nuevoEstado"
+      name="nuevoEstado"
+      (change)="onEstadoChange()"
+      required
+      #estadoSelect="ngModel"
+    >
+      <option value="" disabled>Estado</option>
       <option value="Presente">Presente</option>
       <option value="Tarde">Tarde</option>
       <option value="Ausente">Ausente</option>
     </select>
+    <div *ngIf="estadoSelect.invalid && estadoSelect.touched" class="error">
+      Debes seleccionar un estado
+    </div>
 
-    <input
-      *ngIf="mostrarMotivo"
-      type="text"
-      placeholder="Motivo (opcional)"
-      [(ngModel)]="nuevoMotivo"
-      name="nuevoMotivo"
-      required
-    />
+    <ng-container *ngIf="mostrarMotivo">
+      <input
+        type="text"
+        placeholder="Motivo (opcional)"
+        [(ngModel)]="nuevoMotivo"
+        name="nuevoMotivo"
+        required
+        #motivoInput="ngModel"
+      />
+      <div *ngIf="motivoInput.invalid && motivoInput.touched" class="error">
+        El motivo es requerido para el estado seleccionado
+      </div>
+    </ng-container>
 
-    <button type="submit">Registrar</button>
+    <button type="submit" [disabled]="formAsistencia.invalid">Registrar</button>
   </form>
 
-  <ul>
-    <li *ngFor="let registro of registros">
-      <span>{{ registro.nombre }}</span>
-      <span
-        [ngClass]="{
-          'presente': registro.estado === 'Presente',
-          'tarde': registro.estado === 'Tarde',
-          'ausente': registro.estado === 'Ausente'
-        }"
-      >
-        {{ registro.estado }}
-      </span>
-      <span class="motivo" *ngIf="registro.motivo">Motivo: {{ registro.motivo }}</span>
-    </li>
-  </ul>
+  <div class="tabla-asistencias" *ngIf="asistenciasSesion.length > 0">
+    <h3>Asistencias Registradas (Sesión Actual)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Empleado</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+          <th>Motivo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let asistencia of asistenciasSesion">
+          <td>{{ asistencia.nombre }}</td>
+          <td>{{ asistencia.fecha }}</td>
+          <td>{{ asistencia.hora }}</td>
+          <td>{{ asistencia.estado }}</td>
+          <td>{{ asistencia.motivo }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <button (click)="limpiarTabla()">Limpiar Tabla</button>
+  </div>
 </div>

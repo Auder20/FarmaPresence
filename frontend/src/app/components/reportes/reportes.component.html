@@ -34,7 +34,23 @@
   <button (click)="exportarExcel()">Exportar Excel</button>
   <button (click)="exportarPDF()">Exportar PDF</button>
 </div>
+  <!-- -- Graficas -- -->
+ <div class="graficas">
+  <div class="grafica-item">
+    <h3>Estado de Asistencia</h3>
+    <canvas #estadoCanvas width="400" height="300"></canvas>
+  </div>
 
+  <div class="grafica-item">
+    <h3>Asistencias por Mes</h3>
+    <canvas #asistenciaCanvas width="400" height="300"></canvas>
+  </div>
+
+  <div class="grafica-item">
+    <h3>Comparación por Empleado</h3>
+    <canvas #comparacionCanvas width="400" height="300"></canvas>
+  </div>
+</div>
 
   <!-- Tabla -->
   <table>
@@ -63,22 +79,5 @@
       </tr>
     </tbody>
   </table>
-  <!-- -- Graficas -- -->
- <div class="graficas">
-  <div class="grafica-item">
-    <h3>Estado de Asistencia</h3>
-    <canvas #estadoCanvas width="400" height="300"></canvas>
-  </div>
-
-  <div class="grafica-item">
-    <h3>Asistencias por Mes</h3>
-    <canvas #asistenciaCanvas width="400" height="300"></canvas>
-  </div>
-
-  <div class="grafica-item">
-    <h3>Comparación por Empleado</h3>
-    <canvas #comparacionCanvas width="400" height="300"></canvas>
-  </div>
-</div>
 </div>
 

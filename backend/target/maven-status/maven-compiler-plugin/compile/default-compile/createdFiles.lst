@@ -14,6 +14,7 @@ Package\PHARMACY_PROJECT\Repository\Empleado_Repository.class
 Package\PHARMACY_PROJECT\Services\Horario_Services.class
 Package\PHARMACY_PROJECT\Services\InformeAsistencia_PDF_Services.class
 Package\PHARMACY_PROJECT\Services\TurnoProgramado_Services.class
+Package\PHARMACY_PROJECT\PRUEBACORREOS\EmailController.class
 Package\PHARMACY_PROJECT\Repository\Horario_Repository.class
 Package\PHARMACY_PROJECT\Repository\InformeAsistencia_Repository.class
 Package\PHARMACY_PROJECT\Services\SerialReaderService.class
@@ -25,6 +26,8 @@ Package\PHARMACY_PROJECT\Models\Usuario_Model.class
 Package\PHARMACY_PROJECT\Response.class
 Package\PHARMACY_PROJECT\Controllers\Asistencia_Controller.class
 Package\PHARMACY_PROJECT\PharmacyProjectApplication.class
+Package\PHARMACY_PROJECT\Controllers\AsistenciaHuellaController.class
+Package\PHARMACY_PROJECT\Controllers\AsistenciaManualController.class
 Package\PHARMACY_PROJECT\PRUEBACORREOS\EmailService.class
 Package\PHARMACY_PROJECT\Services\Asistencia_Services.class
 Package\PHARMACY_PROJECT\Models\Reportes\ReporteEmpleado_DTO.class
