@@ -192,6 +192,51 @@ public class InformeAsistencia_PDF_Services {
         return table;
     }
 
+    
+    /**
+     * Genera un reporte PDF general con una tabla simple de asistencias
+     * sin filtrar por empleado ni mes.
+     */
+    public byte[] generarReporteCumplimientoGeneralPdf(List<Asistencia_Model> asistencias) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        PdfWriter writer = new PdfWriter(baos);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A4);
+        document.setMargins(40, 40, 40, 40);
+
+        // Título
+        document.add(new Paragraph("Reporte General de Cumplimiento de Horario")
+                .setFontSize(18)
+                .setBold()
+                .setTextAlignment(TextAlignment.CENTER));
+        document.add(new Paragraph("\n"));
+
+        // Tabla con encabezados
+        Table table = new Table(new float[]{3, 5, 3, 3, 3});
+        table.setWidth(UnitValue.createPercentValue(100));
+        table.addHeaderCell(new Cell().add(new Paragraph("Fecha").setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Empleado").setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Hora Entrada").setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Hora Salida").setBold()));
+        table.addHeaderCell(new Cell().add(new Paragraph("Estado").setBold()));
+
+        // Rellenar tabla con datos
+        for (Asistencia_Model asistencia : asistencias) {
+            table.addCell(asistencia.getFecha() != null ? asistencia.getFecha().toString() : "N/A");
+            table.addCell(asistencia.getEmpleado() != null ? asistencia.getEmpleado().getNombreCompleto() : "N/A");
+            table.addCell(asistencia.getHoraEntrada() != null ? asistencia.getHoraEntrada().toString() : "N/A");
+            table.addCell(asistencia.getHoraSalida() != null ? asistencia.getHoraSalida().toString() : "N/A");
+            table.addCell(asistencia.getEstado() != null ? asistencia.getEstado() : "N/A");
+        }
+
+        document.add(table);
+        document.close();
+
+        return baos.toByteArray();
+    }
+
+
 
 
 //--------------------------------------------------------------------------------------------

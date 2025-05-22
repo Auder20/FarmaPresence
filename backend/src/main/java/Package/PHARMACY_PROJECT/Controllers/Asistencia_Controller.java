@@ -1,34 +1,65 @@
 package Package.PHARMACY_PROJECT.Controllers;
 
 import Package.PHARMACY_PROJECT.Models.Asistencia_Model;
-import Package.PHARMACY_PROJECT.Models.Empleado_Model;
-import Package.PHARMACY_PROJECT.Models.Reportes.ComparativaAsistencia_DTO;
-import Package.PHARMACY_PROJECT.Models.Reportes.ReporteEmpleado_DTO;
-import Package.PHARMACY_PROJECT.Models.Reportes.ReporteMensual_DTO;
-import Package.PHARMACY_PROJECT.Response;
 import Package.PHARMACY_PROJECT.Services.Asistencia_Services;
-import Package.PHARMACY_PROJECT.Services.Empleado_Services;
-import Package.PHARMACY_PROJECT.Services.Horario_Services;
 import Package.PHARMACY_PROJECT.Services.InformeAsistencia_PDF_Services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/asistencia")
 public class Asistencia_Controller {
+
+    @Autowired
+    private Asistencia_Services asistenciaServices;
+
+    @Autowired
+    private InformeAsistencia_PDF_Services informeAsistenciaPDFServices;
+
+    // Nuevo endpoint para reporte PDF de cumplimiento horario
+   @GetMapping(value = "/reporteCumplimientoHorario", produces = MediaType.APPLICATION_PDF_VALUE)
+public ResponseEntity<byte[]> reporteCumplimientoHorarioPDF(
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaInicio,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaFin) {
+
+    try {
+        Date inicio = java.sql.Date.valueOf(fechaInicio);
+        Date fin = java.sql.Date.valueOf(fechaFin);
+
+        List<Asistencia_Model> asistencias = asistenciaServices.obtenerCumplimientoHorario(inicio, fin);
+
+        // Usa aquí tu método en InformeAsistencia_PDF_Services que genere el PDF según tus necesidades
+        byte[] pdfBytes = informeAsistenciaPDFServices.generateEmployeeAttendancePdf(
+            // Necesitarás pasar el empleado o adaptar según tu lógica
+            null,  // O pasa un empleado si aplica
+            asistencias,
+            null   // O mes, si quieres filtrar por mes dentro del PDF
+        );
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("reporte_cumplimiento_horario.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+    } catch (Exception e) {
+        logger.error("Error generando reporte PDF cumplimiento horario", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+}
 
     private static final Logger logger = LoggerFactory.getLogger(Asistencia_Controller.class);
 
@@ -48,6 +79,38 @@ public class Asistencia_Controller {
 
     @Autowired
     private InformeAsistencia_PDF_Services informeAsistenciaPDFServices;
+
+    @GetMapping(value = "/reporteCumplimientoGeneral", produces = MediaType.APPLICATION_PDF_VALUE)
+public ResponseEntity<byte[]> reporteCumplimientoGeneralPDF(
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaInicio,
+        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fechaFin) {
+
+    try {
+        // Convertir LocalDate a Date si tu servicio usa java.util.Date
+        Date inicio = java.sql.Date.valueOf(fechaInicio);
+        Date fin = java.sql.Date.valueOf(fechaFin);
+
+        // Obtener la lista filtrada de asistencias
+        List<Asistencia_Model> asistencias = asistenciaServices.obtenerCumplimientoHorario(inicio, fin);
+
+        // Generar PDF usando el nuevo método que creamos
+        byte[] pdfBytes = informeAsistenciaPDFServices.generarReporteCumplimientoGeneralPdf(asistencias);
+
+        // Configurar headers para descarga del PDF
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDisposition(ContentDisposition.builder("attachment")
+                .filename("reporte_cumplimiento_general.pdf")
+                .build());
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+
+    } catch (Exception e) {
+        logger.error("Error generando reporte general PDF de cumplimiento horario", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+}
+
 
     // Obtener todas las asistencias
     @GetMapping("/todas")

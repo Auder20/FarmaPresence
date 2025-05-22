@@ -20,7 +20,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
+import java.util.Date;
+import java.util.List;
 @Service
 public class Asistencia_Services {
 
@@ -37,6 +38,10 @@ public class Asistencia_Services {
         return asistenciaRepository.findAll();
     }
 
+    // Método para obtener asistencias entre dos fechas
+    public List<Asistencia> obtenerCumplimientoHorario(Date fechaInicio, Date fechaFin) {
+        return asistenciaRepository.findByFechaBetween(fechaInicio, fechaFin);
+    }
 
     // Método para encontrar asistencia por empleado y fecha
     public Optional<Asistencia_Model> findByEmpleadoAndFecha(Empleado_Model empleado, LocalDate fecha) {

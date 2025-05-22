@@ -1,313 +1,294 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
-
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import Chart from 'chart.js/auto';
+import { forkJoin } from 'rxjs';
 import { ReporteService, Reporte } from '../../services/reporte.service';
+import { RegistroEmpleadosService } from '../../services/registro-empleados.service';
 
-import { Chart, registerables } from 'chart.js';
+interface Empleado {
+  id: number;
+  nombre: string;
+}
 
 @Component({
   selector: 'app-reportes',
   templateUrl: './reportes.component.html',
-  styleUrls: ['./reportes.component.css']
+  styleUrls: ['./reportes.component.css'],
 })
 export class ReportesComponent implements OnInit, AfterViewInit {
-  reportes: Reporte[] = [];
-
   filtroNombre: string = '';
   filtroDia: string = '';
   filtroMes: string = '';
   filtroAnio: string = '';
   filtroEstado: string = '';
-  motivoFiltro: string = '';
 
-  dias: string[] = [];
+  fechaInicio: string = '';
+  fechaFin: string = '';
+
+  reportes: Reporte[] = [];
+  reportesFiltrados: Reporte[] = [];
+  empleados: Empleado[] = [];
+
+  dias: string[] = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
   meses = [
-    { value: '01', name: 'Enero' },
-    { value: '02', name: 'Febrero' },
-    { value: '03', name: 'Marzo' },
-    { value: '04', name: 'Abril' },
-    { value: '05', name: 'Mayo' },
-    { value: '06', name: 'Junio' },
-    { value: '07', name: 'Julio' },
-    { value: '08', name: 'Agosto' },
-    { value: '09', name: 'Septiembre' },
-    { value: '10', name: 'Octubre' },
-    { value: '11', name: 'Noviembre' },
-    { value: '12', name: 'Diciembre' }
+    { name: 'Enero', value: '1' },
+    { name: 'Febrero', value: '2' },
+    { name: 'Marzo', value: '3' },
+    { name: 'Abril', value: '4' },
+    { name: 'Mayo', value: '5' },
+    { name: 'Junio', value: '6' },
+    { name: 'Julio', value: '7' },
+    { name: 'Agosto', value: '8' },
+    { name: 'Septiembre', value: '9' },
+    { name: 'Octubre', value: '10' },
+    { name: 'Noviembre', value: '11' },
+    { name: 'Diciembre', value: '12' },
   ];
-  anios: string[] = [];
-
-  estadoChart: Chart | undefined;
-  asistenciaChart: Chart | undefined;
-  comparacionChart: Chart | undefined;
+  anios: string[] = ['2023', '2024', '2025'];
 
   @ViewChild('estadoCanvas') estadoCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('asistenciaCanvas') asistenciaCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('comparacionCanvas') comparacionCanvas!: ElementRef<HTMLCanvasElement>;
 
-  constructor(private reporteService: ReporteService) {
-    Chart.register(...registerables);
-  }
+  private estadoChart?: Chart;
+  private asistenciaChart?: Chart;
+  private comparacionChart?: Chart;
+
+  constructor(
+    private reporteService: ReporteService,
+    private empleadosService: RegistroEmpleadosService
+  ) {}
 
   ngOnInit(): void {
-    this.reportes = [
-      { nombre: 'Juan Pérez', fecha: '2025-01-06', hora: '08:00', estado: 'Presente' },
-      { nombre: 'Laura Gómez', fecha: '2025-05-06', hora: '08:05', estado: 'Tarde' },
-      { nombre: 'Carlos Ruiz', fecha: '2025-02-06', hora: '08:00', estado: 'Presente' },
-      { nombre: 'Marta Díaz', fecha: '2022-07-07', hora: '08:10', estado: 'Tarde' },
-      { nombre: 'Andrés Suárez', fecha: '2025-05-08', hora: '-', estado: 'Ausente' },
-      { nombre: 'Andrés Suárez', fecha: '2023-05-09', hora: '-', estado: 'Ausente' },
-      { nombre: 'Marta Díaz', fecha: '2024-06-08', hora: '8:10', estado: 'Presente' },
-      { nombre: 'Andrés Suárez', fecha: '2025-05-10', hora: '-', estado: 'Ausente' },
-      { nombre: 'Carlos Ruiz', fecha: '2025-05-09', hora: '9:00', estado: 'Tarde' },
-      { nombre: 'Laura Gómez', fecha: '2025-05-10', hora: '7:50', estado: 'Presente' },
-      { nombre: 'Juan Pérez', fecha: '2025-05-11', hora: '-', estado: 'Ausente' },
-      { nombre: 'Guillermo Humanez', fecha: '2025-05-20', hora: '-', estado: 'Ausente' },
-    ];
-
-    this.reporteService.setReportes(this.reportes);
-
-    this.dias = Array.from({ length: 31 }, (_, i) => (i + 1).toString().padStart(2, '0'));
-    const currentYear = new Date().getFullYear();
-    for (let y = 2020; y <= currentYear; y++) {
-      this.anios.push(y.toString());
-    }
+    this.cargarDatosCompletos();
   }
 
-  ngAfterViewInit(): void {
-    this.crearGraficas();
+  ngAfterViewInit() {
+    // Las gráficas se generan luego de cargar datos
+  }
+
+  cargarDatosCompletos(): void {
+    forkJoin({
+      empleados: this.empleadosService.getAllEmpleados(),
+      reportes: this.reporteService.getReportesDesdeBackend(),
+    }).subscribe(
+      ({ empleados, reportes }) => {
+        this.empleados = empleados;
+
+        this.reportes = reportes.map((r: Reporte) => {
+          return {
+            ...r,
+            nombre: r.empleado ? r.empleado.nombre : 'Desconocido',
+            hora: r.horaEntrada, // para facilitar acceso en la tabla
+          };
+        });
+
+        this.reportesFiltrados = [...this.reportes];
+        this.generarGraficas();
+      },
+      (error) => {
+        console.error('Error cargando empleados o reportes', error);
+      }
+    );
   }
 
   onFiltroChange() {
-    this.actualizarGraficas();
-  }
-
-  get reportesFiltrados(): Reporte[] {
-    return this.reportes.filter(r => {
-      const fecha = new Date(r.fecha);
-
-      const dia = fecha.getDate().toString().padStart(2, '0');
-      const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
-      const anio = fecha.getFullYear().toString();
-
-      const diaMatch = this.filtroDia ? dia === this.filtroDia : true;
-      const mesMatch = this.filtroMes ? mes === this.filtroMes : true;
-      const anioMatch = this.filtroAnio ? anio === this.filtroAnio : true;
-
-      const nombreMatch = this.filtroNombre
-        ? r.nombre.toLowerCase().includes(this.filtroNombre.toLowerCase())
-        : true;
-
-      const estadoMatch = this.filtroEstado ? r.estado === this.filtroEstado : true;
-
-      return diaMatch && mesMatch && anioMatch && nombreMatch && estadoMatch;
+    this.reportesFiltrados = this.reportes.filter((r) => {
+      return (
+        (!this.filtroNombre ||
+          (r.nombre?.toLowerCase() ?? '').includes(this.filtroNombre.toLowerCase())) &&
+        (!this.filtroDia || r.fecha.split('-')[2] === this.filtroDia) &&
+        (!this.filtroMes || r.fecha.split('-')[1] === this.filtroMes.padStart(2, '0')) &&
+        (!this.filtroAnio || r.fecha.split('-')[0] === this.filtroAnio) &&
+        (!this.filtroEstado || r.estado === this.filtroEstado)
+      );
     });
+    this.generarGraficas();
   }
 
-  crearGraficas() {
-    this.crearEstadoChart();
-    this.crearAsistenciaChart();
-    this.crearComparacionChart();
+  exportarExcel() {
+    // Implementa la exportación si deseas
   }
 
-  actualizarGraficas() {
-    if (this.estadoChart) {
-      this.estadoChart.data = this.generarDatosEstado();
-      this.estadoChart.update();
+  descargarReportePDF() {
+    if (!this.fechaInicio || !this.fechaFin) {
+      alert('Por favor, selecciona fecha de inicio y fin.');
+      return;
     }
-    if (this.asistenciaChart) {
-      this.asistenciaChart.data = this.generarDatosAsistencia();
-      this.asistenciaChart.update();
+    if (this.fechaInicio > this.fechaFin) {
+      alert('La fecha de inicio no puede ser mayor que la fecha fin.');
+      return;
     }
-    if (this.comparacionChart) {
-      this.comparacionChart.data = this.generarDatosComparacion();
-      this.comparacionChart.update();
-    }
+
+    this.reporteService
+      .descargarReporteCumplimientoGeneral(this.fechaInicio, this.fechaFin)
+      .subscribe(
+        (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `reporte_cumplimiento_${this.fechaInicio}_a_${this.fechaFin}.pdf`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        (error: any) => {
+          console.error('Error descargando el reporte PDF', error);
+          alert('Error al descargar el reporte PDF.');
+        }
+      );
   }
 
-  private generarDatosEstado() {
-    const estados: Record<'Presente' | 'Tarde' | 'Ausente', number> = {
-      Presente: 0,
-      Tarde: 0,
-      Ausente: 0,
-    };
-
-    this.reportesFiltrados.forEach(r => {
-      const estadoKey = r.estado as 'Presente' | 'Tarde' | 'Ausente';
-      estados[estadoKey] = (estados[estadoKey] || 0) + 1;
-    });
-
-    return {
-      labels: ['Presente', 'Tarde', 'Ausente'],
-      datasets: [{
-        label: 'Estado Asistencia',
-        data: [estados.Presente, estados.Tarde, estados.Ausente],
-        backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
-      }]
-    };
+  private generarGraficas() {
+    this.generarGraficaEstado();
+    this.generarGraficaAsistenciasPorMes();
+    this.generarGraficaComparacionPorEmpleado();
   }
 
-  private crearEstadoChart() {
+  private generarGraficaEstado() {
     if (this.estadoChart) {
       this.estadoChart.destroy();
     }
-    this.estadoChart = new Chart(this.estadoCanvas.nativeElement, {
+
+    const estadoCounts = this.reportesFiltrados.reduce(
+      (acc, curr) => {
+        if (curr.estado === 'Presente') acc.Presente++;
+        else if (curr.estado === 'Tarde') acc.Tarde++;
+        else if (curr.estado === 'Ausente') acc.Ausente++;
+        return acc;
+      },
+      { Presente: 0, Tarde: 0, Ausente: 0 }
+    );
+
+    const ctx = this.estadoCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    this.estadoChart = new Chart(ctx, {
       type: 'pie',
-      data: this.generarDatosEstado(),
+      data: {
+        labels: ['Presente', 'Tarde', 'Ausente'],
+        datasets: [
+          {
+            data: [
+              estadoCounts.Presente,
+              estadoCounts.Tarde,
+              estadoCounts.Ausente,
+            ],
+            backgroundColor: ['#4caf50', '#ff9800', '#f44336'],
+          },
+        ],
+      },
       options: {
         responsive: true,
         plugins: {
           legend: { position: 'bottom' },
-          title: { display: true, text: 'Estado de Asistencia' }
-        }
-      }
+          title: { display: true, text: 'Estado de Asistencia' },
+        },
+      },
     });
   }
 
-  private generarDatosAsistencia() {
-    const conteoMes: Record<string, number> = {};
-    this.reportesFiltrados.forEach(r => {
-      const mes = new Date(r.fecha).toLocaleString('es-CO', { month: 'long', year: 'numeric' });
-      conteoMes[mes] = (conteoMes[mes] || 0) + 1;
-    });
-
-    const labels = Object.keys(conteoMes);
-    const data = labels.map(l => conteoMes[l]);
-
-    return {
-      labels,
-      datasets: [{
-        label: 'Asistencias por Mes',
-        data,
-        backgroundColor: '#2196f3'
-      }]
-    };
-  }
-
-  private crearAsistenciaChart() {
+  private generarGraficaAsistenciasPorMes() {
     if (this.asistenciaChart) {
       this.asistenciaChart.destroy();
     }
-    this.asistenciaChart = new Chart(this.asistenciaCanvas.nativeElement, {
+
+    const asistenciasPorMes: { [key: string]: number } = {};
+
+   this.reportesFiltrados.forEach((r) => {
+  if (r.estado !== 'Ausente') {
+    const mes = r.fecha.split('-')[1]; // ejemplo: "05"
+    asistenciasPorMes[mes] = (asistenciasPorMes[mes] || 0) + 1;
+  }
+});
+
+
+    const labels = this.meses.map((m) => m.name);
+    const data = this.meses.map((m) => {
+      const mesConCero = m.value.padStart(2, '0'); // "01", "02", ...
+      return asistenciasPorMes[mesConCero] || 0;
+    });
+
+    const ctx = this.asistenciaCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    this.asistenciaChart = new Chart(ctx, {
       type: 'bar',
-      data: this.generarDatosAsistencia(),
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Asistencias',
+            data: data,
+            backgroundColor: '#2196f3',
+          },
+        ],
+      },
       options: {
         responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+          },
+        },
         plugins: {
           legend: { display: false },
-          title: { display: true, text: 'Asistencias por Mes' }
+          title: { display: true, text: 'Asistencias por Mes' },
         },
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
+      },
     });
   }
 
-  private generarDatosComparacion() {
-    const conteoEmpleados: Record<string, number> = {};
-    this.reportesFiltrados.forEach(r => {
-      conteoEmpleados[r.nombre] = (conteoEmpleados[r.nombre] || 0) + 1;
-    });
-
-    const labels = Object.keys(conteoEmpleados);
-    const data = labels.map(nombre => conteoEmpleados[nombre]);
-
-    return {
-      labels,
-      datasets: [{
-        label: 'Cantidad de reportes por empleado',
-        data,
-        backgroundColor: '#673ab7'
-      }]
-    };
-  }
-
-  private crearComparacionChart() {
+  private generarGraficaComparacionPorEmpleado() {
     if (this.comparacionChart) {
       this.comparacionChart.destroy();
     }
-    this.comparacionChart = new Chart(this.comparacionCanvas.nativeElement, {
+
+    const asistenciasPorEmpleado: { [key: string]: number } = {};
+
+ this.reportesFiltrados.forEach((r) => {
+  if (r.nombre && r.estado !== 'Ausente') {
+    asistenciasPorEmpleado[r.nombre] = (asistenciasPorEmpleado[r.nombre] || 0) + 1;
+  }
+});
+
+
+    const labels = Object.keys(asistenciasPorEmpleado);
+    const data = labels.map((label) => asistenciasPorEmpleado[label]);
+
+    const ctx = this.comparacionCanvas.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    this.comparacionChart = new Chart(ctx, {
       type: 'bar',
-      data: this.generarDatosComparacion(),
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Asistencias',
+            data: data,
+            backgroundColor: '#673ab7',
+          },
+        ],
+      },
       options: {
         responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { stepSize: 1 },
+          },
+        },
         plugins: {
           legend: { display: false },
-          title: { display: true, text: 'Comparación por Empleado' }
+          title: { display: true, text: 'Comparación por Empleado' },
         },
-        scales: {
-          y: { beginAtZero: true }
-        }
-      }
+      },
     });
   }
-
-  exportarExcel(): void {
-    const worksheet = XLSX.utils.json_to_sheet(this.reportesFiltrados);
-    const workbook = { Sheets: { 'Reportes': worksheet }, SheetNames: ['Reportes'] };
-    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    saveAs(blob, 'reportes.xlsx');
-  }
-
-exportarPDF(): void {
-  const doc = new jsPDF();
-  const margin = 10;  // espacio entre imágenes
-  const imgWidth = 80;  // ancho fijo de imagen
-  const startX = 15;  // margen izquierdo
-  let yPos = 15;       // margen arriba
-
-  // Función para calcular altura con proporción
-  function getImgHeight(canvas: HTMLCanvasElement | undefined): number {
-    if (!canvas) return 0;
-    const ratio = canvas.height / canvas.width;
-    return imgWidth * ratio;
-  }
-
-  // Agregar primera gráfica (estado)
-  if (this.estadoCanvas) {
-    const estadoImg = this.estadoCanvas.nativeElement.toDataURL('image/png');
-    const imgHeight = getImgHeight(this.estadoCanvas.nativeElement);
-    doc.addImage(estadoImg, 'PNG', startX, yPos, imgWidth, imgHeight);
-  }
-
-  // Agregar segunda gráfica (asistencia) al lado derecho de la primera
-  if (this.asistenciaCanvas) {
-    const asistenciaImg = this.asistenciaCanvas.nativeElement.toDataURL('image/png');
-    const imgHeight = getImgHeight(this.asistenciaCanvas.nativeElement);
-    const secondX = startX + imgWidth + margin;
-    doc.addImage(asistenciaImg, 'PNG', secondX, yPos, imgWidth, imgHeight);
-  }
-
-  // Calcular el Y para la siguiente fila, toma la mayor altura de las dos primeras
-  const estadoHeight = getImgHeight(this.estadoCanvas?.nativeElement);
-  const asistenciaHeight = getImgHeight(this.asistenciaCanvas?.nativeElement);
-  yPos += Math.max(estadoHeight, asistenciaHeight) + margin;
-
-  // Agregar tercera gráfica (comparación) debajo de la primera
-  if (this.comparacionCanvas) {
-    const comparacionImg = this.comparacionCanvas.nativeElement.toDataURL('image/png');
-    const imgHeight = getImgHeight(this.comparacionCanvas.nativeElement);
-    doc.addImage(comparacionImg, 'PNG', startX, yPos, imgWidth, imgHeight);
-    yPos += imgHeight + margin;
-  }
-
-  // Finalmente la tabla debajo de todo
-  autoTable(doc, {
-    startY: yPos,
-    head: [['Nombre', 'Fecha', 'Hora', 'Estado']],
-    body: this.reportesFiltrados.map(r => [r.nombre, r.fecha, r.hora, r.estado]),
-    theme: 'grid',
-    headStyles: { fillColor: [46, 101, 164] },
-    styles: { fontSize: 9 }
-  });
-
-  doc.save('reportes.pdf');
-}
-
-
 }

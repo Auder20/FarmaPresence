@@ -12,15 +12,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Date;
 
 @Repository
 public interface Asistencia_Repository extends JpaRepository<Asistencia_Model, Long> {
+
+    List<Asistencia> findByFechaBetween(Date fechaInicio, Date fechaFin);
+
     List<Asistencia_Model> findByEmpleadoId(Long empleadoId);
     // Método para encontrar asistencia por empleado y fecha
     Optional<Asistencia_Model> findByEmpleadoAndFecha(Empleado_Model empleado, LocalDate fecha);
     Optional<Asistencia_Model> findByEmpleadoAndFechaAndTipoRegistro(Empleado_Model empleado, LocalDate fecha, String tipoRegistro);
     public List<Asistencia_Model> findByEmpleadoIdAndFecha(Long empleadoId, LocalDate fecha);
 
+    
     @Modifying
     @Transactional
     @Query(value = "ALTER TABLE asistencias AUTO_INCREMENT = 1", nativeQuery = true)

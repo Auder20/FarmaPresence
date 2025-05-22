@@ -99,17 +99,21 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-6 form-group">
-                <label for="rolEmpleado"><strong>Rol</strong></label>
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  id="rolEmpleado"
-                  required
-                  [(ngModel)]="rolEmpleado"
-                  name="rolEmpleado"
-                />
-              </div>
+          <div class="col-md-6 form-group">
+  <label for="rolEmpleado"><strong>Rol</strong></label>
+  <select
+    id="rolEmpleado"
+    class="form-control form-control-sm"
+    [(ngModel)]="rolEmpleado"
+    name="rolEmpleado"
+    required
+  >
+    <option value="practicante">Practicante</option>
+    <option value="farmaceutico">Farmacéutico</option>
+    <option value="repartidores">Repartidores</option>
+  </select>
+</div>
+
               <div class="col-md-6 form-group">
                 <label for="telefonoEmpleado"><strong>Teléfono</strong></label>
                 <input
@@ -158,7 +162,7 @@
                   name="horarioEmpleado"
                   required
                 >
-                  <option *ngFor="let horario of horarios" [value]="horario.id">{{ horario.descripcion }}</option>
+                  <option *ngFor="let horario of horarios" [ngValue]="horario.id">{{ horario.descripcion }}</option>
                 </select>
               </div>
             </div>

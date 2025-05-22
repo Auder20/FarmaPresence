@@ -1,56 +1,64 @@
 <div class="reportes-container">
   <h2>Reportes de Asistencia</h2>
 
-<div class="filtros">
-  <input
-    type="text"
-    [(ngModel)]="filtroNombre"
-    (ngModelChange)="onFiltroChange()"
-    placeholder="Filtrar por nombre"
-  />
+  <div class="filtros">
+    <input
+      type="text"
+      [(ngModel)]="filtroNombre"
+      (ngModelChange)="onFiltroChange()"
+      placeholder="Filtrar por nombre"
+    />
 
-  <select [(ngModel)]="filtroDia" (ngModelChange)="onFiltroChange()">
-    <option value="">Día</option>
-    <option *ngFor="let d of dias" [value]="d">{{ d }}</option>
-  </select>
+    <select [(ngModel)]="filtroDia" (ngModelChange)="onFiltroChange()">
+      <option value="">Día</option>
+      <option *ngFor="let d of dias" [value]="d">{{ d }}</option>
+    </select>
 
-  <select [(ngModel)]="filtroMes" (ngModelChange)="onFiltroChange()">
-    <option value="">Mes</option>
-    <option *ngFor="let m of meses" [value]="m.value">{{ m.name }}</option>
-  </select>
+    <select [(ngModel)]="filtroMes" (ngModelChange)="onFiltroChange()">
+      <option value="">Mes</option>
+      <option *ngFor="let m of meses" [value]="m.value">{{ m.name }}</option>
+    </select>
 
-  <select [(ngModel)]="filtroAnio" (ngModelChange)="onFiltroChange()">
-    <option value="">Año</option>
-    <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
-  </select>
+    <select [(ngModel)]="filtroAnio" (ngModelChange)="onFiltroChange()">
+      <option value="">Año</option>
+      <option *ngFor="let a of anios" [value]="a">{{ a }}</option>
+    </select>
 
-  <select [(ngModel)]="filtroEstado" (ngModelChange)="onFiltroChange()">
-    <option value="">-- Estado --</option>
-    <option value="Presente">Presente</option>
-    <option value="Tarde">Tarde</option>
-    <option value="Ausente">Ausente</option>
-  </select>
+    <select [(ngModel)]="filtroEstado" (ngModelChange)="onFiltroChange()">
+      <option value="">-- Estado --</option>
+      <option value="Presente">Presente</option>
+      <option value="Tarde">Tarde</option>
+      <option value="Ausente">Ausente</option>
+    </select>
 
-  <button (click)="exportarExcel()">Exportar Excel</button>
-  <button (click)="exportarPDF()">Exportar PDF</button>
-</div>
+    <!-- NUEVOS CAMPOS DE FECHA -->
+    <label for="fechaInicio">Fecha Inicio:</label>
+    <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio" />
+
+    <label for="fechaFin">Fecha Fin:</label>
+    <input type="date" id="fechaFin" [(ngModel)]="fechaFin" />
+
+    <button (click)="exportarExcel()">Exportar Excel</button>
+    <button (click)="descargarReportePDF()">Exportar PDF</button>
+  </div>
+
   <!-- -- Graficas -- -->
- <div class="graficas">
-  <div class="grafica-item">
-    <h3>Estado de Asistencia</h3>
-    <canvas #estadoCanvas width="400" height="300"></canvas>
-  </div>
+  <div class="graficas">
+    <div class="grafica-item">
+      <h3>Estado de Asistencia</h3>
+      <canvas #estadoCanvas width="400" height="300"></canvas>
+    </div>
 
-  <div class="grafica-item">
-    <h3>Asistencias por Mes</h3>
-    <canvas #asistenciaCanvas width="400" height="300"></canvas>
-  </div>
+    <div class="grafica-item">
+      <h3>Asistencias por Mes</h3>
+      <canvas #asistenciaCanvas width="400" height="300"></canvas>
+    </div>
 
-  <div class="grafica-item">
-    <h3>Comparación por Empleado</h3>
-    <canvas #comparacionCanvas width="400" height="300"></canvas>
+    <div class="grafica-item">
+      <h3>Comparación por Empleado</h3>
+      <canvas #comparacionCanvas width="400" height="300"></canvas>
+    </div>
   </div>
-</div>
 
   <!-- Tabla -->
   <table>
@@ -60,6 +68,7 @@
         <th>Fecha</th>
         <th>Hora</th>
         <th>Estado</th>
+        <th>Motivo</th> <!-- Columna nueva -->
       </tr>
     </thead>
     <tbody>
@@ -76,8 +85,8 @@
         >
           {{ r.estado }}
         </td>
+        <td>{{ r.motivo || '-' }}</td> <!-- Mostrar motivo o guion si no hay -->
       </tr>
     </tbody>
   </table>
 </div>
-

@@ -26,7 +26,7 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
   telefonoEmpleado: string = '';
   identificacionEmpleado: string = '';
   activoEmpleado: boolean = false;
-  horarioEmpleado: string = '';  // Aquí guardaremos el idHorario
+  horarioEmpleado: number | null = null;  // Aquí guardaremos el idHorario
   huellaEmpleado: string = '';
 
   userName: string = 'Usuario';
@@ -96,7 +96,7 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
     this.telefonoEmpleado = empleado.telefono || '';
     this.identificacionEmpleado = empleado.identificacion || '';
     this.activoEmpleado = empleado.activo || false;
-    this.horarioEmpleado = empleado.idHorario || '';  // Aquí el cambio importante
+    this.horarioEmpleado = empleado.horario ? empleado.horario.id : null;
     this.huellaEmpleado = empleado.huellaDactilar || '';
     this.modalEstado = true;
   }
@@ -135,12 +135,9 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
     );
   }
 
-  getDescripcionHorario(idHorario: string): string {
-    for (let i = 0; i < this.horarios.length; i++) {
-      if (this.horarios[i].id === idHorario) {
-        return this.horarios[i].descripcion;
-      }
-    }
-    return 'N/A';
-  }
+getDescripcionHorario(horario: any): string {
+  if (!horario) return 'N/A';
+  return horario.descripcion || 'N/A';
+}
+
 }
