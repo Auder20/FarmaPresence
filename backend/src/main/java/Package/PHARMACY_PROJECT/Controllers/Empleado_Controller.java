@@ -219,22 +219,25 @@ if (empleadoData.getIdentificacion() != null
                     empleado.setRol(empleadoData.getRol());
                     cambiosRealizados = true;
                 }
-                if (empleadoData.getHorario() != null && !empleadoData.getHorario().equals(empleado.getHorario())) {
-                    // Validar que el horario existe
-                    Optional<Horario_Model> horarioExistente = horarioServices.getHorarioById(empleadoData.getHorario().getId());
-                    if (horarioExistente.isPresent()) {
-                        empleado.setHorario(horarioExistente.get());
-                        cambiosRealizados = true;
-                    } else {
-                        Response<Empleado_Model> response = new Response<>(
-                                "404",
-                                "Horario no encontrado para el ID proporcionado",
-                                null,
-                                "HORARIO_NOT_FOUND"
-                        );
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-                    }
-                }
+               if (empleadoData.getHorario() != null 
+    && (empleado.getHorario() == null 
+        || !empleadoData.getHorario().getId().equals(empleado.getHorario().getId()))) {
+    
+    Optional<Horario_Model> horarioExistente = horarioServices.getHorarioById(empleadoData.getHorario().getId());
+    if (horarioExistente.isPresent()) {
+        empleado.setHorario(horarioExistente.get());
+        cambiosRealizados = true;
+    } else {
+        Response<Empleado_Model> response = new Response<>(
+                "404",
+                "Horario no encontrado para el ID proporcionado",
+                null,
+                "HORARIO_NOT_FOUND"
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+}
+
 
 
                 // Si no se realizaron cambios, devolver respuesta adecuada

@@ -21,6 +21,9 @@ public class Asistencia_Model {
 
     private static final Logger logger = LoggerFactory.getLogger(Asistencia_Model.class);
 
+    public static final int RANGO_TEMPRANO = -10; // 10 minutos antes
+    public static final int RANGO_TARDE = 10;     // 10 minutos después
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // ID autoincremental de la asistencia
@@ -35,8 +38,8 @@ public class Asistencia_Model {
     @Column(name = "hora_entrada")
     private LocalTime horaEntrada; // Hora de entrada
 
-    @Transient
-    private LocalTime horaEntrada2;
+    @Column(name = "hora_salida")
+    private LocalTime horaSalida; // Hora de salida
 
     @Column(name = "estado", nullable = false, length = 20)
     private String estado; // Estado de la asistencia (temprano, puntual, tarde)
@@ -46,6 +49,9 @@ public class Asistencia_Model {
 
     @Column(name = "diferencia_tiempo_entrada", nullable = true)
     private String diferenciaTiempoEntrada; // Diferencia de tiempo, no persistente en la base de datos
+
+    @Column(name = "diferencia_tiempo_salida", nullable = true)
+    private String diferenciaTiempoSalida; // Diferencia de tiempo, no persistente en la base de datos
 
     @Column(name = "motivo", nullable = true, length = 255)
     private String motivo; // Motivo para estados como Tarde o Ausente
@@ -62,27 +68,54 @@ public class Asistencia_Model {
         this.tipoRegistro = tipoRegistro;
     }
 
+    // Constructor para registrar salida
+    public Asistencia_Model(Empleado_Model empleado, LocalDate fecha, LocalTime horaEntrada, LocalTime horaSalida, String estado, String tipoRegistro) {
+        this.empleado = empleado;
+        this.fecha = fecha;
+        this.horaEntrada = horaEntrada;
+        this.horaSalida = horaSalida;
+        this.estado = estado;
+        this.tipoRegistro = tipoRegistro;
+    }
+
+    // Calcula diferencia de tiempo para entrada con dos referencias (ejemplo: turno 1 y turno 2)
     public String calcularDiferenciaTiempoEntrada(LocalTime horaReferenciaEntrada1, LocalTime horaReferenciaEntrada2) {
-        // Verifica si horaEntrada o horaEntrada2 están registradas y calcula en cada caso.
         if (horaEntrada != null) {
-            return calcularDiferencia(horaReferenciaEntrada1, horaEntrada);
-        } else if (horaEntrada2 != null) {
-            return calcularDiferencia(horaReferenciaEntrada2, horaEntrada2);
+            // Elegir la referencia más cercana a horaEntrada para comparar
+            long diff1 = Math.abs(ChronoUnit.SECONDS.between(horaReferenciaEntrada1, horaEntrada));
+            long diff2 = Math.abs(ChronoUnit.SECONDS.between(horaReferenciaEntrada2, horaEntrada));
+            if (diff1 <= diff2) {
+                return calcularDiferencia(horaReferenciaEntrada1, horaEntrada);
+            } else {
+                return calcularDiferencia(horaReferenciaEntrada2, horaEntrada);
+            }
         }
         return "No disponible";
     }
 
-    // Método privado para calcular la diferencia de tiempo
+    // Calcula diferencia de tiempo para salida con dos referencias
+    public String calcularDiferenciaTiempoSalida(LocalTime horaReferenciaSalida1, LocalTime horaReferenciaSalida2) {
+        if (horaSalida != null) {
+            long diff1 = Math.abs(ChronoUnit.SECONDS.between(horaReferenciaSalida1, horaSalida));
+            long diff2 = Math.abs(ChronoUnit.SECONDS.between(horaReferenciaSalida2, horaSalida));
+            if (diff1 <= diff2) {
+                return calcularDiferenciaSalida(horaSalida, horaReferenciaSalida1);
+            } else {
+                return calcularDiferenciaSalida(horaSalida, horaReferenciaSalida2);
+            }
+        }
+        return "No disponible";
+    }
+
+    // Método privado para calcular la diferencia de tiempo para entrada
     private String calcularDiferencia(LocalTime referencia, LocalTime actual) {
-        // Obtener la diferencia total en segundos (sin valor absoluto)
         long diferenciaSegundos = ChronoUnit.SECONDS.between(referencia, actual);
 
-        // Convertir la diferencia en horas, minutos y segundos
         long horas = Math.abs(diferenciaSegundos) / 3600;
         long minutos = (Math.abs(diferenciaSegundos) % 3600) / 60;
         long segundos = Math.abs(diferenciaSegundos) % 60;
 
-        if (diferenciaSegundos < RANGO_TEMPRANO * 60) { // Temprano (conversión de minutos a segundos)
+        if (diferenciaSegundos < RANGO_TEMPRANO * 60) { // Temprano
             return horas > 0 ? "Temprano por " + horas + " hora(s), " + minutos + " minuto(s) y " + segundos + " segundo(s)"
                     : minutos > 0 ? "Temprano por " + minutos + " minuto(s) y " + segundos + " segundo(s)"
                     : "Temprano por " + segundos + " segundo(s)";
@@ -94,4 +127,26 @@ public class Asistencia_Model {
             return "Puntual";
         }
     }
+
+    // Método privado para calcular la diferencia de tiempo para salida
+    private String calcularDiferenciaSalida(LocalTime actual, LocalTime referencia) {
+        long diferenciaSegundos = ChronoUnit.SECONDS.between(referencia, actual);
+
+        long horas = Math.abs(diferenciaSegundos) / 3600;
+        long minutos = (Math.abs(diferenciaSegundos) % 3600) / 60;
+        long segundos = Math.abs(diferenciaSegundos) % 60;
+
+        if (diferenciaSegundos < RANGO_TEMPRANO * 60) { // Salida temprana
+            return horas > 0 ? "Salida temprana por " + horas + " hora(s), " + minutos + " minuto(s) y " + segundos + " segundo(s)"
+                    : minutos > 0 ? "Salida temprana por " + minutos + " minuto(s) y " + segundos + " segundo(s)"
+                    : "Salida temprana por " + segundos + " segundo(s)";
+        } else if (diferenciaSegundos > RANGO_TARDE * 60) { // Salida tarde
+            return horas > 0 ? "Salida tarde por " + horas + " hora(s), " + minutos + " minuto(s) y " + segundos + " segundo(s)"
+                    : minutos > 0 ? "Salida tarde por " + minutos + " minuto(s) y " + segundos + " segundo(s)"
+                    : "Salida tarde por " + segundos + " segundo(s)";
+        } else { // Puntual
+            return "Salida puntual";
+        }
+    }
+
 }

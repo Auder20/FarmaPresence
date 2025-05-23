@@ -39,7 +39,7 @@ public class Asistencia_Services {
     }
 
     // Método para obtener asistencias entre dos fechas
-    public List<Asistencia> obtenerCumplimientoHorario(Date fechaInicio, Date fechaFin) {
+    public List<Asistencia_Model> obtenerCumplimientoHorario(Date fechaInicio, Date fechaFin) {
         return asistenciaRepository.findByFechaBetween(fechaInicio, fechaFin);
     }
 
@@ -458,5 +458,69 @@ public class Asistencia_Services {
 
         return resultado;
     }
+    public List<Asistencia_Model> obtenerAsistenciasConDiferenciaSalidaPorEmpleadoYMes(long empleadoId, int mes) {
+    List<Asistencia_Model> asistencias = asistenciaRepository.findByEmpleadoId(empleadoId);
+
+    if (asistencias.isEmpty()) {
+        return Collections.emptyList();
+    }
+
+    for (Asistencia_Model asistencia : asistencias) {
+        String fechaStr = String.valueOf(asistencia.getFecha());
+        int mesAsistencia = Integer.parseInt(fechaStr.substring(5, 7));
+
+        if (mesAsistencia == mes) {
+            // Obtener horarios del empleado
+            LocalTime horaInicio1 = asistencia.getEmpleado().getHorario().getHoraInicio1();
+            LocalTime horaInicio2 = asistencia.getEmpleado().getHorario().getHoraInicio2();
+            LocalTime horaFin1 = asistencia.getEmpleado().getHorario().getHoraFin1();
+            LocalTime horaFin2 = asistencia.getEmpleado().getHorario().getHoraFin2();
+
+            // Calcular diferencia de entrada
+            String diferenciaEntrada = asistencia.calcularDiferenciaTiempoEntrada(horaInicio1, horaInicio2);
+            asistencia.setDiferenciaTiempoEntrada(diferenciaEntrada);
+
+            // Calcular diferencia de salida
+            String diferenciaSalida = asistencia.calcularDiferenciaTiempoSalida(horaFin1, horaFin2);
+            asistencia.setDiferenciaTiempoSalida(diferenciaSalida);  // Asegúrate que tengas este atributo y setter en tu modelo
+        }
+    }
+
+    return asistencias.stream()
+            .filter(a -> Integer.parseInt(a.getFecha().toString().substring(5, 7)) == mes)
+            .collect(Collectors.toList());
+}
+public Asistencia_Model registrarAsistenciaConCalculo(Asistencia_Model asistencia) throws IllegalArgumentException {
+    if (asistencia == null || asistencia.getEmpleado() == null) {
+        throw new IllegalArgumentException("Asistencia o empleado no pueden ser nulos");
+    }
+
+    Empleado_Model empleado = asistencia.getEmpleado();
+
+    if (empleado.getHorario() == null) {
+        throw new IllegalArgumentException("El empleado no tiene horario asignado");
+    }
+
+    LocalTime horaReferenciaEntrada1 = empleado.getHorario().getHoraInicio1();
+    LocalTime horaReferenciaEntrada2 = empleado.getHorario().getHoraInicio2();
+
+    // Calcular diferencia de tiempo para la entrada
+    String diferencia = asistencia.calcularDiferenciaTiempoEntrada(horaReferenciaEntrada1, horaReferenciaEntrada2);
+    asistencia.setDiferenciaTiempoEntrada(diferencia);
+
+    // Si también quieres calcular diferencia de salida y horaSalida está presente, puedes hacerlo igual:
+    if (asistencia.getHoraSalida() != null) {
+        LocalTime horaReferenciaSalida1 = empleado.getHorario().getHoraFin1();
+        LocalTime horaReferenciaSalida2 = empleado.getHorario().getHoraFin2();
+       
+        String diferenciaSalida = asistencia.calcularDiferenciaTiempoSalida(horaReferenciaSalida1, asistencia.getHoraSalida());
+
+        asistencia.setDiferenciaTiempoSalida(diferenciaSalida);
+    }
+
+    // Guardar asistencia con los datos calculados
+    return save(asistencia);
+}
+
 
 }

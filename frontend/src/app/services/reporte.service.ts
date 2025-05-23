@@ -34,13 +34,13 @@ export class ReporteService {
     );
   }
 
-  descargarReporteCumplimientoGeneral(fechaInicio: string, fechaFin: string): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/asistencia/reporteCumplimientoGeneral`, {
-      params: {
-        fechaInicio,
-        fechaFin
-      },
-      responseType: 'blob'
-    });
-  }
+  //descargarReporteCumplimientoGeneral(fechaInicio: string, fechaFin: string): Observable<Blob> {
+    //return this.http.get(`${this.baseUrl}/asistencia/reporteCumplimientoGeneral`, {
+      //params: {
+        //fechaInicio,
+        //fechaFin
+      //},
+      //responseType: 'blob'
+    //});
+  //}
 }

@@ -32,11 +32,12 @@
     </select>
 
     <!-- NUEVOS CAMPOS DE FECHA -->
-    <label for="fechaInicio">Fecha Inicio:</label>
-    <input type="date" id="fechaInicio" [(ngModel)]="fechaInicio" />
+  <label for="fechaInicio">Fecha Inicio:</label>
+  <input id="fechaInicio" type="date" [(ngModel)]="fechaInicio" (change)="onFiltroChange()" />
 
-    <label for="fechaFin">Fecha Fin:</label>
-    <input type="date" id="fechaFin" [(ngModel)]="fechaFin" />
+  <label for="fechaFin">Fecha Fin:</label>
+  <input id="fechaFin" type="date" [(ngModel)]="fechaFin" (change)="onFiltroChange()" />
+
 
     <button (click)="exportarExcel()">Exportar Excel</button>
     <button (click)="descargarReportePDF()">Exportar PDF</button>

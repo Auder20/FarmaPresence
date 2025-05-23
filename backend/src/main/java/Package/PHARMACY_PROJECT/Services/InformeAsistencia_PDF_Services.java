@@ -224,7 +224,7 @@ public class InformeAsistencia_PDF_Services {
         // Rellenar tabla con datos
         for (Asistencia_Model asistencia : asistencias) {
             table.addCell(asistencia.getFecha() != null ? asistencia.getFecha().toString() : "N/A");
-            table.addCell(asistencia.getEmpleado() != null ? asistencia.getEmpleado().getNombreCompleto() : "N/A");
+            table.addCell(asistencia.getEmpleado() != null ? asistencia.getEmpleado().getNombre() : "N/A");
             table.addCell(asistencia.getHoraEntrada() != null ? asistencia.getHoraEntrada().toString() : "N/A");
             table.addCell(asistencia.getHoraSalida() != null ? asistencia.getHoraSalida().toString() : "N/A");
             table.addCell(asistencia.getEstado() != null ? asistencia.getEstado() : "N/A");
