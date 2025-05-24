@@ -25,6 +25,10 @@ public class TurnoProgramado_Model {
     @Column(name = "hora_fin", nullable = true)
     private LocalTime horaFin;  // Hora de fin específica (puede coincidir con el horario)
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "empleado_id", nullable = false) // ajusta nullable según necesidad
+    private Empleado_Model empleado;
+
     // Constructor vacío
     public TurnoProgramado_Model() {
     }

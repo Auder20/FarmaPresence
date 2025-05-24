@@ -12,6 +12,7 @@ import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.co
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AuthGuard } from './services/auth.guard';
 import { RedirectGuard } from './guards/redirect.guard';
+import { TurnoProgramadoComponent } from './components/turno-programado/turno-programado.component';
 
 const routes: Routes = [
   // Rutas protegidas por AuthGuard
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
   { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },
   { path: 'reset-password', component: ResetPasswordComponent, canActivate: [AuthGuard] },
+  { path: 'turno-programado', component: TurnoProgramadoComponent, canActivate: [AuthGuard] },
 
   // Ruta pública para login
   { path: 'login', component: LoginComponent },

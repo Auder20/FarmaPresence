@@ -1,0 +1,37 @@
+<div class="turnos-container">
+  <h2>Turnos Programados</h2>
+  <form (ngSubmit)="agregarTurno()" class="turno-form">
+    <!-- Select para elegir empleado -->
+    <select [(ngModel)]="nuevoTurno.empleado" name="empleado" required>
+      <option [ngValue]="undefined">Selecciona un empleado</option>
+      <option *ngFor="let emp of empleados" [ngValue]="emp">
+        {{ emp.nombre }}
+      </option>
+    </select>
+    <input type="date" [(ngModel)]="nuevoTurno.fecha" name="fecha" required placeholder="Fecha" />
+    <input type="time" [(ngModel)]="nuevoTurno.horaInicio" name="horaInicio" required placeholder="Hora inicio" />
+    <input type="time" [(ngModel)]="nuevoTurno.horaFin" name="horaFin" required placeholder="Hora fin" />
+    <button type="submit">Agregar Turno</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Empleado</th>
+        <th>Fecha</th>
+        <th>Hora Inicio</th>
+        <th>Hora Fin</th>
+        </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let turno of turnos">
+        <td>{{ turno.empleado?.nombre || 'Sin asignar' }}</td>
+        <td>{{ turno.fecha }}</td>
+        <td>{{ turno.horaInicio }}</td>
+        <td>{{ turno.horaFin }}</td>
+
+
+      </tr>
+    </tbody>
+  </table>
+</div>

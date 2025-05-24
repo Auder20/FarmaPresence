@@ -64,6 +64,15 @@
         [class.active]="selectedNavItem === 'registros'"
       >Registro de Empleado</a>
     </li>
+    <li class="nav-item">
+  <a
+    class="nav-link"
+    [routerLink]="['/turno-programado']"
+    (click)="onMenuItemClick('turnoProgramado')"
+    [class.active]="selectedNavItem === 'turnoProgramado'"
+  >Turno Programado</a>
+</li>
+
 
     <!-- Mostrar menú solo si hay usuario -->
     <li class="nav-item user-menu" *ngIf="username && username.trim().length > 0">

@@ -1,0 +1,122 @@
+.turnos-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px 35px;
+  background: #ffffffdd;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(46, 101, 164, 0.18);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #003366;
+}
+
+.turnos-container h2 {
+  font-weight: 900;
+  font-size: 2.1rem;
+  margin-bottom: 32px;
+  color: #2e65a4;
+  text-align: center;
+}
+
+.turno-form {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.turno-form input[type="date"],
+.turno-form input[type="time"] {
+  padding: 9px 13px;
+  border-radius: 8px;
+  border: 1.5px solid #4caf50;
+  font-size: 1rem;
+  outline-color: #50e3c2;
+  transition: border-color 0.3s ease;
+  min-width: 140px;
+}
+
+.turno-form input:focus {
+  border-color: #31708f;
+}
+
+.turno-form button {
+  padding: 11px 32px;
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  font-size: 1.12rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.turno-form button:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: #f8fafb;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(46, 101, 164, 0.08);
+}
+
+th, td {
+  padding: 13px 14px;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+th {
+  background: #2e65a4;
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+tr:nth-child(even) {
+  background: #eaf6fa;
+}
+
+tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+td button {
+  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  border: none;
+  color: white;
+  padding: 6px 18px;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+td button:hover {
+  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .turnos-container {
+    padding: 13px 5px;
+    max-width: 99vw;
+  }
+  .turno-form {
+    flex-direction: column;
+    gap: 11px;
+    align-items: stretch;
+  }
+  th, td {
+    font-size: 0.95rem;
+    padding: 10px 4px;
+  }
+}
