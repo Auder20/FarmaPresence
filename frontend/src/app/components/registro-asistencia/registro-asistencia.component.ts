@@ -10,11 +10,12 @@ import { RegistroEmpleadosService } from '../../services/registro-empleados.serv
 export class RegistroAsistenciaComponent implements OnInit {
   empleados: any[] = [];
   nuevoEmpleadoId: number | null = null;
-  nuevoEstado: 'Presente' | 'Tarde' | 'Ausente' = 'Presente';
+  nuevoEstado: 'Presente' | 'Tarde' | 'Ausente' | null = null;
+  ausenteSeleccionado: boolean = false;
   nuevoMotivo: string = '';
   mostrarMotivo: boolean = false;
+  esperandoMotivo: boolean = false; // controla si espera motivo para tardanza
 
-  // Lista local para asistencias registradas en esta sesión
   asistenciasSesion: Reporte[] = [];
 
   constructor(
@@ -38,10 +39,62 @@ export class RegistroAsistenciaComponent implements OnInit {
   }
 
   onEstadoChange(): void {
-    this.mostrarMotivo = this.nuevoEstado === 'Tarde' || this.nuevoEstado === 'Ausente';
+    this.nuevoEstado = this.ausenteSeleccionado ? 'Ausente' : null;
+    this.mostrarMotivo = this.ausenteSeleccionado;
+
     if (!this.mostrarMotivo) {
       this.nuevoMotivo = '';
+      this.esperandoMotivo = false;
     }
+  }
+
+  validarAntesDeRegistrar(): void {
+    if (this.nuevoEmpleadoId === null) {
+      alert('Por favor, selecciona un empleado');
+      return;
+    }
+
+    if (this.ausenteSeleccionado) {
+      this.nuevoEstado = 'Ausente';
+      this.mostrarMotivo = true;
+
+      if (!this.nuevoMotivo.trim()) {
+        alert('Debe ingresar el motivo para el estado Ausente.');
+        return;
+      }
+      this.registrarAsistencia();
+      return;
+    }
+
+    if (this.esperandoMotivo) {
+      if (!this.nuevoMotivo.trim()) {
+        alert('Debe ingresar el motivo para el estado Tarde.');
+        return;
+      } else {
+        this.registrarAsistencia();
+        return;
+      }
+    }
+
+    this.registroAsistenciaService.evaluarHoraEntrada(this.nuevoEmpleadoId).subscribe(
+      (response) => {
+        this.nuevoEstado = response.estado as 'Presente' | 'Tarde';
+
+        if (this.nuevoEstado === 'Tarde') {
+          this.mostrarMotivo = true;
+          this.esperandoMotivo = true;
+          alert('Empleado llegó tarde: se requiere ingresar motivo antes de registrar.');
+        } else {
+          this.mostrarMotivo = false;
+          this.esperandoMotivo = false;
+          this.registrarAsistencia();
+        }
+      },
+      (error) => {
+        alert('Error al validar hora de entrada');
+        console.error(error);
+      }
+    );
   }
 
   registrarAsistencia(): void {
@@ -49,41 +102,44 @@ export class RegistroAsistenciaComponent implements OnInit {
       alert('Por favor, selecciona un empleado');
       return;
     }
-    if (this.mostrarMotivo && !this.nuevoMotivo.trim()) {
-      alert('Por favor, ingrese el motivo para el estado seleccionado.');
+
+    if ((this.nuevoEstado === 'Tarde' || this.nuevoEstado === 'Ausente') && !this.nuevoMotivo.trim()) {
+      alert('Debe ingresar el motivo para este estado.');
       return;
     }
 
     const ahora = new Date();
-
     const nuevoRegistro: NuevaAsistencia = {
-      empleado: {id: this.nuevoEmpleadoId},
+      empleado: { id: this.nuevoEmpleadoId },
       fecha: ahora.toISOString().slice(0, 10),
       horaEntrada: ahora.toTimeString().slice(0, 8),
-      estado: this.nuevoEstado,
       motivo: this.mostrarMotivo ? this.nuevoMotivo.trim() : null,
-      tipoRegistro: 'ENTRADA_1'
+      tipoRegistro: 'ENTRADA_1',
+      estado: this.nuevoEstado!
     };
 
     this.registroAsistenciaService.registrarAsistenciaManual(nuevoRegistro).subscribe(
-      () => {
+      (respuesta) => {
         alert('Asistencia registrada con éxito');
 
-        // Agregar asistencia a la lista local para mostrar en la tabla
+        const estadoFinal = respuesta?.data?.estado || nuevoRegistro.estado;
         const empleadoNombre = this.empleados.find(e => e.id === this.nuevoEmpleadoId)?.nombre || 'Desconocido';
+
         this.asistenciasSesion.push({
           nombre: empleadoNombre,
           fecha: nuevoRegistro.fecha,
           hora: nuevoRegistro.horaEntrada,
-          estado: nuevoRegistro.estado,
+          estado: estadoFinal!,
           motivo: nuevoRegistro.motivo || ''
         });
 
         // Resetear formulario
         this.nuevoEmpleadoId = null;
-        this.nuevoEstado = 'Presente';
+        this.nuevoEstado = null;
+        this.ausenteSeleccionado = false;
         this.nuevoMotivo = '';
         this.mostrarMotivo = false;
+        this.esperandoMotivo = false;
       },
       error => {
         alert('Error al registrar asistencia, intenta nuevamente');
@@ -92,7 +148,6 @@ export class RegistroAsistenciaComponent implements OnInit {
     );
   }
 
-  // Método para limpiar la tabla local (sin afectar la base de datos)
   limpiarTabla(): void {
     this.asistenciasSesion = [];
   }

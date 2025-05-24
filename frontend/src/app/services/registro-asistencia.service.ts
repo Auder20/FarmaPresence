@@ -7,7 +7,7 @@ export interface NuevaAsistencia {
   empleado: {id: number};
   fecha: string;
   horaEntrada: string;
-  estado: 'Presente' | 'Tarde' | 'Ausente';
+  estado?: 'Presente' | 'Tarde' | 'Ausente';
   motivo?: string | null;
   tipoRegistro: string;
 }
@@ -27,10 +27,12 @@ export interface Reporte {
 export class RegistroAsistenciaService {
   // URL para el registro manual en controlador asistenciaManual
 private urlRegistrarManual = 'http://localhost:8080/asistencia/manual/registrarIngreso';
+private urlEvaluarEntrada = 'http://localhost:8080/asistencia/manual/evaluar-hora-entrada';
 
   // URL para obtener registros y para la huella en controlador asistenciaHuella
   private urlRegistrosHuella = 'http://localhost:8080/asistenciaHuella/todas';
   private urlRegistrarHuella = 'http://localhost:8080/asistenciaHuella/entrada';
+
 
   constructor(private http: HttpClient) {}
 
@@ -48,4 +50,11 @@ private urlRegistrarManual = 'http://localhost:8080/asistencia/manual/registrarI
   registrarEntradaHuella(huella: string): Observable<any> {
     return this.http.post(`${this.urlRegistrarHuella}/${huella}`, null);
   }
+  // Metodo para evaluar la hora de entrada
+  evaluarHoraEntrada(empleadoId: number): Observable<{ estado: string, diferencia: string }> {
+  return this.http.get<{ estado: string, diferencia: string }>(
+    `${this.urlEvaluarEntrada}/${empleadoId}`
+  );
+}
+
 }
