@@ -17,7 +17,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // Método para enviar correo simple (sin adjuntos)
+    // 1. Enviar mensaje simple (texto plano)
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -26,11 +26,10 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    // Método para enviar correo con archivo adjunto
+    // 2. Enviar mensaje con archivo adjunto
     public void sendMessageWithAttachment(String to, String subject, String text, File file) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
-
-        MimeMessageHelper helper = new MimeMessageHelper(message, true); // true para multipart
+        MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart
 
         helper.setTo(to);
         helper.setSubject(subject);
@@ -40,6 +39,19 @@ public class EmailService {
             FileSystemResource fileResource = new FileSystemResource(file);
             helper.addAttachment(file.getName(), fileResource);
         }
+
+        mailSender.send(message);
+    }
+
+    // ✅ 3. Enviar mensaje HTML para recuperación de contraseña
+    public void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(htmlBody, true); // true = es HTML
+        helper.setFrom("audergonzalez1@gmail.com"); // Reemplaza por tu correo configurado en properties
 
         mailSender.send(message);
     }

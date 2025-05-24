@@ -94,17 +94,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
 
     this.sendingRecovery = true;
-    this.loginService.sendRecoveryLink(this.recoveryEmail).subscribe({
-      next: () => {
-        this.validationMessage = 'Enlace de recuperación enviado a su correo.';
-        this.sendingRecovery = false;
-        setTimeout(() => this.closeRecoveryModal(), 3000);
-      },
-      error: () => {
-        this.validationMessage = 'Error al enviar el enlace, intente más tarde.';
-        this.sendingRecovery = false;
-      }
-    });
+   this.loginService.forgotPassword(this.recoveryEmail).subscribe(
+  response => {
+    alert('Correo de recuperación enviado');
+  },
+  error => {
+    console.error(error);
+    alert('Hubo un error al intentar enviar el correo');
+  }
+);
+
   }
 
   logout(): void {

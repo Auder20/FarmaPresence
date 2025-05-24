@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'editar-perfil/:id', component: EditarPerfilComponent, canActivate: [AuthGuard] },
   { path: 'agregar-usuario', component: AgregarUsuarioComponent, canActivate: [AuthGuard] },
   { path: 'registro-asistencia', component: RegistroAsistenciaComponent, canActivate: [AuthGuard] },
-  { path: 'reset-password', component: ResetPasswordComponent, canActivate: [AuthGuard] },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'turno-programado', component: TurnoProgramadoComponent, canActivate: [AuthGuard] },
 
   // Ruta pública para login

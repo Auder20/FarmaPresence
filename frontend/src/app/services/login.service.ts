@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 export class LoginService {
 
   private API_SERVER = "http://localhost:8080/usuario";
+  private API_SERVER_AUTH = "http://localhost:8080/auth";
 
   // Claves para localStorage
   private usuarioidKey = 'usuarioid';
@@ -209,12 +210,15 @@ export class LoginService {
 
   // >>> NUEVA LÓGICA AÑADIDA >>>
 
-  sendRecoveryLink(email: string): Observable<any> {
-    const body = { correosElectronicos: [email] };
-    return this.httpClient.post(`${this.API_SERVER}/forgot-password`, body);
-  }
+forgotPassword(email: string): Observable<any> {
+  const data = { email: email };  // 👈 el backend espera 'email', no 'correosElectronicos'
+  return this.httpClient.post(`${this.API_SERVER_AUTH}/forgot-password`, data) // 👈 asegúrate del endpoint correcto
+}
 
-  resetPassword(token: string, password: string): Observable<any> {
-    return this.httpClient.post(`${this.API_SERVER}/reset-password?token=${token}`, { password });
-  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+  const data = {token: token, newPassword: newPassword };
+  return this.httpClient.post(`${this.API_SERVER_AUTH}/reset-password`, data);
+}
+
 }
