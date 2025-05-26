@@ -25,7 +25,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let turno of turnos">
-        <td>{{ turno.empleado?.nombre || 'Sin asignar' }}</td>
+        <td>{{ turno.empleado.nombre || 'Sin asignar' }}</td>
         <td>{{ turno.fecha }}</td>
         <td>{{ turno.horaInicio }}</td>
         <td>{{ turno.horaFin }}</td>
