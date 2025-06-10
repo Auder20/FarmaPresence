@@ -12,6 +12,9 @@ export class RegistroEmpleadosService {
   private apiUrlRegsitrarEmpeleado = 'http://localhost:8080/empleado/registrar'; // Cambia la URL al endpoint correcto de tu backend
   private apiUrlHorarios = 'http://localhost:8080/horarios'; // URL para horarios
   private apiUrlAsistencia = 'http://localhost:8080/asistencia'; // URL para asistencia
+  private apiUrlRegistrarhuella = 'https://prueba-ylpz.onrender.com/empleado/registrarHuella';
+  private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistencia/huella/entrada';
+
 
   constructor(private http: HttpClient) {}
 
@@ -42,4 +45,13 @@ export class RegistroEmpleadosService {
   getReporteComparativoGrafica(mes: number, anio: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrlAsistencia}/reporteComparativo/grafica?mes=${mes}&anio=${anio}`);
   }
+  updateHuella(huella: string, empleado: any): Observable<any> {
+  const url = `${this.apiUrlRegistrarhuella}/${huella}`;
+  const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  return this.http.post(url, empleado, { headers });
+}
+registrarEntradaHuella(huella: string): Observable<any> {
+  return this.http.post(`${this.urlRegistrarHuella}/${huella}`, null);
+}
+
 }

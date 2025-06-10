@@ -148,5 +148,23 @@ public class Asistencia_Model {
             return "Salida puntual";
         }
     }
+// Calcula la diferencia entre dos horas dadas para entradas
+public String calcularDiferenciaTiempoEntrada(LocalTime horaEsperada, LocalTime horaReal) {
+    if (horaEsperada == null || horaReal == null) {
+        return "Hora no disponible";
+    }
+
+    long diferenciaMinutos = ChronoUnit.MINUTES.between(horaEsperada, horaReal);
+
+    if (diferenciaMinutos < 0) {
+        return "Temprano por " + Math.abs(diferenciaMinutos) + " minutos";
+    } else if (diferenciaMinutos == 0) {
+        return "Exacto a la hora";
+    } else if (diferenciaMinutos <= 5) {
+        return "Tarde (tolerancia) por " + diferenciaMinutos + " minutos";
+    } else {
+        return "Tarde por " + diferenciaMinutos + " minutos";
+    }
+}
 
 }

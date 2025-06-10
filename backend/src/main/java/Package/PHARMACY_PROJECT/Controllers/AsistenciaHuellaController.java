@@ -55,14 +55,14 @@ public class AsistenciaHuellaController {
         LocalDate fechaActual = now.toLocalDate();
         LocalTime horaEntradaActual = now.toLocalTime();
 
-        logger.info(String.valueOf(LocalTime.now()));
+        logger.info(String.valueOf(horaEntradaActual));
 
         Optional<Asistencia_Model> asistencia1Optional = asistenciaServices.findByEmpleadoAndFechaAndTipoRegistro(empleado, fechaActual, "ENTRADA_1");
         if (!asistencia1Optional.isPresent()) {
             String estadoEntrada1 = calcularEstadoEntrada(empleado, horaEntradaActual, 1);
             Asistencia_Model asistencia1 = new Asistencia_Model(empleado, fechaActual, horaEntradaActual, estadoEntrada1, "ENTRADA_1");
 
-            String diferenciaEntrada1 = asistencia1.calcularDiferenciaTiempoEntrada(empleado.getHorario().getHoraInicio1(), null);
+            String diferenciaEntrada1 = asistencia1.calcularDiferenciaTiempoEntrada(empleado.getHorario().getHoraInicio1(), horaEntradaActual);
             asistencia1.setDiferenciaTiempoEntrada(diferenciaEntrada1);
 
             asistenciaServices.save(asistencia1);
@@ -88,7 +88,7 @@ public class AsistenciaHuellaController {
                 String estadoEntrada2 = calcularEstadoEntrada(empleado, horaEntradaActual, 2);
                 Asistencia_Model asistencia2 = new Asistencia_Model(empleado, fechaActual, horaEntradaActual, estadoEntrada2, "ENTRADA_2");
 
-                String diferenciaEntrada2 = asistencia2.calcularDiferenciaTiempoEntrada(empleado.getHorario().getHoraInicio2(), null);
+                String diferenciaEntrada2 = asistencia2.calcularDiferenciaTiempoEntrada(empleado.getHorario().getHoraInicio2(), horaEntradaActual);
                 asistencia2.setDiferenciaTiempoEntrada(diferenciaEntrada2);
 
                 asistenciaServices.save(asistencia2);

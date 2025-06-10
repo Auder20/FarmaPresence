@@ -31,7 +31,7 @@ private urlEvaluarEntrada = 'http://localhost:8080/asistencia/manual/evaluar-hor
 
   // URL para obtener registros y para la huella en controlador asistenciaHuella
   private urlRegistrosHuella = 'http://localhost:8080/asistenciaHuella/todas';
-  private urlRegistrarHuella = 'http://localhost:8080/asistenciaHuella/entrada';
+  private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistenciaHuella/entrada';
 
 
   constructor(private http: HttpClient) {}
