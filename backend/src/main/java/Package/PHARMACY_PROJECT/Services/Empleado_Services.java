@@ -1,6 +1,6 @@
 package Package.PHARMACY_PROJECT.Services;
+
 import Package.PHARMACY_PROJECT.Models.Empleado_Model;
-import Package.PHARMACY_PROJECT.Models.Horario_Model;
 import Package.PHARMACY_PROJECT.Repository.Empleado_Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,93 +23,91 @@ public class Empleado_Services {
     public List<Empleado_Model> getAllEmpleados() {
         return empleadoRepository.findAll();
     }
-    // Método para guardar o actualizar un empleado
+
+    // Guardar o actualizar un empleado
     public Empleado_Model save(Empleado_Model empleado) {
         return empleadoRepository.save(empleado);
     }
 
-    // Método para obtener un horario por su id
+    // Buscar por ID
     public Optional<Empleado_Model> getEmpleadoById(Long id) {
         return empleadoRepository.findById(id);
     }
 
-    // Método para buscar un empleado por huella dactilar
+    // Buscar por huella dactilar
     public Optional<Empleado_Model> findByHuellaDactilar(String huellaDactilar) {
         return empleadoRepository.findByHuellaDactilar(huellaDactilar);
     }
-    // Método para obtener todas las huellas dactilares de todos los empleados
+
+    // Buscar por huella dactilar incluyendo el horario (requiere query personalizada en el repositorio)
+    public Optional<Empleado_Model> findByHuellaDactilarWithHorario(String huellaDactilar) {
+        return empleadoRepository.findByHuellaDactilarWithHorario(huellaDactilar);
+    }
+
+    // Obtener todas las huellas dactilares
     public List<String> getAllHuellas() {
         return empleadoRepository.findAll()
                 .stream()
-                .map(Empleado_Model::getHuellaDactilar) // Obtén solo la huella dactilar
+                .map(Empleado_Model::getHuellaDactilar)
                 .collect(Collectors.toList());
     }
 
-    // Método para guardar un empleado con la huella dactilar
+    // Guardar solo una huella dactilar (⚠️ cuidado con duplicados)
     public Empleado_Model saveHuella(Empleado_Model empleado) {
-        // Guardar solo la huella dactilar
         Empleado_Model nuevoEmpleado = new Empleado_Model();
         nuevoEmpleado.setHuellaDactilar(empleado.getHuellaDactilar());
-        // Guarda en la base de datos
         return empleadoRepository.save(nuevoEmpleado);
     }
-    // Método para obtener la huella dactilar de un empleado por su ID
+
+    // Obtener huella por ID
     public String getHuellaById(Long id) {
         Empleado_Model empleado = empleadoRepository.findById(id).orElse(null);
-        if (empleado != null) {
-            return empleado.getHuellaDactilar(); // devuelve la huella almacenada
-        }
-        return null;
+        return empleado != null ? empleado.getHuellaDactilar() : null;
     }
 
+    // Obtener todos los empleados
     public List<Empleado_Model> findAll() {
         return empleadoRepository.findAll();
     }
 
+    // Eliminar por ID
     public void deleteById(Long id) {
         empleadoRepository.deleteById(id);
     }
 
+    // Buscar por identificación
     public Optional<Empleado_Model> findByIdentificacion(String identificacion) {
         return empleadoRepository.findByIdentificacion(identificacion);
     }
 
-    // Método para eliminar un empleado por identificación
+    // Eliminar por identificación
     public boolean deleteByIdentificacion(String identificacion) {
         Optional<Empleado_Model> empleado = empleadoRepository.findByIdentificacion(identificacion);
         if (empleado.isPresent()) {
             empleadoRepository.delete(empleado.get());
             return true;
         }
-        return false;  // Retorna false si no se encuentra el empleado
+        return false;
     }
 
-    // Método para eliminar todos los empleados
+    // Eliminar todos y resetear auto-incremento
     @Transactional
     public void deleteAll() {
         empleadoRepository.deleteAll();
         empleadoRepository.resetAutoIncrement();
-
     }
 
+    // Obtener huellas sin identificación
     public List<String> getHuellasSinIdentificacion() {
-        // Buscar todos los empleados donde el campo 'identificacion' sea null o esté vacío
         List<Empleado_Model> empleadosSinIdentificacion = empleadoRepository.findByIdentificacionIsNullOrIdentificacion("");
-
-        // Extraer solo las huellas de esos empleados
-        List<String> huellas = empleadosSinIdentificacion.stream()
+        return empleadosSinIdentificacion.stream()
                 .map(Empleado_Model::getHuellaDactilar)
                 .collect(Collectors.toList());
-        return huellas;
     }
-    // Método para obtener el nombre del empleado según la identificación
-    public Optional<String> getNombreByIdentificacion(String identificacion) {
-        // Buscar el empleado por identificación
-        Optional<Empleado_Model> empleadoOpt = empleadoRepository.findByIdentificacion(identificacion);
 
-        // Si existe, devolver su nombre, de lo contrario, devolver un Optional vacío
+    // Obtener nombre por identificación
+    public Optional<String> getNombreByIdentificacion(String identificacion) {
+        Optional<Empleado_Model> empleadoOpt = empleadoRepository.findByIdentificacion(identificacion);
         return empleadoOpt.map(Empleado_Model::getNombre);
     }
-
 }
-

@@ -20,4 +20,8 @@ public interface Empleado_Repository extends JpaRepository<Empleado_Model, Long>
     @Transactional
     @Query(value = "ALTER TABLE empleados AUTO_INCREMENT = 1", nativeQuery = true)
     void resetAutoIncrement();
+
+    @Query("SELECT e FROM Empleado_Model e JOIN FETCH e.horario WHERE e.huellaDactilar = :huellaDactilar")
+Optional<Empleado_Model> findByHuellaDactilarWithHorario(String huellaDactilar);
 }
+

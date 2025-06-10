@@ -35,7 +35,7 @@ public class AsistenciaHuellaController {
     // Método para registrar entrada usando huella
     @PostMapping("/entrada/{huella}")
     public ResponseEntity<Response<Asistencia_Model>> registrarEntrada(@PathVariable String huella) {
-        Optional<Empleado_Model> empleadoOptional = empleadoServices.findByHuellaDactilar(huella);
+        Optional<Empleado_Model> empleadoOptional = empleadoServices.findByHuellaDactilarWithHorario(huella);
 
         if (!empleadoOptional.isPresent()) {
             logger.error("Empleado no encontrado para la huella: " + huella);
