@@ -8,10 +8,10 @@ import { HttpHeaders } from '@angular/common/http';
 })
 export class RegistroEmpleadosService {
 
-  private apiUrl = 'http://localhost:8080/empleado'; // Ajusta la URL según sea necesario
-  private apiUrlRegsitrarEmpeleado = 'http://localhost:8080/empleado/registrar'; // Cambia la URL al endpoint correcto de tu backend
-  private apiUrlHorarios = 'http://localhost:8080/horarios'; // URL para horarios
-  private apiUrlAsistencia = 'http://localhost:8080/asistencia'; // URL para asistencia
+  private apiUrl = 'https://prueba-ylpz.onrender.com/empleado'; // Ajusta la URL según sea necesario
+  private apiUrlRegsitrarEmpeleado = 'https://prueba-ylpz.onrender.com/empleado/registrar'; // Cambia la URL al endpoint correcto de tu backend
+  private apiUrlHorarios = 'https://prueba-ylpz.onrender.com/horarios'; // URL para horarios
+  private apiUrlAsistencia = 'https://prueba-ylpz.onrender.com/asistencia'; // URL para asistencia
   private apiUrlRegistrarhuella = 'https://prueba-ylpz.onrender.com/empleado/registrarHuella';
   private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistencia/huella/entrada';
 

@@ -26,11 +26,11 @@ export interface Reporte {
 })
 export class RegistroAsistenciaService {
   // URL para el registro manual en controlador asistenciaManual
-private urlRegistrarManual = 'http://localhost:8080/asistencia/manual/registrarIngreso';
-private urlEvaluarEntrada = 'http://localhost:8080/asistencia/manual/evaluar-hora-entrada';
+private urlRegistrarManual = 'https://prueba-ylpz.onrender.com/asistencia/manual/registrarIngreso';
+private urlEvaluarEntrada = 'https://prueba-ylpz.onrender.com/asistencia/manual/evaluar-hora-entrada';
 
   // URL para obtener registros y para la huella en controlador asistenciaHuella
-  private urlRegistrosHuella = 'http://localhost:8080/asistenciaHuella/todas';
+  private urlRegistrosHuella = 'https://prueba-ylpz.onrender.com/asistenciaHuella/todas';
   private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistenciaHuella/entrada';
 
 

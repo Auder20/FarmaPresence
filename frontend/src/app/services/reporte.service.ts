@@ -24,7 +24,7 @@ export interface Reporte {
   providedIn: 'root'
 })
 export class ReporteService {
-  private baseUrl = 'http://localhost:8080'; // Cambia si tu API está en otro host/puerto
+  private baseUrl = 'https://prueba-ylpz.onrender.com'; // Cambia si tu API está en otro host/puerto
 
   constructor(private http: HttpClient) {}
 

@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
 })
 export class LoginService {
 
-  private API_SERVER = "http://localhost:8080/usuario";
-  private API_SERVER_AUTH = "http://localhost:8080/auth";
+  private API_SERVER = "https://prueba-ylpz.onrender.com/usuario";
+  private API_SERVER_AUTH = "https://prueba-ylpz.onrender.com/auth";
 
   // Claves para localStorage
   private usuarioidKey = 'usuarioid';
@@ -200,7 +200,7 @@ export class LoginService {
   }
 
   updateStudentInfo(studentId: number, studentData: any): Observable<any> {
-    return this.httpClient.put<any>(`http://localhost:8080/estudiante/${studentId}`, studentData).pipe(
+    return this.httpClient.put<any>(`https://prueba-ylpz.onrender.com/estudiante/${studentId}`, studentData).pipe(
       catchError(error => {
         console.error('Error updating student info', error);
         return throwError(error);

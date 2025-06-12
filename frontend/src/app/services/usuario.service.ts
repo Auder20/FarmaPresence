@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = 'http://localhost:8080/usuario';
+  private apiUrl = 'https://prueba-ylpz.onrender.com/usuario';
 
   private httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })

@@ -28,7 +28,7 @@ export interface Horario {
   providedIn: 'root'
 })
 export class TurnoProgramadoService {
-  private baseUrl = 'http://localhost:8080/turnoProgramado';
+  private baseUrl = 'https://prueba-ylpz.onrender.com/turnoProgramado';
 
   constructor(private http: HttpClient) {}
 
