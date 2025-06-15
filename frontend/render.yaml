@@ -3,7 +3,7 @@ services:
     name: pharmacy-project-frontend
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npx http-server dist/pharmacy-project -p 10000
+    startCommand: npx http-server dist/pharmacy-project -p 10000 --spa
     envVars:
       - key: NODE_VERSION
         value: 18
