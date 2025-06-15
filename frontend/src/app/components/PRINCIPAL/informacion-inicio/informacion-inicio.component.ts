@@ -8,6 +8,7 @@ import { LoginService } from '../../../services/login.service';
   templateUrl: './informacion-inicio.component.html',
   styleUrls: ['./informacion-inicio.component.css']
 })
+
 export class InformacionInicioComponent implements OnInit, OnDestroy {
   usuarioAutenticado: boolean = false;
   private authSubscription?: Subscription;
