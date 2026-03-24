@@ -79,7 +79,7 @@ public class Usuario_Controller {
 
 
    @PostMapping
-public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario_Model usuario) {
+public ResponseEntity<Response<UsuarioDTO>> saveUsuarios(@RequestBody Usuario_Model usuario) {
     // Log para verificar que teléfono llega
     logger.info("Telefono recibido: {}", usuario.getTelefono());
 
@@ -128,7 +128,8 @@ public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario
          usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
         Usuario_Model usuarioNuevo = usersServices.save(usuario);
-        Response<Usuario_Model> response = new Response<>("200", "Usuario creado satisfactoriamente", usuarioNuevo, "USUARIO_INSERT_OK");
+        UsuarioDTO dto = convertToDTO(usuarioNuevo);
+        Response<UsuarioDTO> response = new Response<>("200", "Usuario creado satisfactoriamente", dto, "USUARIO_INSERT_OK");
         return ResponseEntity.created(new URI("/usuario/" + usuarioNuevo.getId())).body(response);
 
     } catch (DataIntegrityViolationException e) {
@@ -171,9 +172,9 @@ public ResponseEntity<Response<Usuario_Model>> saveUsuarios(@RequestBody Usuario
     }
 
    @PutMapping("/{id}")
-public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
+public ResponseEntity<Response<UsuarioDTO>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
     if (id == null) {
-        Response<Usuario_Model> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
+        Response<UsuarioDTO> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
         return ResponseEntity.badRequest().body(response);
     }
 
@@ -196,11 +197,11 @@ public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @Re
         existingUser.setRol(newUser.getRol());
 
         Usuario_Model updatedUser = usersServices.save(existingUser);
-
-        Response<Usuario_Model> response = new Response<>("200", "Usuario actualizado satisfactoriamente", updatedUser, "USUARIO_UPDATE_OK");
+        UsuarioDTO dto = convertToDTO(updatedUser);
+        Response<UsuarioDTO> response = new Response<>("200", "Usuario actualizado satisfactoriamente", dto, "USUARIO_UPDATE_OK");
         return ResponseEntity.ok(response);
     } else {
-        Response<Usuario_Model> response = new Response<>("404", "Usuario no encontrado con ID: " + id, null, "USER_NOT_FOUND");
+        Response<UsuarioDTO> response = new Response<>("404", "Usuario no encontrado con ID: " + id, null, "USER_NOT_FOUND");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 }

@@ -33,3 +33,10 @@ build/
 .vscode/
 
 target/
+
+# Development configuration (keep local secrets out of repo)
+application-dev.properties
+
+# Configuración con credenciales locales
+src/main/resources/application-dev.properties
+src/main/resources/application.properties

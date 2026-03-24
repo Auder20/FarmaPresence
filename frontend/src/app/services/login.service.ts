@@ -92,9 +92,10 @@ export class LoginService {
           this.changeFormVisibility(true);
 
           const responseData = response.data;
-          const userId = responseData.id;
-          const userName = responseData.nombreCompleto ?? '';
-          const token = responseData.token;
+          const usuario = responseData.usuario;   // El DTO anidado
+          const token = responseData.token;       // El JWT
+          const userId = usuario?.id;
+          const userName = usuario?.nombreCompleto ?? '';
 
           // Guardar token JWT
           if (token) {
