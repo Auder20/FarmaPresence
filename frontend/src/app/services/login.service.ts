@@ -4,21 +4,22 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private API_SERVER = "https://prueba-ylpz.onrender.com/usuario";
-  private API_SERVER_AUTH = "https://prueba-ylpz.onrender.com/auth";
+  private API_SERVER = environment.apiUrl + "/usuario";
+  private API_SERVER_AUTH = environment.apiUrl + "/auth";
 
   // Claves para localStorage
   private usuarioidKey = 'usuarioid';
   private usernameKey = 'username';
-  private estudianteidKey = 'estudianteid';
   private rememberMeKey = 'rememberMe';
   private isLoggedInKey = 'isLoggedIn';
+  private tokenKey = 'jwtToken';
 
   private isLoggedIn: boolean = localStorage.getItem(this.isLoggedInKey) === 'true';
 
@@ -45,9 +46,6 @@ export class LoginService {
   private formVisibleKey = 'formVisible';
   private formVisibility = new BehaviorSubject<boolean>(localStorage.getItem(this.formVisibleKey) === 'true');
   currentFormVisibility = this.formVisibility.asObservable();
-
-  private studentInfoSubject = new BehaviorSubject<any>(null);
-  studentInfo$ = this.studentInfoSubject.asObservable();
 
   constructor(private httpClient: HttpClient, private router: Router, private authService: AuthService) {
     const mostrarFormulario = localStorage.getItem('mostrarFormulario');
@@ -93,8 +91,15 @@ export class LoginService {
           this.unlockButtons();
           this.changeFormVisibility(true);
 
-          const userId = response.data.id;
-          const userName = response.data.nombreCompleto ?? '';
+          const responseData = response.data;
+          const userId = responseData.id;
+          const userName = responseData.nombreCompleto ?? '';
+          const token = responseData.token;
+
+          // Guardar token JWT
+          if (token) {
+            this.authService.setToken(token);
+          }
 
           localStorage.setItem(this.usernameKey, userName);
           this.usernameSubject.next(userName);
@@ -105,9 +110,7 @@ export class LoginService {
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
           this.getStudentInfo(userId).subscribe(estudiante => {
-            if (estudiante?.data?.id) {
-              localStorage.setItem(this.estudianteidKey, estudiante.data.id.toString());
-            }
+            // Student info handling removed - not applicable to pharmacy system
           });
 
           this.authService.notifyLogin();
@@ -126,13 +129,11 @@ export class LoginService {
 
   logout(): void {
     this.isLoggedIn = false;
-    localStorage.removeItem(this.isLoggedInKey);
-    localStorage.removeItem('autenticado');
+    this.authService.logout(); // Use auth service to clear token and login state
     localStorage.removeItem(this.usuarioidKey);
     localStorage.removeItem(this.usernameKey);
     this.usernameSubject.next(null);
     this.usuarioidSubject.next(null);
-    localStorage.removeItem(this.estudianteidKey);
     localStorage.removeItem(this.rememberMeKey);
 
     this.autenticadoSubject.next(false);
@@ -189,30 +190,11 @@ export class LoginService {
     localStorage.setItem(this.formVisibleKey, isVisible.toString());
   }
 
-  getStudentInfo(userId: string): Observable<any> {
-    return this.httpClient.get<any>(`${this.API_SERVER}/${userId}`).pipe(
-      tap(info => this.studentInfoSubject.next(info)),
-      catchError(error => {
-        console.error('Error fetching student info', error);
-        return of(null);
-      })
-    );
-  }
-
-  updateStudentInfo(studentId: number, studentData: any): Observable<any> {
-    return this.httpClient.put<any>(`https://prueba-ylpz.onrender.com/estudiante/${studentId}`, studentData).pipe(
-      catchError(error => {
-        console.error('Error updating student info', error);
-        return throwError(error);
-      })
-    );
-  }
-
   // >>> NUEVA LÓGICA AÑADIDA >>>
 
-forgotPassword(email: string): Observable<any> {
-  const data = { email: email };  // 👈 el backend espera 'email', no 'correosElectronicos'
-  return this.httpClient.post(`${this.API_SERVER_AUTH}/forgot-password`, data) // 👈 asegúrate del endpoint correcto
+  forgotPassword(email: string): Observable<any> {
+  const data = { correosElectronicos: email };  
+  return this.httpClient.post(`${this.API_SERVER_AUTH}/forgot-password`, data) 
 }
 
 

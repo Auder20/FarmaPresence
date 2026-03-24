@@ -16,8 +16,8 @@ public class MailConfigs {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("appasistenciabiometrica@gmail.com");
-        mailSender.setPassword("iljlhinlvwkbnynv"); // Usa password de aplicación, no la normal
+        mailSender.setUsername(System.getenv("MAIL_USER"));
+        mailSender.setPassword(System.getenv("MAIL_PASS"));
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

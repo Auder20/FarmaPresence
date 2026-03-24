@@ -3,9 +3,8 @@ package Package.PHARMACY_PROJECT.Services;
 import Package.PHARMACY_PROJECT.Models.Empleado_Model;
 import Package.PHARMACY_PROJECT.Response;
 import com.fazecast.jSerialComm.SerialPort;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +12,15 @@ import java.util.Set;
 @Service
 public class SerialReaderService {
 
-    private static final String ARDUINO_PORT = "COM8";
-    private static final String BACKEND_URL_HUELLA = "http://localhost:8080/empleado/registrarHuella";
-    private static final String BACKEND_URL_ASISTENCIA = "http://localhost:8080/asistencia/entrada/";
+    private static final String ARDUINO_PORT = System.getenv().getOrDefault("ARDUINO_PORT", "COM8");
     private SerialPort port;
-    private final RestTemplate restTemplate = new RestTemplate();
     private Set<String> processedFingerprints = new HashSet<>(); // Para evitar duplicados
+
+    @Autowired
+    private Empleado_Services empleadoServices;
+
+    @Autowired
+    private Asistencia_Services asistenciaServices;
 
     public void startSerialCommunication() {
         try {
@@ -175,14 +177,18 @@ public class SerialReaderService {
 
     private void sendFingerprintToAsistencia(String id) {
         try {
-            String asistenciaUrl = BACKEND_URL_ASISTENCIA + id;
-            System.out.println("Enviando ID de huella dactilar a la URL de asistencia: " + asistenciaUrl);
-            restTemplate.postForObject(asistenciaUrl, null, Void.class);
-            System.out.println("Envío a URL de asistencia exitoso.");
-        } catch (HttpClientErrorException e) {
-            System.err.println("Error del backend al enviar a asistencia (HTTP error): " + e.getResponseBodyAsString());
+            System.out.println("Registrando asistencia para ID de huella dactilar: " + id);
+            
+            // Llamada directa al servicio de asistencia
+            Response<?> response = asistenciaServices.registrarEntrada(id);
+            
+            if (response != null) {
+                System.out.println("Respuesta del servicio de asistencia: " + response.getMessage());
+            } else {
+                System.err.println("Error: No se recibió respuesta del servicio de asistencia.");
+            }
         } catch (Exception e) {
-            System.err.println("Error al enviar la huella al URL de asistencia: " + e.getMessage());
+            System.err.println("Error al registrar asistencia: " + e.getMessage());
         }
     }
 
@@ -191,20 +197,18 @@ public class SerialReaderService {
             Empleado_Model empleado = new Empleado_Model();
             empleado.setHuellaDactilar(huellaDactilar);
 
-            System.out.println("Enviando huella dactilar al backend: " + huellaDactilar);
-            Response<Empleado_Model> response = restTemplate.postForObject(BACKEND_URL_HUELLA, empleado, Response.class);
+            System.out.println("Registrando huella dactilar: " + huellaDactilar);
+            
+            // Llamada directa al servicio de empleado
+            Response<Empleado_Model> response = empleadoServices.registrarHuella(empleado);
 
             if (response != null) {
-                System.out.println("Respuesta del backend: " + response.getMessage());
+                System.out.println("Respuesta del servicio de empleado: " + response.getMessage());
             } else {
-                System.err.println("Error: No se recibió respuesta del backend.");
+                System.err.println("Error: No se recibió respuesta del servicio de empleado.");
             }
-        } catch (HttpClientErrorException.BadRequest e) {
-            System.err.println("Error del backend (BadRequest): " + e.getResponseBodyAsString());
-        } catch (HttpClientErrorException e) {
-            System.err.println("Error del backend (HTTP error): " + e.getResponseBodyAsString());
         } catch (Exception e) {
-            System.err.println("Error al enviar la huella al backend: " + e.getMessage());
+            System.err.println("Error al registrar huella dactilar: " + e.getMessage());
         }
     }
 

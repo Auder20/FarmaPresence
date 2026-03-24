@@ -1,25 +1,20 @@
 package Package.PHARMACY_PROJECT.Controllers;
 
 import Package.PHARMACY_PROJECT.Models.Usuario_Model;
+import Package.PHARMACY_PROJECT.DTOs.UsuarioDTO;
 import Package.PHARMACY_PROJECT.Response;
 import Package.PHARMACY_PROJECT.Services.Usuario_Services;
-import jakarta.mail.internet.MimeMessage;
+import Package.PHARMACY_PROJECT.Services.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -32,22 +27,25 @@ public class Usuario_Controller {
     private Usuario_Services usersServices;
 
     @Autowired
-    private JavaMailSender mailSender;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
 
 
 
     @GetMapping
-    public ResponseEntity<Response<List<Usuario_Model>>> getAllUsuarios() {
+    public ResponseEntity<Response<List<UsuarioDTO>>> getAllUsuarios() {
         List<Usuario_Model> usuarios = usersServices.findAll();
-        Response<List<Usuario_Model>> response = new Response<>("200", "Usuarios obtenidos satisfactoriamente", usuarios, "USUARIOS_GET_OK");
+        List<UsuarioDTO> dtos = usuarios.stream()
+                .map(this::convertToDTO)
+                .toList();
+        Response<List<UsuarioDTO>> response = new Response<>("200", "Usuarios obtenidos", dtos, "USUARIOS_GET_OK");
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response<Usuario_Model>> login(@RequestBody Usuario_Model loginRequest) {
+    public ResponseEntity<Response<Map<String, Object>>> login(@RequestBody Usuario_Model loginRequest) {
         Optional<Usuario_Model> usuario = Optional.empty();
 
         // Comprobamos si el "username" es un correo electrónico
@@ -59,17 +57,24 @@ public class Usuario_Controller {
             usuario = usersServices.findByUsername(loginRequest.getUsername());
         }
 
-        logger.info("Usuario encontrado: {}", usuario.orElse(null)); // Loguea el usuario (si está presente) o null
-        logger.info("¿Usuario y contraseña coinciden?: {}", usuario.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), usuario.get().getPassword()));
+        logger.info("Login intento para usuario: {}", loginRequest.getUsername());
 
         if (usuario.isPresent() && passwordEncoder.matches(loginRequest.getPassword(), usuario.get().getPassword())) {
-         Response<Usuario_Model> response = new Response<>("200", "Login exitoso", usuario.get(), "LOGIN_SUCCESS");
-         return ResponseEntity.ok(response);
-            } else {
-                    Response<Usuario_Model> response = new Response<>("401", "Usuario o contraseña incorrectos", null, "LOGIN_FAILURE");
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-                    }
-
+            // Generar JWT token
+            String token = jwtService.generateToken(usuario.get().getUsername());
+            
+            // Crear respuesta con DTO y token
+            UsuarioDTO userDTO = convertToDTO(usuario.get());
+            Map<String, Object> responseData = new HashMap<>();
+            responseData.put("usuario", userDTO);
+            responseData.put("token", token);
+            
+            Response<Map<String, Object>> response = new Response<>("200", "Login exitoso", responseData, "LOGIN_SUCCESS");
+            return ResponseEntity.ok(response);
+        } else {
+            Response<Map<String, Object>> response = new Response<>("401", "Usuario o contraseña incorrectos", null, "LOGIN_FAILURE");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
     }
 
 
@@ -200,170 +205,16 @@ public ResponseEntity<Response<Usuario_Model>> update(@PathVariable Long id, @Re
     }
 }
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<Response<List<String>>> forgotPassword(@RequestBody Map<String, Object> payload) {
-        // Obtener el correo electrónico desde el payload
-        String correoElectronico = (String) payload.get("correoElectronico");
-        List<String> errores = new ArrayList<>();
-
-        try {
-            // Validar que el correo electrónico no esté vacío
-            if (correoElectronico == null || correoElectronico.isEmpty()) {
-                errores.add("El correo electrónico no puede estar vacío.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "Correo electrónico vacío.", errores, "EMPTY_EMAIL"));
-            }
-
-            // Validar el formato del correo electrónico
-            if (!isValidEmail(correoElectronico)) {
-                errores.add(correoElectronico);
-                System.out.println("Error: El correo electrónico " + correoElectronico + " tiene un formato inválido.");
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new Response<>("400", "Correo electrónico con formato inválido.", errores, "INVALID_EMAIL_FORMAT"));
-            }
-
-            // Buscar al usuario por correo electrónico
-            Optional<Usuario_Model> usuario = usersServices.findByCorreoElectronico(correoElectronico);
-            if (usuario.isPresent()) {
-                Usuario_Model user = usuario.get();
-
-                // Generar un código de recuperación
-                String recoveryCode = generateRecoveryCode(); // Método que puedes implementar
-                user.setToken(recoveryCode); // Usamos el campo 'token' para almacenar el código
-                usersServices.save(user);
-
-                // Enviar el correo electrónico con el código de recuperación
-
-                // Enviar el correo electrónico con el código de recuperación
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(correoElectronico);
-                message.setSubject("Recuperación de Contraseña");
-                message.setText("Su código de recuperación es: " + recoveryCode + "\nPor favor ingréselo en la página de recuperación de contraseña.");
-
-                try {
-                    mailSender.send(message);
-                } catch (MailException e) {
-                    errores.add(correoElectronico);
-                    System.out.println("Error: Fallo al enviar el correo electrónico a " + correoElectronico + ". Detalle del error: " + e.getMessage() + ".");
-                    e.printStackTrace(); // Imprime el stack trace para obtener más detalles
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body(new Response<>("500", "Error al enviar el correo electrónico de recuperación.", errores, "MAIL_SENDING_ERROR"));
-                }
-
-                // Respuesta exitosa
-                return ResponseEntity.ok(new Response<>("200", "Código de recuperación enviado al correo electrónico.", null, "RECOVERY_CODE_SENT"));
-            } else {
-                errores.add(correoElectronico);
-                System.out.println("Error: No se encontró un usuario con el correo electrónico " + correoElectronico + ".");
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new Response<>("404", "No se encontró un usuario con el correo electrónico proporcionado.", errores, "USER_NOT_FOUND"));
-            }
-        } catch (Exception e) {
-            errores.add("Ocurrió un error inesperado: " + e.getMessage());
-            System.out.println("Error: Excepción inesperada al procesar la solicitud de recuperación de contraseña. Detalle del error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new Response<>("500", "Error al procesar la solicitud de recuperación de contraseña.", errores, "INTERNAL_ERROR"));
-        }
-    }
-
-
-    public String generateRecoveryCode() {
-        // Generar un código de 6 dígitos
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000); // Genera un número aleatorio entre 100000 y 999999
-        return String.valueOf(code);
-    }
-
-
-
-    private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
-
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<Response<String>> resetPassword(@RequestParam String recoveryCode, @RequestParam String newPassword) {
-        Optional<Usuario_Model> userOptional = usersServices.findByToken(recoveryCode);
-
-        if (userOptional.isPresent()) {
-            Usuario_Model user = userOptional.get();
-            // Verificar el código de recuperación
-            if (user.getToken().equals(recoveryCode)) {
-                user.setPassword(newPassword); // Actualiza la contraseña
-                user.setToken(null); // Elimina el código de recuperación después de usarlo
-                usersServices.save(user);
-                return ResponseEntity.ok(new Response<>("200", "Contraseña restablecida correctamente", null, "PASSWORD_RESET_SUCCESS"));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>("400", "Código de recuperación incorrecto", null, "INVALID_RECOVERY_CODE"));
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND"));
-        }
-    }
-
-    @PostMapping("/validate-recovery-code")
-    public ResponseEntity<Response<String>> validateRecoveryCode(@RequestBody Map<String, String> payload) {
-        String code = payload.get("code");
-        boolean isValid = verifyCode(code);
-
-        if (isValid) {
-            return ResponseEntity.ok(new Response<>("200", "Código válido. Puede restablecer su contraseña.", null, "CODE_VALID"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>("400", "Código inválido.", null, "INVALID_CODE"));
-        }
-    }
-
-    private boolean verifyCode(String code) {
-        // Busca el código en la base de datos
-        Optional<Usuario_Model> user = usersServices.findByToken(code);
-
-        // Si el usuario con el código existe y el token no ha expirado, es válido
-        if (user.isPresent()) {
-            return true;
-        }
-
-        return false; // El código no es válido
-    }
-
-    private String generateRecoveryToken() {
-        return UUID.randomUUID().toString();
-    }
-
-
-   @PutMapping("/update-password")
-public ResponseEntity<Response<String>> updatePassword(@RequestBody Map<String, String> payload) {
-    String recoveryCode = payload.get("recoveryCode");
-    String newPassword = payload.get("newPassword");
-
-    Optional<Usuario_Model> userOptional = usersServices.findByToken(recoveryCode);
-
-    if (userOptional.isPresent()) {
-        Usuario_Model user = userOptional.get();
-        if (user.getToken().equals(recoveryCode)) {
-            user.setPassword(passwordEncoder.encode(newPassword)); // <-- codificar aquí
-            user.setToken(null);
-            usersServices.save(user);
-            return ResponseEntity.ok(new Response<>("200", "Contraseña actualizada correctamente", null, "PASSWORD_UPDATED_SUCCESS"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response<>("400", "Código de recuperación incorrecto", null, "INVALID_RECOVERY_CODE"));
-        }
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND"));
-    }
-}
-
     @GetMapping("/{id}")
-    public ResponseEntity<Response<Usuario_Model>> getUsuarioById(@PathVariable Long id) {
+    public ResponseEntity<Response<UsuarioDTO>> getUsuarioById(@PathVariable Long id) {
         Optional<Usuario_Model> usuario = usersServices.findById(id);
 
         if (usuario.isPresent()) {
-            Response<Usuario_Model> response = new Response<>("200", "Usuario encontrado", usuario.get(), "USER_FOUND");
+            UsuarioDTO usuarioDTO = convertToDTO(usuario.get());
+            Response<UsuarioDTO> response = new Response<>("200", "Usuario encontrado", usuarioDTO, "USER_FOUND");
             return ResponseEntity.ok(response);
         } else {
-            Response<Usuario_Model> response = new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND");
+            Response<UsuarioDTO> response = new Response<>("404", "Usuario no encontrado", null, "USER_NOT_FOUND");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
@@ -417,8 +268,6 @@ public ResponseEntity<Response<String>> changePassword(
 
         // Validar que la contraseña actual coincida con la guardada (hash)
         if (!passwordEncoder.matches(contrasenaActual, user.getPassword())) {
-            logger.info("Contraseña en base: {}", user.getPassword());
-            logger.info("Contraseña recibida: {}", contrasenaActual);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new Response<>("401", "La contraseña actual es incorrecta", null, "INVALID_CURRENT_PASSWORD"));
         }
@@ -434,5 +283,16 @@ public ResponseEntity<Response<String>> changePassword(
     }
 }
 
+    // Helper method to convert Usuario_Model to UsuarioDTO
+    private UsuarioDTO convertToDTO(Usuario_Model usuario) {
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setId(usuario.getId());
+        dto.setUsername(usuario.getUsername());
+        dto.setNombreCompleto(usuario.getNombreCompleto());
+        dto.setCorreoElectronico(usuario.getCorreoElectronico());
+        dto.setTelefono(usuario.getTelefono());
+        dto.setRol(usuario.getRol());
+        return dto;
+    }
 
 }

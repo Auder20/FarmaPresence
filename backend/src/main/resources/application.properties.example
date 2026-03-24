@@ -1,0 +1,45 @@
+# Spring Profile Configuration
+# Set to 'dev' for local development, 'prod' for production
+# In production, set SPRING_PROFILE=prod environment variable
+spring.profiles.active=dev
+
+# Development Profile Configuration (application-dev.properties)
+# Copy this section to application-dev.properties for local development
+# Database Configuration - Development
+spring.datasource.url=jdbc:mysql://localhost:3306/pharmacy_project
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-that-should-be-at-least-256-bits-long
+
+# JPA Configuration - Development
+spring.jpa.show-sql=true
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQLDialect
+
+# Hikari Connection Pool Configuration
+spring.datasource.hikari.maximum-pool-size=3
+spring.datasource.hikari.minimum-idle=1
+spring.datasource.hikari.idle-timeout=10000
+spring.datasource.hikari.max-lifetime=1800000
+spring.datasource.hikari.connection-timeout=20000
+
+# Production Profile Configuration (application-prod.properties)
+# Environment variables for production deployment
+# DB_URL - Production database URL
+# DB_USER - Production database username  
+# DB_PASS - Production database password
+# JWT_SECRET - Production JWT secret key
+# FRONTEND_URL - Production frontend URL
+# ARDUINO_PORT - Arduino serial port for SerialReaderService
+
+# Production settings (automatically applied when SPRING_PROFILE=prod):
+# spring.datasource.url=${DB_URL}
+# spring.datasource.username=${DB_USER}
+# spring.datasource.password=${DB_PASS}
+# spring.jpa.show-sql=false
+# spring.jpa.generate-ddl=false
+# spring.jpa.hibernate.ddl-auto=validate

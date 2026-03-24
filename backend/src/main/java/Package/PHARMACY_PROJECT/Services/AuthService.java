@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,15 +37,18 @@ public class AuthService {
         // Limpiar cualquier token anterior
         for (Usuario_Model u : usuarios) {
             u.setToken(null);
+            u.setTokenExpiracion(null);
         }
 
         Usuario_Model usuario = usuarios.get(0); // Tomar uno (el primero)
         String token = UUID.randomUUID().toString();
         usuario.setToken(token);
+        usuario.setTokenExpiracion(LocalDateTime.now().plusMinutes(30));
 
         usuarioRepository.saveAll(usuarios);
 
-        String resetLink = "http://localhost:4200/reset-password?token=" + token;
+        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "http://localhost:4200");
+        String resetLink = frontendUrl + "/reset-password?token=" + token;
 
         String mensajeHtml = "<html><body>" +
                 "<p>Hola <strong>" + usuario.getNombreCompleto() + "</strong>,</p>" +
@@ -70,8 +74,15 @@ public class AuthService {
         }
 
         Usuario_Model usuario = usuarios.get(0); // Usamos el primero
+        
+        // Validar expiración del token
+        if (usuario.getTokenExpiracion() == null || LocalDateTime.now().isAfter(usuario.getTokenExpiracion())) {
+            throw new Exception("El enlace de recuperación ha expirado. Solicita uno nuevo.");
+        }
+        
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuario.setToken(null); // Elimina token usado
+        usuario.setTokenExpiracion(null); // Elimina expiración
 
         usuarioRepository.save(usuario);
 
@@ -79,6 +90,7 @@ public class AuthService {
         for (int i = 1; i < usuarios.size(); i++) {
             Usuario_Model extra = usuarios.get(i);
             extra.setToken(null);
+            extra.setTokenExpiracion(null);
             usuarioRepository.save(extra);
         }
     }

@@ -3,13 +3,13 @@ package Package.PHARMACY_PROJECT.Models;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "usuario")
 @Getter
 @Setter
 public class Usuario_Model {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)// esto es para que el id se encrementre
@@ -21,6 +21,9 @@ public class Usuario_Model {
     private String rol; //ADMIN o usuario
     private String token;
     private String telefono;
+    
+    @Column(name = "token_expiracion")
+    private LocalDateTime tokenExpiracion;
 
     // Constructor vacío
     public Usuario_Model() {
