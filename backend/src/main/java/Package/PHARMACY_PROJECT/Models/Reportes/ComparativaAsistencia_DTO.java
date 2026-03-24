@@ -30,7 +30,39 @@ public class ComparativaAsistencia_DTO {
     public void incrementarTardanzas() {
         this.tardanzas++;
     }
-        // Getters y Setters
+
+    // Getters y setters manuales para asegurar compatibilidad
+    public Long getEmpleadoId() {
+        return empleadoId;
     }
+
+    public void setEmpleadoId(Long empleadoId) {
+        this.empleadoId = empleadoId;
+    }
+
+    public String getEmpleadoNombre() {
+        return empleadoNombre;
+    }
+
+    public void setEmpleadoNombre(String empleadoNombre) {
+        this.empleadoNombre = empleadoNombre;
+    }
+
+    public int getTardanzas() {
+        return tardanzas;
+    }
+
+    public void setTardanzas(int tardanzas) {
+        this.tardanzas = tardanzas;
+    }
+
+    public int getPuntualidades() {
+        return puntualidades;
+    }
+
+    public void setPuntualidades(int puntualidades) {
+        this.puntualidades = puntualidades;
+    }
+}
 
 

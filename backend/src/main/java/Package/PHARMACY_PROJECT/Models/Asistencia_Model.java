@@ -46,28 +46,6 @@ public class Asistencia_Model {
         this.tipoRegistro = tipoRegistro;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public String getDiferenciaTiempoEntrada() {
-        if (empleado != null && empleado.getHorario() != null && horaEntrada != null) {
-            LocalTime horaEsperada = tipoRegistro.equals("ENTRADA_1") ?
-                    empleado.getHorario().getHoraInicio1() :
-                    empleado.getHorario().getHoraInicio2();
-            return calcularDiferenciaTiempoEntrada(horaEsperada, horaEntrada);
-        }
-        return null;
-    }
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public String getDiferenciaTiempoSalida() {
-        if (empleado != null && empleado.getHorario() != null && horaSalida != null) {
-            LocalTime horaEsperada = tipoRegistro.equals("SALIDA_1") ?
-                    empleado.getHorario().getHoraFin1() :
-                    empleado.getHorario().getHoraFin2();
-            return calcularDiferenciaTiempoSalida(horaEsperada, horaSalida);
-        }
-        return null;
-    }
-
     // ✅ Estos métodos son NECESARIOS para que compile
     public String calcularDiferenciaTiempoEntrada(LocalTime horaEsperada, LocalTime horaReal) {
         long minutos = ChronoUnit.MINUTES.between(horaEsperada, horaReal);
@@ -83,5 +61,78 @@ public class Asistencia_Model {
         long minutosRestantes = Math.abs(minutos) % 60;
         String signo = (minutos < 0) ? "-" : "+";
         return signo + String.format("%02d:%02d", horas, minutosRestantes);
+    }
+
+    // Getters y setters manuales para asegurar compatibilidad
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Empleado_Model getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado_Model empleado) {
+        this.empleado = empleado;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public LocalTime getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public void setHoraEntrada(LocalTime horaEntrada) {
+        this.horaEntrada = horaEntrada;
+    }
+
+    public LocalTime getHoraSalida() {
+        return horaSalida;
+    }
+
+    public void setHoraSalida(LocalTime horaSalida) {
+        this.horaSalida = horaSalida;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getTipoRegistro() {
+        return tipoRegistro;
+    }
+
+    public void setTipoRegistro(String tipoRegistro) {
+        this.tipoRegistro = tipoRegistro;
+    }
+
+    public String getDiferenciaTiempoEntrada() {
+        return diferenciaTiempoEntrada;
+    }
+
+    public void setDiferenciaTiempoEntrada(String diferenciaTiempoEntrada) {
+        this.diferenciaTiempoEntrada = diferenciaTiempoEntrada;
+    }
+
+    public String getDiferenciaTiempoSalida() {
+        return diferenciaTiempoSalida;
+    }
+
+    public void setDiferenciaTiempoSalida(String diferenciaTiempoSalida) {
+        this.diferenciaTiempoSalida = diferenciaTiempoSalida;
     }
 }

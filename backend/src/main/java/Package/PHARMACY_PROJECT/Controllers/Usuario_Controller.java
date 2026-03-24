@@ -5,6 +5,7 @@ import Package.PHARMACY_PROJECT.DTOs.UsuarioDTO;
 import Package.PHARMACY_PROJECT.Response;
 import Package.PHARMACY_PROJECT.Services.Usuario_Services;
 import Package.PHARMACY_PROJECT.Services.JwtService;
+import Package.PHARMACY_PROJECT.Services.RateLimiterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 
@@ -211,9 +214,15 @@ public ResponseEntity<Response<UsuarioDTO>> update(@PathVariable Long id, @Reque
 
         // Solo actualiza la contraseña si NO viene vacía ni nula
          if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+            try {
                 validarFortalezaContrasena(newUser.getPassword());
                 existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            } catch (Exception e) {
+                logger.error("Error de validación de contraseña: {}", e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new Response<>("400", e.getMessage(), null, "WEAK_PASSWORD"));
             }
+        }
 
 
         existingUser.setNombreCompleto(newUser.getNombreCompleto());
@@ -358,4 +367,14 @@ public ResponseEntity<Response<String>> changePassword(
         return request.getRemoteAddr();
     }
 
+    // Método estático para validar email
+    private static boolean isValidEmail(String email) {
+        if (email == null || email.isEmpty()) {
+            return false;
+        }
+        String emailRegex = "^[A-Za-z0-9+._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
 }

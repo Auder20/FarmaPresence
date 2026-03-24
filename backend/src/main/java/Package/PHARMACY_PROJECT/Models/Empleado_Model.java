@@ -69,4 +69,85 @@ public class Empleado_Model {
         return activo;
     }
 
+    // Getters y setters manuales para asegurar compatibilidad
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getIdentificacion() {
+        return identificacion;
+    }
+
+    public void setIdentificacion(String identificacion) {
+        this.identificacion = identificacion;
+    }
+
+    public LocalDate getFechaContratacion() {
+        return fechaContratacion;
+    }
+
+    public void setFechaContratacion(LocalDate fechaContratacion) {
+        this.fechaContratacion = fechaContratacion;
+    }
+
+    public Boolean getActivo() {
+        return activo;
+    }
+
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getHuellaDactilar() {
+        return huellaDactilar;
+    }
+
+    public void setHuellaDactilar(String huellaDactilar) {
+        this.huellaDactilar = huellaDactilar;
+    }
+
+    public Horario_Model getHorario() {
+        return horario;
+    }
+
+    public void setHorario(Horario_Model horario) {
+        this.horario = horario;
+    }
+
+    public TurnoProgramado_Model getTurnoProgramado() {
+        return turnoProgramado;
+    }
+
+    public void setTurnoProgramado(TurnoProgramado_Model turnoProgramado) {
+        this.turnoProgramado = turnoProgramado;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
 }

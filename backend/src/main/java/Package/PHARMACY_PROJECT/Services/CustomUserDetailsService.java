@@ -27,9 +27,10 @@ public class CustomUserDetailsService implements UserDetailsService {
             usuario = usuarioRepository.findByCorreoElectronico(username);
         }
 
-        Usuario_Model user = usuario.orElseThrow(() ->
-            new UsernameNotFoundException("Usuario no encontrado: " + username)
-        );
+        Usuario_Model user = (Usuario_Model) usuario.orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException("Usuario no encontrado: " + username);
+        }
 
         return new User(
             user.getUsername(),

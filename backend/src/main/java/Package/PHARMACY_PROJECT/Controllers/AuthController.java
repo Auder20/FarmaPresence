@@ -1,6 +1,8 @@
 package Package.PHARMACY_PROJECT.Controllers;
 
 import Package.PHARMACY_PROJECT.Services.AuthService;
+import Package.PHARMACY_PROJECT.Services.RateLimiterService;
+import Package.PHARMACY_PROJECT.DTOs.EmailRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +18,7 @@ public class AuthController {
     private AuthService authService;
 
     @Autowired
-    private Package.PHARMACY_PROJECT.Services.RateLimiterService rateLimiterService;
+    private RateLimiterService rateLimiterService;
 
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(

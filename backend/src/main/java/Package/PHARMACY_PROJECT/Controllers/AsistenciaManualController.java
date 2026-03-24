@@ -35,7 +35,7 @@ public class AsistenciaManualController {
     @GetMapping("/evaluar-hora-entrada/{empleadoId}")
     public ResponseEntity<Map<String, String>> evaluarHoraEntrada(@PathVariable Long empleadoId) {
         try {
-            Optional<Empleado_Model> empleadoOpt = empleadoServices.getEmpleadoById(empleadoId);
+            Optional<Empleado_Model> empleadoOpt = empleadoServices.findById(empleadoId);
 
             if (!empleadoOpt.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -91,7 +91,7 @@ public class AsistenciaManualController {
     public ResponseEntity<Response<Asistencia_Model>> registrarAsistencia(@RequestBody Asistencia_Model asistencia) {
         try {
             Long empleadoId = asistencia.getEmpleado().getId();
-            Optional<Empleado_Model> empleadoOpt = empleadoServices.getEmpleadoById(empleadoId);
+            Optional<Empleado_Model> empleadoOpt = empleadoServices.findById(empleadoId);
 
             if (!empleadoOpt.isPresent()) {
                 logger.error("Empleado no encontrado con ID: " + empleadoId);

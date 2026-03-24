@@ -8,6 +8,7 @@ import Package.PHARMACY_PROJECT.Models.Reportes.ReporteEmpleado_DTO;
 import Package.PHARMACY_PROJECT.Models.Reportes.ReporteMensual_DTO;
 
 import Package.PHARMACY_PROJECT.Repository.Asistencia_Repository;
+import Package.PHARMACY_PROJECT.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -520,6 +521,33 @@ public Asistencia_Model registrarAsistenciaConCalculo(Asistencia_Model asistenci
 
     // Guardar asistencia con los datos calculados
     return save(asistencia);
+}
+
+// Método para registrar entrada por ID de huella
+public Response<?> registrarEntrada(String id) {
+    try {
+        // Buscar al empleado por el ID
+        Empleado_Model empleado = null; // Aquí deberías buscar al empleado por ID
+        
+        if (empleado == null) {
+            return new Response<>("404", "Empleado no encontrado", null, "EMPLEADO_NOT_FOUND");
+        }
+        
+        // Crear registro de asistencia
+        Asistencia_Model asistencia = new Asistencia_Model(
+            empleado, 
+            LocalDate.now(), 
+            LocalTime.now(), 
+            "PRESENT", 
+            "ENTRADA_MANUAL"
+        );
+        
+        return new Response<>("200", "Asistencia registrada correctamente", save(asistencia), "ASISTENCIA_REGISTRADA");
+        
+    } catch (Exception e) {
+        logger.error("Error al registrar entrada: {}", e.getMessage());
+        return new Response<>("500", "Error al registrar asistencia", null, "ERROR_REGISTRO");
+    }
 }
 
 

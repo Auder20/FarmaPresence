@@ -2,6 +2,9 @@ package Package.PHARMACY_PROJECT.Services;
 
 import Package.PHARMACY_PROJECT.Models.Empleado_Model;
 import Package.PHARMACY_PROJECT.Repository.Empleado_Repository;
+import Package.PHARMACY_PROJECT.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class Empleado_Services {
 
+    private static final Logger logger = LoggerFactory.getLogger(Empleado_Services.class);
     private final Empleado_Repository empleadoRepository;
 
     @Autowired
@@ -30,7 +34,7 @@ public class Empleado_Services {
     }
 
     // Buscar por ID
-    public Optional<Empleado_Model> getEmpleadoById(Long id) {
+    public Optional<Empleado_Model> findById(Long id) {
         return empleadoRepository.findById(id);
     }
 
@@ -109,5 +113,29 @@ public class Empleado_Services {
     public Optional<String> getNombreByIdentificacion(String identificacion) {
         Optional<Empleado_Model> empleadoOpt = empleadoRepository.findByIdentificacion(identificacion);
         return empleadoOpt.map(Empleado_Model::getNombre);
+    }
+
+    // Método para registrar huella dactilar
+    public Response<Empleado_Model> registrarHuella(Empleado_Model empleado) {
+        try {
+            if (empleado == null || empleado.getHuellaDactilar() == null) {
+                return new Response<>("400", "Huella dactilar es requerida", null, "HUELLA_REQUERIDA");
+            }
+            
+            // Guardar huella en el empleado existente
+            Empleado_Model empleadoExistente = findById(empleado.getId()).orElse(null);
+            if (empleadoExistente == null) {
+                return new Response<>("404", "Empleado no encontrado", null, "EMPLEADO_NOT_FOUND");
+            }
+            
+            empleadoExistente.setHuellaDactilar(empleado.getHuellaDactilar());
+            Empleado_Model actualizado = save(empleadoExistente);
+            
+            return new Response<>("200", "Huella registrada correctamente", actualizado, "HUELLA_REGISTRADA");
+            
+        } catch (Exception e) {
+            logger.error("Error al registrar huella: {}", e.getMessage());
+            return new Response<>("500", "Error al registrar huella", null, "ERROR_REGISTRO_HUELLA");
+        }
     }
 }

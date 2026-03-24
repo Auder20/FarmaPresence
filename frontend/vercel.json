@@ -1,8 +1,4 @@
 {
-  "buildCommand": "cd frontend && npm run build",
-  "outputDirectory": "frontend/dist/pharmacy-project",
-  "installCommand": "cd frontend && npm install",
-  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)",
