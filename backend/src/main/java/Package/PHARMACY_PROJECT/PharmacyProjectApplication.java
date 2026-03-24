@@ -4,7 +4,9 @@ import Package.PHARMACY_PROJECT.Services.SerialReaderService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 
+@EnableMethodSecurity
 @SpringBootApplication
 public class PharmacyProjectApplication {	
 

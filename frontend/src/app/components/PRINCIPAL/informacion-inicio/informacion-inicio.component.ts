@@ -126,7 +126,6 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
       empleadoData
     ).subscribe(
       (response) => {
-        console.log('Empleado actualizado:', response);
         this.cerrarModal();
         this.consultarEmpleados();
       },

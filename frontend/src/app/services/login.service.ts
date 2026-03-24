@@ -194,7 +194,7 @@ export class LoginService {
   // >>> NUEVA LÓGICA AÑADIDA >>>
 
   forgotPassword(email: string): Observable<any> {
-  const data = { correosElectronicos: email };  
+  const data = { email: email };  
   return this.httpClient.post(`${this.API_SERVER_AUTH}/forgot-password`, data) 
 }
 

@@ -6,6 +6,7 @@ import Package.PHARMACY_PROJECT.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
@@ -21,6 +22,7 @@ public class Horario_Controller {
 
     // Endpoint para guardar un horario
     @PostMapping("/guardar")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Horario_Model>> saveHorario(@RequestBody Horario_Model horario) {
         try {
             Horario_Model savedHorario = horarioServices.saveHorario(horario);
@@ -65,6 +67,7 @@ public class Horario_Controller {
 
     // Endpoint para eliminar un horario por ID
     @DeleteMapping("/eliminar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Void>> deleteHorario(@PathVariable Long id) {
         try {
             horarioServices.deleteHorario(id);
@@ -91,6 +94,7 @@ public class Horario_Controller {
 
     // Endpoint para actualizar un horario por ID
     @PutMapping("/actualizar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Horario_Model>> updateHorario(@PathVariable Long id, @RequestBody Horario_Model horarioDetails) {
         try {
             // Buscar el horario existente por ID

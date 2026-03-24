@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   passwordFieldType: string = 'password';
 
   showError: boolean = false;
+  mensajeError: string = '';
 
   private authSubscription?: Subscription;
 
@@ -70,19 +71,28 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   login(): void {
+    this.mensajeError = ''; // Limpiar mensaje de error al inicio
     this.loginService.login(this.username, this.password, this.rememberMe).subscribe(
       success => {
         if (success) {
           this.showError = false;
+          this.mensajeError = '';
           window.alert('Inicio de sesión exitoso. ¡Bienvenido!');
           this.authService.notifyLogin();
           this.router.navigate(['/informacionInicio']);
         } else {
           this.showError = true;
+          this.mensajeError = 'Usuario o contraseña incorrectos.';
         }
       },
       error => {
-        window.alert('Hubo un problema con el inicio de sesión. Por favor, intente de nuevo más tarde.');
+        if (error.status === 429) {
+          this.mensajeError = 'Demasiados intentos fallidos. Por favor espera 1 minuto antes de intentarlo de nuevo.';
+          this.showError = true;
+        } else {
+          this.mensajeError = 'Hubo un problema con el inicio de sesión. Por favor, intente de nuevo más tarde.';
+          this.showError = true;
+        }
       }
     );
   }

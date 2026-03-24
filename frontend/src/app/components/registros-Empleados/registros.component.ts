@@ -53,13 +53,10 @@ export class RegistrosComponent implements OnInit {
         this.empleado.horario = undefined;
       }
 
-      console.log(this.empleado);
-      console.log(this.empleado.huellaDactilar);
 
       this.registroService.updateEmpleado(this.empleado.huellaDactilar, this.empleado)
         .subscribe(
           (response) => {
-            console.log('Empleado registrado:', response);
             alert(response.message || 'Empleado actualizado correctamente');
               // Vaciar el formulario después de éxito
           this.resetForm();
@@ -114,7 +111,6 @@ resetForm(): void {
     this.registroService.updateEmpleadoByIdentificacion(identificacion, this.empleado)
       .subscribe(
         (response) => {
-          console.log('Empleado actualizado:', response);
           alert(response.message || 'Empleado actualizado correctamente');
           this.resetForm();
         },

@@ -96,7 +96,6 @@ export class EditarPerfilComponent implements OnInit {
       password: passwordToSend
     };
 
-    console.log('Usuario actualizado que se enviará:', usuarioActualizado);
 
     this.usuarioService.updateUsuario(this.idusuario, usuarioActualizado).subscribe({
       next: () => {
@@ -121,8 +120,6 @@ export class EditarPerfilComponent implements OnInit {
     return;
   }
 
-  console.log('Contraseña actual enviada:', this.contrasenaActual);
-  console.log('Nueva contraseña enviada:', this.nuevaContrasena);
 
   this.usuarioService.updatePassword(this.idusuario!, {
     contrasenaActual: this.contrasenaActual,

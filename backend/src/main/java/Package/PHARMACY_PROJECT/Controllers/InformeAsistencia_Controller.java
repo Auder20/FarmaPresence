@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-@CrossOrigin(origins = "https://farmacia-proyecto-backend.onrender.com")
 @RestController
 @RequestMapping("/informe-asistencia")
 public class InformeAsistencia_Controller {

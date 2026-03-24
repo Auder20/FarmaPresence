@@ -42,8 +42,8 @@
           <label class="radio" for="remember">Stay Logged In</label>
         </div>
 
-        <div *ngIf="showError" class="error-message">
-          Usuario o contraseña incorrectos.
+        <div *ngIf="showError && mensajeError" class="error-message">
+          {{ mensajeError }}
         </div>
 
         <div class="button-group">

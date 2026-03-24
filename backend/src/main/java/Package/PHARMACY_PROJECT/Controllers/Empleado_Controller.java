@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -77,6 +78,7 @@ public class Empleado_Controller {
 
     // Método para guardar empleado solo con huella dactilar
     @PostMapping("/registrarHuella")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Empleado_Model>> saveEmpleadoHuella(@RequestBody Empleado_Model empleado) {
         try {
             // Verificar si la huella dactilar ya está registrada
@@ -122,6 +124,7 @@ public class Empleado_Controller {
     }
 
     @PostMapping("/registrar/{huella}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Empleado_Model>> updateEmpleado(
             @PathVariable String huella, @RequestBody Empleado_Model empleadoData) {
         try {
@@ -170,6 +173,7 @@ public class Empleado_Controller {
 
 
     @PutMapping("/actualizar/{identificacion}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Empleado_Model>> updateEmpleadoByIdentificacion(
 
             @PathVariable String identificacion, @RequestBody Empleado_Model empleadoData) {
@@ -286,6 +290,7 @@ if (empleadoData.getIdentificacion() != null
 
     // Método para eliminar un empleado por identificación
     @DeleteMapping("/eliminar/{identificacion}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Void>> deleteEmpleadoByIdentificacion(@PathVariable String identificacion) {
         try {
             boolean eliminado = empleadoServices.deleteByIdentificacion(identificacion);
@@ -307,6 +312,7 @@ if (empleadoData.getIdentificacion() != null
 
     // Método para eliminar todos los empleados
     @DeleteMapping("/eliminar/todos")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Void>> deleteAllEmpleados() {
         try {
             empleadoServices.deleteAll();

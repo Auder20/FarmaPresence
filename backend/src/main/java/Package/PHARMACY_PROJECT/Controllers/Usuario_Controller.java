@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -32,9 +33,13 @@ public class Usuario_Controller {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private RateLimiterService rateLimiterService;
+
 
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<List<UsuarioDTO>>> getAllUsuarios() {
         List<Usuario_Model> usuarios = usersServices.findAll();
         List<UsuarioDTO> dtos = usuarios.stream()
@@ -45,7 +50,23 @@ public class Usuario_Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Response<Map<String, Object>>> login(@RequestBody Usuario_Model loginRequest) {
+    public ResponseEntity<Response<Map<String, Object>>> login(
+            @RequestBody Usuario_Model loginRequest,
+            jakarta.servlet.http.HttpServletRequest request) {
+        
+        // Rate limiting - 5 intentos por IP por minuto
+        String clientIp = getClientIp(request);
+        if (!rateLimiterService.tryConsume(clientIp)) {
+            long tokensDisponibles = rateLimiterService.getAvailableTokens(clientIp);
+            Response<Map<String, Object>> response = new Response<>(
+                "429",
+                "Demasiados intentos de inicio de sesión. Por favor espera 1 minuto antes de intentarlo de nuevo.",
+                null,
+                "TOO_MANY_REQUESTS"
+            );
+            return ResponseEntity.status(429).body(response);
+        }
+        
         Optional<Usuario_Model> usuario = Optional.empty();
 
         // Comprobamos si el "username" es un correo electrónico
@@ -79,6 +100,7 @@ public class Usuario_Controller {
 
 
    @PostMapping
+   @PreAuthorize("hasRole('ADMIN')")
 public ResponseEntity<Response<UsuarioDTO>> saveUsuarios(@RequestBody Usuario_Model usuario) {
     // Log para verificar que teléfono llega
     logger.info("Telefono recibido: {}", usuario.getTelefono());
@@ -125,6 +147,7 @@ public ResponseEntity<Response<UsuarioDTO>> saveUsuarios(@RequestBody Usuario_Mo
                     .body(new Response<>("400", "El correo electrónico ya está en uso", null, "CORREO_DUPLICADO"));
         }
          // Encriptar la contraseña
+         validarFortalezaContrasena(usuario.getPassword());
          usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
 
         Usuario_Model usuarioNuevo = usersServices.save(usuario);
@@ -144,13 +167,13 @@ public ResponseEntity<Response<UsuarioDTO>> saveUsuarios(@RequestBody Usuario_Mo
 
 
     public boolean esCorreoValido(String correo) {
-        // Expresión regular para validar el formato del correo
-        String regexCorreo = "^[A-Za-z0-9+_.-]+@(.+)$";
+        String regexCorreo = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern = Pattern.compile(regexCorreo);
         return pattern.matcher(correo).matches();
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Response<Void>> deleteUsuario(@PathVariable Long id) {
         try {
             Optional<Usuario_Model> usuario = usersServices.findById(id);
@@ -172,6 +195,7 @@ public ResponseEntity<Response<UsuarioDTO>> saveUsuarios(@RequestBody Usuario_Mo
     }
 
    @PutMapping("/{id}")
+   @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public ResponseEntity<Response<UsuarioDTO>> update(@PathVariable Long id, @RequestBody Usuario_Model newUser) {
     if (id == null) {
         Response<UsuarioDTO> response = new Response<>("400", "El ID no puede ser nulo", null, "ID_NULL_ERROR");
@@ -187,6 +211,7 @@ public ResponseEntity<Response<UsuarioDTO>> update(@PathVariable Long id, @Reque
 
         // Solo actualiza la contraseña si NO viene vacía ni nula
          if (newUser.getPassword() != null && !newUser.getPassword().isEmpty()) {
+                validarFortalezaContrasena(newUser.getPassword());
                 existingUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
             }
 
@@ -230,6 +255,14 @@ public ResponseEntity<Response<String>> updatePasswordById(
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new Response<>("400", "La nueva contraseña no puede estar vacía", null, "EMPTY_PASSWORD"));
         }
+        
+        // Validar fortaleza de contraseña
+        try {
+            validarFortalezaContrasena(newPassword);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", e.getMessage(), null, "WEAK_PASSWORD"));
+        }
 
         Optional<Usuario_Model> userOptional = usersServices.findById(id);
 
@@ -272,6 +305,14 @@ public ResponseEntity<Response<String>> changePassword(
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new Response<>("401", "La contraseña actual es incorrecta", null, "INVALID_CURRENT_PASSWORD"));
         }
+        
+        // Validar fortaleza de nueva contraseña
+        try {
+            validarFortalezaContrasena(nuevaContrasena);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new Response<>("400", e.getMessage(), null, "WEAK_PASSWORD"));
+        }
 
         // Actualizar la contraseña cifrada
         user.setPassword(passwordEncoder.encode(nuevaContrasena));
@@ -294,6 +335,27 @@ public ResponseEntity<Response<String>> changePassword(
         dto.setTelefono(usuario.getTelefono());
         dto.setRol(usuario.getRol());
         return dto;
+    }
+    
+    private void validarFortalezaContrasena(String password) throws Exception {
+        if (password == null || password.length() < 8)
+            throw new Exception("La contraseña debe tener al menos 8 caracteres.");
+        if (!password.matches(".*[A-Z].*"))
+            throw new Exception("La contraseña debe contener al menos una letra mayúscula.");
+        if (!password.matches(".*\\d.*"))
+            throw new Exception("La contraseña debe contener al menos un número.");
+    }
+    
+    private String getClientIp(jakarta.servlet.http.HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        String xRealIp = request.getHeader("X-Real-IP");
+        if (xRealIp != null && !xRealIp.isEmpty()) {
+            return xRealIp;
+        }
+        return request.getRemoteAddr();
     }
 
 }

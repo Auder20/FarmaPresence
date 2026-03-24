@@ -80,6 +80,9 @@ public class AuthService {
             throw new Exception("El enlace de recuperación ha expirado. Solicita uno nuevo.");
         }
         
+        // Validar fortaleza de contraseña
+        validarFortalezaContrasena(nuevaPassword);
+        
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
         usuario.setToken(null); // Elimina token usado
         usuario.setTokenExpiracion(null); // Elimina expiración
@@ -93,5 +96,14 @@ public class AuthService {
             extra.setTokenExpiracion(null);
             usuarioRepository.save(extra);
         }
+    }
+    
+    private void validarFortalezaContrasena(String password) throws Exception {
+        if (password == null || password.length() < 8)
+            throw new Exception("La contraseña debe tener al menos 8 caracteres.");
+        if (!password.matches(".*[A-Z].*"))
+            throw new Exception("La contraseña debe contener al menos una letra mayúscula.");
+        if (!password.matches(".*\\d.*"))
+            throw new Exception("La contraseña debe contener al menos un número.");
     }
 }

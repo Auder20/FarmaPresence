@@ -3,6 +3,8 @@ package Package.PHARMACY_PROJECT.Services;
 import Package.PHARMACY_PROJECT.Models.Empleado_Model;
 import Package.PHARMACY_PROJECT.Response;
 import com.fazecast.jSerialComm.SerialPort;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.Set;
 @Service
 public class SerialReaderService {
 
+    private static final Logger log = 
+        org.slf4j.LoggerFactory.getLogger(SerialReaderService.class);
     private static final String ARDUINO_PORT = System.getenv().getOrDefault("ARDUINO_PORT", "COM8");
     private SerialPort port;
     private Set<String> processedFingerprints = new HashSet<>(); // Para evitar duplicados
@@ -27,15 +31,17 @@ public class SerialReaderService {
             port = configureSerialPort(ARDUINO_PORT);
 
             if (port == null || !port.openPort()) {
-                System.err.println("Error: No se pudo abrir el puerto " + ARDUINO_PORT);
+                log.warn("Puerto serial '{}' no disponible. El registro biométrico automático " +
+                         "estará desactivado. El sistema continuará funcionando con registro manual.", 
+                         ARDUINO_PORT);
                 return;
             }
 
-            System.out.println("Conectado al puerto serie: " + ARDUINO_PORT);
+            log.info("Conectado al puerto serie: {}", ARDUINO_PORT);
 
             new Thread(this::readSerialData).start();
         } catch (Exception e) {
-            System.err.println("Error al iniciar la comunicación serial: " + e.getMessage());
+            log.error("Error al iniciar la comunicación serial: {}", e.getMessage());
         }
     }
 
@@ -50,7 +56,7 @@ public class SerialReaderService {
     }
 
     private void readSerialData() {
-        System.out.println("Iniciando lectura de datos serial...");
+        log.info("Iniciando lectura de datos serial...");
 
         try (var inputStream = port.getInputStream()) {
             byte[] buffer = new byte[1024];
@@ -61,13 +67,13 @@ public class SerialReaderService {
                     bytesRead = inputStream.read(buffer);
                     if (bytesRead > 0) {
                         String data = new String(buffer, 0, bytesRead).trim();
-                        System.out.println("Dato recibido del Arduino: " + data);
+                        log.debug("Dato recibido del Arduino: {}", data);
 
                         // Filtrar mensajes no deseados antes de procesar
                         if (data.equalsIgnoreCase("Imagen capturada correctamente.") ||
                                 data.equalsIgnoreCase("Huella identificada exitosamente") ||
                                 data.contains("Intentando identificar huella")) {
-                            System.out.println("Mensaje intermedio ignorado: " + data);
+                            log.debug("Mensaje intermedio ignorado: {}", data);
                             continue;
                         }
 
@@ -79,116 +85,116 @@ public class SerialReaderService {
                 Thread.sleep(100); // Pequeña pausa
             }
         } catch (Exception e) {
-            System.err.println("Error durante la comunicación serial: " + e.getMessage());
+            log.error("Error durante la comunicación serial: {}", e.getMessage());
         } finally {
             closeSerialPort();
         }
     }
 
     private void processBufferedData(String data) {
-        System.out.println("Entrando a processBufferedData con el dato: " + data);
+        log.debug("Entrando a processBufferedData con el dato: {}", data);
 
         // Normalización: eliminar puntos y espacios innecesarios
         data = data.replaceAll("\\.+", "").trim();
-        System.out.println("Dato normalizado: " + data);
+        log.debug("Dato normalizado: {}", data);
 
         // Ignorar mensajes específicos que no se procesan
         if (data.equalsIgnoreCase("Imagen capturada correctamente") ||
                 data.equalsIgnoreCase("Huella identificada exitosamente") ||
                 data.contains("Intentando identificar huella")) {
-            System.out.println("Mensaje intermedio ignorado: " + data);
+            log.debug("Mensaje intermedio ignorado: {}", data);
             return; // Salir del método sin procesar
         }
 
         if (data.startsWith("Huella registrada exitosamente ID:")) {
-            System.out.println("Detectado inicio de registro de nueva huella.");
+            log.debug("Detectado inicio de registro de nueva huella.");
             handleRegistroHuella(data);
         } else if (data.startsWith("Huella identificada ID:")) {
-            System.out.println("Detectada identificación de huella.");
+            log.debug("Detectada identificación de huella.");
             handleHuellaIdentificada(data);
         } else {
-            System.out.println("Mensaje no reconocido: " + data);
+            log.debug("Mensaje no reconocido: {}", data);
         }
     }
 
     private void handleRegistroHuella(String data) {
-        System.out.println("Entrando a handleRegistroHuella con el dato: " + data);
+        log.debug("Entrando a handleRegistroHuella con el dato: {}", data);
         try {
             String fingerprintId = extractIdFromRegistroMessage(data);
-            System.out.println("ID extraído del mensaje de registro: " + fingerprintId);
+            log.debug("ID extraído del mensaje de registro: {}", fingerprintId);
             if (fingerprintId != null) {
-                System.out.println("Enviando ID al backend para registro.");
+                log.debug("Enviando ID al backend para registro.");
                 sendFingerprintToBackend(fingerprintId); // Enviar al endpoint de registro
             } else {
-                System.out.println("Advertencia: ID de registro no válido. Ignorando.");
+                log.warn("Advertencia: ID de registro no válido. Ignorando.");
             }
         } catch (Exception e) {
-            System.err.println("Error al manejar el registro de huella: " + e.getMessage());
+            log.error("Error al manejar el registro de huella: {}", e.getMessage());
         }
     }
 
     private String extractIdFromRegistroMessage(String data) {
-        System.out.println("Entrando a extractIdFromRegistroMessage con el dato: " + data);
+        log.debug("Entrando a extractIdFromRegistroMessage con el dato: {}", data);
         try {
             if (data.startsWith("Huella registrada exitosamente ID:")) {
                 String id = data.split(":")[1].trim();
-                System.out.println("ID extraído exitosamente: " + id);
+                log.debug("ID extraído exitosamente: {}", id);
                 return id; // Extraer el ID después de '#'
             }
-            System.out.println("El dato no contiene un ID válido para registro.");
+            log.debug("El dato no contiene un ID válido para registro.");
             return null;
         } catch (Exception e) {
-            System.err.println("Error al extraer ID de registro del mensaje: " + e.getMessage());
+            log.error("Error al extraer ID de registro del mensaje: {}", e.getMessage());
             return null;
         }
     }
 
     private String extractIdFromMessage(String data) {
-        System.out.println("Entrando a extractIdFromMessage con el dato: " + data);
+        log.debug("Entrando a extractIdFromMessage con el dato: {}", data);
         try {
             if (data.startsWith("Huella identificada ID:")) {
                 String id = data.split(":")[1].trim();
-                System.out.println("ID extraído exitosamente: " + id);
+                log.debug("ID extraído exitosamente: {}", id);
                 return id; // Extraer el ID después de los dos puntos
             }
-            System.out.println("El dato no contiene un ID válido para identificación.");
+            log.debug("El dato no contiene un ID válido para identificación.");
             return null;
         } catch (Exception e) {
-            System.err.println("Error al extraer ID de huella del mensaje: " + e.getMessage());
+            log.error("Error al extraer ID de huella del mensaje: {}", e.getMessage());
             return null;
         }
     }
 
     private void handleHuellaIdentificada(String data) {
-        System.out.println("Entrando a handleHuellaIdentificada con el dato: " + data);
+        log.debug("Entrando a handleHuellaIdentificada con el dato: {}", data);
         try {
             String fingerprintId = extractIdFromMessage(data);
-            System.out.println("ID extraído del mensaje de identificación: " + fingerprintId);
+            log.debug("ID extraído del mensaje de identificación: {}", fingerprintId);
             if (fingerprintId != null) {
-                System.out.println("Enviando ID al backend para asistencia.");
+                log.debug("Enviando ID al backend para asistencia.");
                 sendFingerprintToAsistencia(fingerprintId);
             } else {
-                System.out.println("Advertencia: ID duplicado o no válido detectado. Ignorando.");
+                log.warn("Advertencia: ID duplicado o no válido detectado. Ignorando.");
             }
         } catch (Exception e) {
-            System.err.println("Error al manejar huella identificada: " + e.getMessage());
+            log.error("Error al manejar huella identificada: {}", e.getMessage());
         }
     }
 
     private void sendFingerprintToAsistencia(String id) {
         try {
-            System.out.println("Registrando asistencia para ID de huella dactilar: " + id);
+            log.info("Registrando asistencia para ID de huella dactilar: {}", id);
             
             // Llamada directa al servicio de asistencia
             Response<?> response = asistenciaServices.registrarEntrada(id);
             
             if (response != null) {
-                System.out.println("Respuesta del servicio de asistencia: " + response.getMessage());
+                log.info("Respuesta del servicio de asistencia: {}", response.getMessage());
             } else {
-                System.err.println("Error: No se recibió respuesta del servicio de asistencia.");
+                log.error("Error: No se recibió respuesta del servicio de asistencia.");
             }
         } catch (Exception e) {
-            System.err.println("Error al registrar asistencia: " + e.getMessage());
+            log.error("Error al registrar asistencia: {}", e.getMessage());
         }
     }
 
@@ -197,25 +203,25 @@ public class SerialReaderService {
             Empleado_Model empleado = new Empleado_Model();
             empleado.setHuellaDactilar(huellaDactilar);
 
-            System.out.println("Registrando huella dactilar: " + huellaDactilar);
+            log.info("Registrando huella dactilar: {}", huellaDactilar);
             
             // Llamada directa al servicio de empleado
             Response<Empleado_Model> response = empleadoServices.registrarHuella(empleado);
 
             if (response != null) {
-                System.out.println("Respuesta del servicio de empleado: " + response.getMessage());
+                log.info("Respuesta del servicio de empleado: {}", response.getMessage());
             } else {
-                System.err.println("Error: No se recibió respuesta del servicio de empleado.");
+                log.error("Error: No se recibió respuesta del servicio de empleado.");
             }
         } catch (Exception e) {
-            System.err.println("Error al registrar huella dactilar: " + e.getMessage());
+            log.error("Error al registrar huella dactilar: {}", e.getMessage());
         }
     }
 
     private void closeSerialPort() {
         if (port != null && port.isOpen()) {
             port.closePort();
-            System.out.println("Puerto serial cerrado.");
+            log.info("Puerto serial cerrado.");
         }
     }
 

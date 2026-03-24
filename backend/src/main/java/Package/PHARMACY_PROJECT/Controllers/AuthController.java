@@ -15,8 +15,21 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private Package.PHARMACY_PROJECT.Services.RateLimiterService rateLimiterService;
+
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody @Valid EmailRequest request) {
+    public ResponseEntity<?> forgotPassword(
+            @RequestBody @Valid EmailRequest request,
+            jakarta.servlet.http.HttpServletRequest httpRequest) {
+        
+        // Rate limiting - 5 intentos por IP por minuto
+        String clientIp = getClientIp(httpRequest);
+        if (!rateLimiterService.tryConsume(clientIp)) {
+            return ResponseEntity.status(429)
+                .body("Demasiadas solicitudes. Por favor espera 1 minuto.");
+        }
+        
         try {
             authService.sendPasswordResetToken(request.getEmail());
             return ResponseEntity.ok("Correo de recuperación enviado");
@@ -56,5 +69,17 @@ public class AuthController {
 
         public String getNewPassword() { return newPassword; }
         public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
+    
+    private String getClientIp(jakarta.servlet.http.HttpServletRequest request) {
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+            return xForwardedFor.split(",")[0].trim();
+        }
+        String xRealIp = request.getHeader("X-Real-IP");
+        if (xRealIp != null && !xRealIp.isEmpty()) {
+            return xRealIp;
+        }
+        return request.getRemoteAddr();
     }
 }
