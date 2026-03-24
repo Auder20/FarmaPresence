@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (isAuth) {
         const userId = localStorage.getItem('usuarioid');
         if (userId) {
-          this.loginService.getStudentInfo(userId).subscribe(info => {
+          this.loginService.getUserInfo(userId).subscribe((info: any) => {
             this.studentInfo = info;
           });
         }

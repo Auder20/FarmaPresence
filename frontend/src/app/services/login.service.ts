@@ -32,6 +32,9 @@ export class LoginService {
   private usuarioidSubject = new BehaviorSubject<number | null>(this.getStoredUsuarioid());
   usuarioid$ = this.usuarioidSubject.asObservable();
 
+  private userInfoSubject = new BehaviorSubject<any>(null);
+  userInfo$ = this.userInfoSubject.asObservable();
+
   private mostrarFormularioSubject = new BehaviorSubject<boolean>(true);
   mostrarFormulario$ = this.mostrarFormularioSubject.asObservable();
 
@@ -65,7 +68,7 @@ export class LoginService {
     if (isLoggedIn) {
       const userId = this.getStoredUsuarioid();
       if (userId) {
-        this.getStudentInfo(userId.toString()).subscribe();
+        // User info is now available through userInfo$ observable
         this.changeFormVisibility(true);
       }
     }
@@ -110,8 +113,10 @@ export class LoginService {
 
           localStorage.setItem(this.rememberMeKey, rememberMe.toString());
 
-          this.getStudentInfo(userId).subscribe(estudiante => {
-            // Student info handling removed - not applicable to pharmacy system
+          this.userInfoSubject.next({
+            data: {
+              nombre: userName
+            }
           });
 
           this.authService.notifyLogin();
@@ -191,7 +196,14 @@ export class LoginService {
     localStorage.setItem(this.formVisibleKey, isVisible.toString());
   }
 
-  // >>> NUEVA LÓGICA AÑADIDA >>>
+  getUserInfo(userId: string): Observable<any> {
+    return this.httpClient.get<any>(`${this.API_SERVER}/${userId}`).pipe(
+      catchError(error => {
+        console.error('Error getting user info', error);
+        return of(null);
+      })
+    );
+  }
 
   forgotPassword(email: string): Observable<any> {
   const data = { email: email };  

@@ -42,7 +42,7 @@ export class InformacionInicioComponent implements OnInit, OnDestroy {
       this.usuarioAutenticado = isAuth;
     });
 
-    this.loginService.studentInfo$.subscribe(info => {
+    this.loginService.userInfo$.subscribe((info: any) => {
       if (info && info.data && info.data.nombre) {
         this.userName = info.data.nombre;
       }
