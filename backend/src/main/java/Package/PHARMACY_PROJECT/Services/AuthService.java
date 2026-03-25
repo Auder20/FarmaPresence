@@ -47,7 +47,7 @@ public class AuthService {
 
         usuarioRepository.saveAll(usuarios);
 
-        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "http://localhost:4200");
+        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "https://farma-presence.vercel.app/");
         String resetLink = frontendUrl + "/reset-password?token=" + token;
 
         String mensajeHtml = "<html><body>" +
