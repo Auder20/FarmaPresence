@@ -49,7 +49,8 @@ public class SecurityConfig {
                     org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
                     configuration.setAllowedOrigins(java.util.Arrays.asList(
                         "http://localhost:4200",
-                        "https://farma-presence.vercel.app"
+                        "https://farma-presence.vercel.app",
+                        "https://farmapresence.onrender.com"
                     ));
                     configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
@@ -60,9 +61,17 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/usuario/login", "/auth/**").permitAll()
+                // Endpoints públicos que no requieren autenticación
+                .requestMatchers("/usuario/login", "/usuario/health", "/auth/**", "/public/**", "/health", "/actuator/health").permitAll()
+                // Endpoints de desarrollo (si es necesario)
+                .requestMatchers("/h2-console/**", "/error").permitAll()
+                // Permitir acceso a recursos estáticos
+                .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                // Todos los demás endpoints requieren autenticación
                 .anyRequest().authenticated()
             )
+            // Deshabilitar frame options para H2 console (si se usa)
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.net.URI;
 import java.util.*;
@@ -24,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/usuario")
+@CrossOrigin(origins = {"http://localhost:4200", "https://farma-presence.vercel.app", "https://farmapresence.onrender.com"})
 public class Usuario_Controller {
     private static final Logger logger = LoggerFactory.getLogger(Usuario_Controller.class);
 
@@ -49,6 +51,15 @@ public class Usuario_Controller {
                 .map(this::convertToDTO)
                 .toList();
         Response<List<UsuarioDTO>> response = new Response<>("200", "Usuarios obtenidos", dtos, "USUARIOS_GET_OK");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/health")
+    public ResponseEntity<Map<String, String>> health() {
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "UP");
+        response.put("service", "FarmaPresence Backend");
+        response.put("timestamp", new Date().toString());
         return ResponseEntity.ok(response);
     }
 
