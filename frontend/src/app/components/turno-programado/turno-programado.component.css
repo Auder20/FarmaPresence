@@ -1,83 +1,115 @@
+/* Contenedor principal responsivo */
 .turnos-container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 30px 35px;
-  background: #ffffffdd;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(46, 101, 164, 0.18);
+  max-width: clamp(600px, 90vw, 700px);
+  margin: clamp(20px, 5vw, 40px) auto;
+  padding: clamp(20px, 4vw, 30px) clamp(20px, 5vw, 35px);
+  background: var(--light-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #003366;
+  color: var(--text-dark);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.turnos-container:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
 }
 
 .turnos-container h2 {
   font-weight: 900;
-  font-size: 2.1rem;
-  margin-bottom: 32px;
-  color: #2e65a4;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  margin-bottom: clamp(20px, 4vw, 32px);
+  color: var(--secondary-color);
   text-align: center;
+  line-height: 1.2;
 }
 
+/* Formulario de turnos responsivo */
 .turno-form {
   display: flex;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: clamp(10px, 2vw, 15px);
+  margin-bottom: clamp(20px, 4vw, 25px);
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  padding: clamp(15px, 3vw, 20px);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(5px);
 }
 
 .turno-form input[type="date"],
 .turno-form input[type="time"] {
-  padding: 9px 13px;
-  border-radius: 8px;
-  border: 1.5px solid #4caf50;
-  font-size: 1rem;
-  outline-color: #50e3c2;
-  transition: border-color 0.3s ease;
-  min-width: 140px;
+  padding: clamp(8px, 2vw, 9px) clamp(10px, 2.5vw, 13px);
+  border-radius: var(--border-radius);
+  border: 1.5px solid var(--success-color);
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  outline-color: var(--accent-color);
+  transition: var(--transition);
+  min-width: clamp(120px, 30vw, 140px);
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
 }
 
 .turno-form input:focus {
-  border-color: #31708f;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 8px rgba(46,101,164,0.3);
 }
 
 .turno-form button {
-  padding: 11px 32px;
-  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  padding: clamp(8px, 2vw, 11px) clamp(25px, 5vw, 32px);
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
   border: none;
   border-radius: 20px;
   color: white;
   font-weight: 700;
-  font-size: 1.12rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.12rem);
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition);
+  box-shadow: var(--shadow-light);
 }
 
 .turno-form button:hover {
-  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+  background: linear-gradient(45deg, var(--secondary-color), #38b8a1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Tabla de turnos responsiva */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
-  background: #f8fafb;
-  border-radius: 14px;
+  background: white;
+  border-radius: var(--border-radius);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(46, 101, 164, 0.08);
+  min-width: 500px;
 }
 
 th, td {
-  padding: 13px 14px;
+  padding: clamp(10px, 2vw, 13px) clamp(8px, 2vw, 14px);
   text-align: center;
-  font-size: 1.05rem;
+  font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+  vertical-align: middle;
 }
 
 th {
-  background: #2e65a4;
-  color: #fff;
+  background: var(--secondary-color);
+  color: white;
   font-weight: 800;
   letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 tr:nth-child(even) {
@@ -88,35 +120,245 @@ tr:nth-child(odd) {
   background: #ffffff;
 }
 
+tr:hover {
+  background-color: #d9f0f5;
+  transition: background-color 0.2s ease;
+}
+
 td button {
-  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
   border: none;
   color: white;
-  padding: 6px 18px;
+  padding: clamp(4px, 1vw, 6px) clamp(12px, 3vw, 18px);
   border-radius: 15px;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2vw, 1rem);
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition);
+  margin: 2px;
+  white-space: nowrap;
 }
 
 td button:hover {
-  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+  background: linear-gradient(45deg, var(--secondary-color), #38b8a1);
+  transform: translateY(-1px);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* Responsive para tablets */
+@media (max-width: 992px) {
   .turnos-container {
-    padding: 13px 5px;
-    max-width: 99vw;
+    margin: 30px auto;
+    padding: 25px 30px;
   }
+  
+  .turno-form {
+    padding: 15px;
+    gap: 12px;
+  }
+  
+  table {
+    font-size: 0.95rem;
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .turnos-container {
+    margin: 20px auto;
+    padding: 15px 20px;
+  }
+  
+  .turnos-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
   .turno-form {
     flex-direction: column;
-    gap: 11px;
+    gap: 12px;
     align-items: stretch;
+    padding: 15px;
   }
+
+  .turno-form input[type="date"],
+  .turno-form input[type="time"] {
+    min-width: 100%;
+  }
+  
+  .turno-form button {
+    min-width: 100%;
+  }
+  
   th, td {
-    font-size: 0.95rem;
-    padding: 10px 4px;
+    font-size: 0.9rem;
+    padding: 8px 6px;
   }
+  
+  td button {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+  .turnos-container {
+    margin: 15px auto;
+    padding: 12px 15px;
+  }
+  
+  .turnos-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  .turno-form {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .turno-form input[type="date"],
+  .turno-form input[type="time"] {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .turno-form button {
+    padding: 8px 20px;
+    font-size: 0.85rem;
+  }
+  
+  table {
+    font-size: 0.8rem;
+  }
+  
+  th, td {
+    font-size: 0.8rem;
+    padding: 6px 4px;
+  }
+  
+  td button {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) and (max-width: 768px) {
+  .turnos-container {
+    margin: 10px auto;
+    padding: 10px 15px;
+  }
+  
+  .turnos-container h2 {
+    margin-bottom: 15px;
+  }
+  
+  .turno-form {
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.turnos-container {
+  animation: fadeInUp 0.5s ease;
+}
+
+.turno-form {
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.table-responsive {
+  animation: fadeInUp 0.7s ease 0.2s both;
+}
+
+/* Scrollbar personalizado */
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--accent-color);
+  border-top: 2px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mensaje de no turnos */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--secondary-color);
+  font-weight: 600;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+}
+
+.empty-state::before {
+  content: '📅';
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+/* Estados especiales para turnos */
+.turno-activo {
+  background-color: rgba(76, 175, 80, 0.1) !important;
+  font-weight: 700;
+}
+
+.turno-pasado {
+  background-color: rgba(158, 158, 158, 0.1) !important;
+  color: #666;
+}
+
+.turno-futuro {
+  background-color: rgba(33, 150, 243, 0.1) !important;
+  color: var(--secondary-color);
 }

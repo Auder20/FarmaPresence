@@ -12,7 +12,7 @@ public class config implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:4200", // Para desarrollo local
-                        "https://farma-presence.vercel.app/" // Dominio desplegado en Vercel
+                        "https://farma-presence.vercel.app" // Dominio desplegado en Vercel (sin barra al final)
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
                 .allowedHeaders("*") // Permitir todos los encabezados

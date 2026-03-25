@@ -1,9 +1,9 @@
-/* --------- NUEVO HEADER --------- */
+/* --------- NUEVO HEADER RESPONSIVO --------- */
 .top-header {
-    background: linear-gradient(90deg, #3a9d9d, #2e65a4);
-    border-bottom: 4px solid #4caf50;
-    padding: 15px 30px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-bottom: 4px solid var(--success-color);
+    padding: clamp(12px, 3vw, 15px) clamp(20px, 4vw, 30px);
+    box-shadow: var(--shadow-light);
     position: sticky;
     top: 0;
     z-index: 1100;
@@ -13,17 +13,18 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 20px;
+    gap: clamp(12px, 3vw, 20px);
+    flex-wrap: wrap;
 }
 
 .logo .custom-icon {
-    width: 60px;
-    height: 60px;
+    width: clamp(40px, 10vw, 60px);
+    height: clamp(40px, 10vw, 60px);
     background-image: url('DROGSINFONDO.png');
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    transition: transform 0.3s ease;
+    transition: var(--transition);
     cursor: pointer;
 }
 
@@ -32,40 +33,42 @@
 }
 
 .title h5 {
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: clamp(10px, 3vw, 14px);
     font-weight: normal;
     margin: 0;
-    color: #e0f7f7;
+    color: var(--text-light);
     letter-spacing: 1.2px;
 }
 
 .title h2 {
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 32px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: clamp(20px, 5vw, 32px);
     font-weight: bold;
     margin: 0;
-    color: #e0f7f7;
+    color: var(--text-light);
     letter-spacing: 1.2px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    line-height: 1.1;
 }
 
-/* --------- NAVBAR --------- */
+/* --------- NAVBAR RESPONSIVA --------- */
 .navbar-custom {
-    background-color: #0047b3;
+    background-color: var(--secondary-color);
     color: white;
-    padding: 12px 30px;
+    padding: clamp(8px, 2vw, 12px) clamp(20px, 4vw, 30px);
     display: flex;
     justify-content: flex-start;
     align-items: center;
     border-bottom: none;
     flex-wrap: nowrap;
-    gap: 25px;
+    gap: clamp(15px, 3vw, 25px);
     overflow: visible !important;
     position: relative;
     z-index: 1000;
     scrollbar-width: thin;
-    scrollbar-color: #50e3c2 #0047b3;
+    scrollbar-color: var(--accent-color) var(--secondary-color);
+    min-height: 60px;
 }
 
 .navbar-custom::-webkit-scrollbar {
@@ -73,12 +76,12 @@
 }
 
 .navbar-custom::-webkit-scrollbar-thumb {
-    background-color: #50e3c2;
+    background-color: var(--accent-color);
     border-radius: 3px;
 }
 
 .navbar-custom::-webkit-scrollbar-track {
-    background-color: #0047b3;
+    background-color: var(--secondary-color);
 }
 
 .navbar-nav {
@@ -88,7 +91,7 @@
     margin: 0;
     list-style: none;
     width: auto;
-    gap: 20px;
+    gap: clamp(10px, 2vw, 20px);
 }
 
 .nav-item {
@@ -96,30 +99,34 @@
 }
 
 .nav-link {
- font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: block;
-    padding: 12px 20px;
+    padding: clamp(8px, 2vw, 12px) clamp(12px, 3vw, 20px);
     text-decoration: none;
     color: white;
     background: none;
     border-radius: 25px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    transition: var(--transition);
     white-space: nowrap;
     font-weight: 600;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
     box-shadow: inset 0 0 0 0 transparent;
+    text-align: center;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background-color: #50e3c2;
-    color: #0047b3;
-    box-shadow: 0 4px 12px rgba(80,227,194,0.7);
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
+    box-shadow: var(--shadow-light);
+    transform: translateY(-1px);
 }
 
-/* --------- USUARIO --------- */
+/* --------- USUARIO RESPONSIVO --------- */
 .user-menu {
     position: relative;
     z-index: 2000;
+    margin-left: auto;
 }
 
 .user-account {
@@ -133,145 +140,297 @@
     gap: 8px;
     padding: 8px 12px;
     border-radius: 20px;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
 }
 
 .user-account:hover {
-    background-color: #50e3c2;
-    color: #0047b3;
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
 }
 
 .user-icon {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 32px;
-    height: 32px;
-    background-color: #d32f2f;
+    width: clamp(24px, 6vw, 32px);
+    height: clamp(24px, 6vw, 32px);
+    background-color: var(--danger-color);
     border-radius: 50%;
     color: white;
-    font-size: 18px;
+    font-size: clamp(14px, 3.5vw, 18px);
     font-weight: 700;
-    line-height: 32px;
+    line-height: clamp(24px, 6vw, 32px);
 }
 
-/* Dropdown menu */
+/* Dropdown menu responsivo */
 .dropdown-menu {
     position: absolute;
     top: 100%;
-    left: 0;
-    background-color: #0047b3;
-    min-width: 180px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    right: 0;
+    background-color: var(--secondary-color);
+    min-width: clamp(150px, 40vw, 180px);
+    box-shadow: var(--shadow-medium);
     border-radius: 8px;
     padding: 0;
     margin: 0;
     list-style: none;
     overflow: visible;
     z-index: 3000;
-
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+    transition: var(--transition);
 }
 
 .dropdown-menu.show {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    transition-delay: 0s;
 }
 
 .dropdown-menu li a {
     color: white;
-    padding: 14px 20px;
+    padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 20px);
     text-decoration: none;
     display: block;
-     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    transition: var(--transition);
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
 }
 
 .dropdown-menu li a:hover {
-    background-color: #50e3c2;
-    color: #0047b3;
-}
-/* ----------- Responsive ---------- */
-
-/* Desktop: menú siempre visible */
-.navbar-nav {
-  display: flex !important;
-  flex-wrap: nowrap;
-  gap: 20px;
+    background-color: var(--accent-color);
+    color: var(--secondary-color);
 }
 
-/* Ocultar botón hamburguesa en desktop */
-.menu-toggle {
-  display: none;
+/* ----------- RESPONSIVE ----------- */
+
+/* Tablet */
+@media (max-width: 992px) {
+    .top-header {
+        padding: 12px 20px;
+    }
+    
+    .navbar-custom {
+        padding: 10px 20px;
+        gap: 15px;
+    }
+    
+    .nav-link {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
 }
 
 /* Móvil */
 @media (max-width: 768px) {
-  .menu-toggle {
-    display: flex;
-    position: absolute;
-    top: 15px;
-    right: 25px;
-    width: 35px;
-    height: 35px;
-    cursor: pointer;
-    flex-direction: column;
-    justify-content: space-around;
-    background: transparent;
-    border: none;
-    z-index: 4000;
-  }
+    .top-header {
+        padding: 10px 15px;
+    }
+    
+    .header-content {
+        gap: 12px;
+    }
+    
+    .title h2 {
+        font-size: 1.5rem;
+    }
+    
+    .navbar-custom {
+        padding: 8px 15px;
+        position: relative;
+    }
+    
+    .menu-toggle {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        width: clamp(30px, 7vw, 35px);
+        height: clamp(30px, 7vw, 35px);
+        cursor: pointer;
+        flex-direction: column;
+        justify-content: space-around;
+        background: transparent;
+        border: none;
+        z-index: 4000;
+    }
 
-  .menu-toggle span {
-    display: block;
-    width: 100%;
-    height: 4px;
-    background-color: white;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
+    .menu-toggle span {
+        display: block;
+        width: 100%;
+        height: clamp(3px, 1vw, 4px);
+        background-color: white;
+        border-radius: 4px;
+        transition: var(--transition);
+    }
 
-  .menu-toggle.active span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
-  }
+    .menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(6px, 6px);
+    }
 
-  .menu-toggle.active span:nth-child(2) {
-    opacity: 0;
-  }
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
 
-  .menu-toggle.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
-  }
+    .menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+    }
 
-  /* Menú oculto por defecto */
-  .navbar-nav {
-    display: none;
-    flex-direction: column;
-    background-color: #0047b3;
-    position: absolute;
-    top: 62px;
-    left: 0;
-    width: 100%;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    z-index: 3000;
-  }
+    .navbar-nav {
+        display: none;
+        flex-direction: column;
+        background-color: var(--secondary-color);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        border-radius: 0 0 8px 8px;
+        box-shadow: var(--shadow-medium);
+        z-index: 3000;
+        gap: 0;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
 
-  /* Mostrar menú si está abierto */
-  .navbar-nav.mobile-open {
-    display: flex !important;
-    /* Borde para testeo visual */
-    /* border: 3px solid yellow !important; */
-  }
+    .navbar-nav.mobile-open {
+        display: flex !important;
+        animation: slideDown 0.3s ease;
+    }
 
-  .nav-link {
-    white-space: normal;
-    padding: 15px 20px;
-  }
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .nav-link {
+        white-space: normal;
+        padding: 15px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+        background-color: var(--accent-color);
+        color: var(--secondary-color);
+    }
+
+    .user-menu {
+        position: static;
+        margin-left: 0;
+        margin-right: 60px;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: auto;
+        right: 15px;
+        min-width: 160px;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .top-header {
+        padding: 8px 10px;
+    }
+    
+    .header-content {
+        gap: 8px;
+    }
+    
+    .logo .custom-icon {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .title h5 {
+        font-size: 10px;
+    }
+    
+    .title h2 {
+        font-size: 1.2rem;
+    }
+    
+    .navbar-custom {
+        padding: 8px 10px;
+        min-height: 50px;
+    }
+    
+    .menu-toggle {
+        right: 10px;
+        width: 28px;
+        height: 28px;
+    }
+    
+    .nav-link {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+    }
+    
+    .user-account {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .user-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+    
+    .dropdown-menu {
+        right: 10px;
+        min-width: 140px;
+    }
+    
+    .dropdown-menu li a {
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) and (max-width: 768px) {
+    .navbar-nav {
+        max-height: 60vh;
+    }
+    
+    .nav-link {
+        padding: 10px 15px;
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo .custom-icon {
+        background-image: url('DROGSINFONDO.png');
+        background-size: contain;
+    }
+}
+
+/* Modo oscuro (si se implementa en el futuro) */
+@media (prefers-color-scheme: dark) {
+    .navbar-custom {
+        background-color: #1a1a2e;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        background-color: var(--accent-color);
+        color: #1a1a2e;
+    }
 }

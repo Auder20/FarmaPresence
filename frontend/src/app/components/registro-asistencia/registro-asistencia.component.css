@@ -1,100 +1,147 @@
+/* Contenedor principal responsivo */
 .asistencia-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 25px 30px;
-  background: #ffffffdd;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.2);
+  max-width: clamp(500px, 90vw, 600px);
+  margin: clamp(20px, 5vw, 40px) auto;
+  padding: clamp(20px, 4vw, 25px) clamp(20px, 5vw, 30px);
+  background: var(--light-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #00407a;
+  color: var(--text-dark);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.asistencia-container:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
 }
 
 .asistencia-container h2 {
   text-align: center;
   font-weight: 900;
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: #2e65a4;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  margin-bottom: clamp(20px, 4vw, 30px);
+  color: var(--secondary-color);
+  line-height: 1.2;
 }
 
+/* Formulario responsivo */
 form {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: clamp(10px, 2vw, 15px);
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 4vw, 30px);
+  padding: clamp(15px, 3vw, 20px);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(5px);
 }
 
 form input[type="text"],
 form select {
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid #4caf50;
-  font-size: 1rem;
-  min-width: 150px;
-  outline-color: #50e3c2;
-  transition: border-color 0.3s ease;
+  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 15px);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--success-color);
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  min-width: clamp(120px, 30vw, 150px);
+  outline-color: var(--accent-color);
+  transition: var(--transition);
+  background: rgba(255, 255, 255, 0.9);
+  box-sizing: border-box;
 }
 
 form input[type="text"]:focus,
 form select:focus {
-  border-color: #31708f;
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 8px rgba(46,101,164,0.3);
 }
 
 form button {
-  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
   border: none;
-  padding: 12px 40px;
+  padding: clamp(10px, 2.5vw, 12px) clamp(30px, 6vw, 40px);
   border-radius: 30px;
   color: white;
   font-weight: 700;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   cursor: pointer;
-  transition: background 0.3s ease;
-  min-width: 160px;
+  transition: var(--transition);
+  min-width: clamp(140px, 35vw, 160px);
+  box-shadow: var(--shadow-light);
 }
 
 form button:hover {
-  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+  background: linear-gradient(45deg, var(--secondary-color), #38b8a1);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-medium);
 }
 
+form button:disabled {
+  background: linear-gradient(45deg, #a5d6a7, #c8e6c9);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Lista de asistencias responsiva */
 ul {
   list-style: none;
   padding: 0;
-  max-height: 320px;
+  max-height: clamp(250px, 50vh, 320px);
   overflow-y: auto;
-  border-top: 2px solid #4caf50;
-  border-radius: 0 0 16px 16px;
+  border-top: 2px solid var(--success-color);
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
 }
 
 li {
-  padding: 15px 20px;
-  border-bottom: 1px solid #e0f2f1;
+  padding: clamp(10px, 2.5vw, 15px) clamp(12px, 3vw, 20px);
+  border-bottom: 1px solid rgba(224, 242, 241, 0.5);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  font-size: 1rem;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  transition: background-color 0.2s ease;
+}
+
+li:hover {
+  background-color: rgba(240, 248, 255, 0.3);
 }
 
 li:last-child {
   border-bottom: none;
 }
 
-/* Estados con color y negrita */
+/* Estados con color y negrita responsivos */
 .presente {
-  color: #556b2f; /* verde oliva oscuro */
+  color: #556b2f;
   font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(154, 205, 50, 0.1);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 .tarde {
-  color: #00796b; /* azul esmeralda */
+  color: #00796b;
   font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(32, 178, 170, 0.1);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 .ausente {
-  color: #b71c1c; /* rojo oscuro */
+  color: #b71c1c;
   font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(231, 76, 60, 0.1);
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
 /* Motivo en cursiva y color gris */
@@ -104,13 +151,38 @@ li:last-child {
   margin-left: 10px;
   flex-basis: 100%;
   margin-top: 5px;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
+/* Responsive para tablets */
+@media (max-width: 992px) {
+  .asistencia-container {
+    margin: 30px auto;
+    padding: 20px 25px;
+  }
+  
+  form {
+    padding: 15px;
+    gap: 12px;
+  }
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .asistencia-container {
+    margin: 20px auto;
+    padding: 15px 20px;
+  }
+  
+  .asistencia-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
   form {
     flex-direction: column;
     gap: 12px;
+    padding: 15px;
   }
 
   form input[type="text"],
@@ -120,42 +192,218 @@ li:last-child {
   }
 
   li {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    padding: 12px 15px;
+  }
+  
+  .presente,
+  .tarde,
+  .ausente {
+    font-size: 0.8rem;
+    padding: 3px 6px;
+  }
+  
+  .motivo {
+    font-size: 0.8rem;
   }
 }
-/* Ajustes para inputs y botones */
-select, input[type="text"], button {
-  border: 1px solid #4CAF50; /* verde suave */
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+  .asistencia-container {
+    margin: 15px auto;
+    padding: 12px 15px;
+  }
+  
+  .asistencia-container h2 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+  }
+  
+  form {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  form input[type="text"],
+  form select,
+  form button {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  
+  ul {
+    max-height: 250px;
+  }
+  
+  li {
+    font-size: 0.85rem;
+    padding: 10px 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .motivo {
+    margin-left: 0;
+    margin-top: 8px;
+  }
 }
 
-button {
-  background-color: #2E7D32; /* verde oscuro */
-  color: white;
+/* Orientación landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) and (max-width: 768px) {
+  .asistencia-container {
+    margin: 10px auto;
+    padding: 10px 15px;
+  }
+  
+  .asistencia-container h2 {
+    margin-bottom: 15px;
+  }
+  
+  form {
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+  
+  ul {
+    max-height: 200px;
+  }
 }
 
-button:disabled {
-  background-color: #a5d6a7; /* verde muy claro */
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-button:hover:not(:disabled) {
-  background-color: #1B5E20; /* verde más oscuro */
+.asistencia-container {
+  animation: fadeInUp 0.5s ease;
 }
 
-/* Tabla asistencias */
+form {
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+ul {
+  animation: fadeInUp 0.7s ease 0.2s both;
+}
+
+li {
+  animation: fadeInUp 0.8s ease both;
+}
+
+li:nth-child(1) { animation-delay: 0.3s; }
+li:nth-child(2) { animation-delay: 0.4s; }
+li:nth-child(3) { animation-delay: 0.5s; }
+li:nth-child(4) { animation-delay: 0.6s; }
+li:nth-child(5) { animation-delay: 0.7s; }
+
+/* Scrollbar personalizado */
+ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+ul::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.5);
+  border-radius: 4px;
+}
+
+ul::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+ul::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Loading state */
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--accent-color);
+  border-top: 2px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Mensaje de vacío */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--secondary-color);
+  font-weight: 600;
+  font-size: clamp(1rem, 2.5vw, 1.1rem);
+}
+
+.empty-state::before {
+  content: '📝';
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+/* Tabla de asistencias (si existe) */
+.tabla-asistencias {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-light);
+}
+
 .tabla-asistencias th {
-  background-color: #C8E6C9; /* verde muy claro para encabezado */
-  color: #1B5E20; /* verde oscuro para texto */
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
+  font-weight: 700;
+  padding: 12px 15px;
+  text-align: left;
 }
 
 .tabla-asistencias td {
-  background-color: #F1F8E9; /* fondo muy suave verde */
+  background-color: #f1f8e9;
+  padding: 10px 15px;
+  border-bottom: 1px solid #e0f2f1;
 }
 
-/* Botón limpiar tabla */
 .tabla-asistencias button {
-  background-color: #C62828; /* rojo oscuro */
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: var(--transition);
 }
 
 .tabla-asistencias button:hover {
-  background-color: #B71C1C; /* rojo más intenso */
+  background-color: #b71c1c;
+  transform: translateY(-1px);
 }

@@ -45,10 +45,20 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().and()
-            .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+        http.cors(cors -> cors.configurationSource(request -> {
+                    org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
+                    configuration.setAllowedOrigins(java.util.Arrays.asList(
+                        "http://localhost:4200",
+                        "https://farma-presence.vercel.app"
+                    ));
+                    configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
+                    configuration.setExposedHeaders(java.util.Arrays.asList("Content-Disposition", "Authorization"));
+                    configuration.setAllowCredentials(true);
+                    return configuration;
+                }))
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/usuario/login", "/auth/**").permitAll()
                 .anyRequest().authenticated()

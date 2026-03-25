@@ -1,175 +1,391 @@
-/* Contenedor principal para centrar el bloque principal */
+/* Contenedor principal responsivo */
 .container-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 0 20px;
+  padding: 0 clamp(10px, 3vw, 20px);
   box-sizing: border-box;
+  min-height: 100vh;
 }
 
 /* Contenedor principal */
 .signin.cf {
   margin: 0 auto;
   width: 100%;
-  padding: 25px;
+  padding: clamp(20px, 5vw, 25px);
   box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #222;
-  background: linear-gradient(135deg, #3a9d9d, #2e65a4);
+  color: var(--text-dark);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   min-height: 100vh;
 }
 
-/* Jumbotron estilo moderno */
+/* Jumbotron estilo moderno responsivo */
 .jumbotron {
   position: relative;
-  width: 80%;
+  width: clamp(85%, 90vw, 80%);
   max-width: 900px;
-  margin: 60px auto 40px auto;
-  padding: 30px 40px;
-  background: #ffffffdd;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.3);
-  color: #00407a;
+  margin: clamp(30px, 6vw, 60px) auto clamp(20px, 4vw, 40px) auto;
+  padding: clamp(20px, 5vw, 40px);
+  background: var(--light-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-medium);
+  color: var(--secondary-color);
   text-align: center;
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.jumbotron:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-heavy);
 }
 
 .jumbotron h1.display-4 {
   font-weight: 900;
-  font-size: 2.8rem;
-  margin-bottom: 15px;
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  margin-bottom: clamp(12px, 3vw, 15px);
+  line-height: 1.2;
 }
 
 .jumbotron h3.display-10 {
   font-weight: 600;
-  font-size: 1.6rem;
-  margin-bottom: 15px;
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  margin-bottom: clamp(12px, 3vw, 15px);
   color: #31708f;
 }
 
 .jumbotron p.lead {
-  font-size: 1.2rem;
+  font-size: clamp(1rem, 3vw, 1.2rem);
   line-height: 1.5;
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 4vw, 30px);
 }
 
 .jumbotron hr.my-4 {
-  border-top: 2px solid #4caf50;
-  width: 60%;
-  margin: 25px auto 0 auto;
+  border-top: 2px solid var(--success-color);
+  width: clamp(40%, 60vw, 60%);
+  margin: clamp(15px, 3vw, 25px) auto 0 auto;
 }
 
-/* Botón consultar empleados */
+/* Botón consultar empleados responsivo */
 .btn-primary {
-  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
   border: none;
   font-weight: 700;
-  padding: 12px 40px;
+  padding: clamp(10px, 2.5vw, 12px) clamp(20px, 5vw, 40px);
   border-radius: 30px;
-  transition: background 0.3s ease;
+  transition: var(--transition);
   cursor: pointer;
   color: white;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
   display: block;
-  margin: 40px auto 50px auto;
-  max-width: 220px;
+  margin: clamp(20px, 4vw, 40px) auto clamp(30px, 5vw, 50px) auto;
+  max-width: clamp(180px, 40vw, 220px);
   text-align: center;
+  box-shadow: var(--shadow-light);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+  background: linear-gradient(45deg, var(--secondary-color), #38b8a1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
 }
 
-/* Contenedor tabla empleados */
+/* Contenedor tabla empleados responsivo */
 .tabla-empleados-container {
-  max-height: 400px;
+  max-height: clamp(300px, 60vh, 400px);
   overflow-y: auto;
   margin-bottom: 20px;
-  padding: 10px 20px;
-  border-radius: 10px;
-  background-color: #fff;
-  box-shadow: 0 8px 24px rgba(46, 101, 164, 0.1);
-  width: 90%;
+  padding: clamp(10px, 2.5vw, 20px);
+  border-radius: var(--border-radius);
+  background-color: white;
+  box-shadow: var(--shadow-light);
+  width: clamp(85%, 95vw, 90%);
   max-width: 1100px;
   margin-left: auto;
   margin-right: auto;
+  backdrop-filter: blur(10px);
 }
 
-/* Tabla empleados */
+/* Tabla empleados responsiva */
 .tabla-empleados-container table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+  min-width: 600px;
 }
 
 .tabla-empleados-container th,
 .tabla-empleados-container td {
-  padding: 12px 15px;
-  border: 1px solid #4caf50;
+  padding: clamp(8px, 2vw, 12px) clamp(10px, 2.5vw, 15px);
+  border: 1px solid var(--success-color);
   text-align: left;
   vertical-align: middle;
   word-wrap: break-word;
 }
 
 .tabla-empleados-container th {
-  background-color: #50e3c2;
-  color: #00407a;
+  background-color: var(--accent-color);
+  color: var(--secondary-color);
   font-weight: 700;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .tabla-empleados-container tr:nth-child(even) {
   background-color: #f9fdfd;
 }
 
-/* Botones dentro de la tabla */
+.tabla-empleados-container tr:hover {
+  background-color: #f0f8f0;
+  transition: background-color 0.2s ease;
+}
+
+/* Botones dentro de la tabla responsivos */
 .tabla-empleados-container button {
-  padding: 8px 18px;
-  border-radius: 30px;
-  background: linear-gradient(45deg, #3a9d9d, #50e3c2);
+  padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 18px);
+  border-radius: 20px;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
   border: none;
   color: white;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition);
+  font-size: clamp(0.75rem, 2vw, 0.9rem);
+  margin: 2px;
+  white-space: nowrap;
 }
 
 .tabla-empleados-container button:hover {
-  background: linear-gradient(45deg, #2e65a4, #38b8a1);
+  background: linear-gradient(45deg, var(--secondary-color), #38b8a1);
+  transform: translateY(-1px);
 }
 
-/* Botón cerrar lista */
+/* Botón cerrar lista responsivo */
 .btn-cerrar-lista {
   display: block;
   margin: 15px auto 0 auto;
-  max-width: 150px;
+  max-width: clamp(120px, 30vw, 150px);
   text-align: center;
-  padding: 10px 0;
-  border-radius: 30px;
-  background: #dc3545;
+  padding: clamp(8px, 2vw, 10px) 0;
+  border-radius: 20px;
+  background: var(--danger-color);
   color: white;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: var(--transition);
   border: none;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
 }
 
 .btn-cerrar-lista:hover {
   background: #a71d2a;
+  transform: translateY(-1px);
 }
 
-/* Responsive */
+/* Responsive para tablets */
+@media (max-width: 992px) {
+  .jumbotron {
+    width: 90%;
+    padding: 30px;
+    margin: 40px auto 30px auto;
+  }
+  
+  .tabla-empleados-container {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .tabla-empleados-container th,
+  .tabla-empleados-container td {
+    font-size: 0.85rem;
+    padding: 10px 12px;
+  }
+}
+
+/* Responsive para móviles */
 @media (max-width: 768px) {
+  .container-main {
+    padding: 0 15px;
+  }
+  
+  .signin.cf {
+    padding: 20px 15px;
+  }
+  
   .jumbotron {
     width: 95%;
     padding: 20px;
+    margin: 30px auto 20px auto;
   }
+  
+  .jumbotron h1.display-4 {
+    font-size: 1.8rem;
+  }
+  
+  .jumbotron h3.display-10 {
+    font-size: 1.3rem;
+  }
+  
+  .jumbotron p.lead {
+    font-size: 1rem;
+  }
+  
   .tabla-empleados-container {
     width: 100%;
-    padding: 10px 10px;
+    padding: 10px;
+    max-height: 350px;
   }
+  
   .tabla-empleados-container th,
   .tabla-empleados-container td {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     padding: 8px 10px;
   }
+  
+  /* Scroll horizontal para tablas en móviles */
+  .tabla-empleados-container {
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  
+  .tabla-empleados-container table {
+    min-width: 500px;
+  }
+}
+
+/* Responsive para móviles pequeños */
+@media (max-width: 480px) {
+  .container-main {
+    padding: 0 10px;
+  }
+  
+  .signin.cf {
+    padding: 15px 10px;
+  }
+  
+  .jumbotron {
+    width: 98%;
+    padding: 15px;
+    margin: 20px auto 15px auto;
+  }
+  
+  .jumbotron h1.display-4 {
+    font-size: 1.5rem;
+  }
+  
+  .jumbotron h3.display-10 {
+    font-size: 1.1rem;
+  }
+  
+  .jumbotron p.lead {
+    font-size: 0.9rem;
+  }
+  
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    margin: 15px auto 20px auto;
+  }
+  
+  .tabla-empleados-container {
+    padding: 8px;
+    max-height: 300px;
+  }
+  
+  .tabla-empleados-container th,
+  .tabla-empleados-container td {
+    font-size: 0.75rem;
+    padding: 6px 8px;
+  }
+  
+  .tabla-empleados-container button {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .btn-cerrar-lista {
+    padding: 6px 0;
+    font-size: 0.8rem;
+  }
+}
+
+/* Orientación landscape en móviles */
+@media (max-height: 600px) and (orientation: landscape) and (max-width: 768px) {
+  .jumbotron {
+    margin: 20px auto 15px auto;
+    padding: 15px;
+  }
+  
+  .tabla-empleados-container {
+    max-height: 250px;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jumbotron {
+  animation: fadeInUp 0.6s ease;
+}
+
+.tabla-empleados-container {
+  animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+/* Scrollbar personalizado para tabla */
+.tabla-empleados-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tabla-empleados-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tabla-empleados-container::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.tabla-empleados-container::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color);
+}
+
+/* Loading state */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.loading::after {
+  content: '';
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--accent-color);
+  border-top: 2px solid var(--secondary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
