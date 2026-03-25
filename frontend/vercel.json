@@ -1,11 +1,10 @@
 {
   "buildCommand": "npm run build:prod",
-  "outputDirectory": "dist/pharmacy-project",
+  "outputDirectory": "dist/pharmacy-project/browser",
   "routes": [
-    {
-      "src": "/[^.]+",
-      "dest": "/index.html",
-      "status": 200
-    }
+    { "handle": "filesystem" },
+    { "src": "/(.*)",
+     "dest": "/index.html",
+      "status": 200 }
   ]
 }
