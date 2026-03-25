@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build:prod",
-  "outputDirectory": "dist/pharmacy-project/browser",
+  "outputDirectory": "dist/pharmacy-project",
   "routes": [
     {
       "src": "/[^.]+",
