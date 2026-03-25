@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Component
-public class DataSeeder implements CommandLineRunner {
+public class Dataseeder implements CommandLineRunner {
 
     private final Usuario_Repository usuarioRepository;
     private final Empleado_Repository empleadoRepository;
@@ -24,7 +24,7 @@ public class DataSeeder implements CommandLineRunner {
     private final TurnoProgramado_Repository turnoProgramadoRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataSeeder(Usuario_Repository usuarioRepository,
+    public Dataseeder(Usuario_Repository usuarioRepository,
                       Empleado_Repository empleadoRepository,
                       Horario_Repository horarioRepository,
                       TurnoProgramado_Repository turnoProgramadoRepository,
