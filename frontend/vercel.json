@@ -1,14 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist/pharmacy-project/browser"
-      }
-    }
-  ],
+  "buildCommand": "npm run build:prod",
+  "outputDirectory": "dist/pharmacy-project/browser",
+  "cleanUrls": false,
+  "trailingSlash": true,
   "routes": [
     {
       "src": "/(.*)",
