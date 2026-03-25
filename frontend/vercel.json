@@ -1,12 +1,10 @@
 {
   "buildCommand": "npm run build:prod",
   "outputDirectory": "dist/pharmacy-project/browser",
-  "cleanUrls": false,
-  "trailingSlash": true,
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
