@@ -31,7 +31,7 @@
       "destination": "/static/$1"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!assets|static).*)",
       "destination": "/index.html"
     }
   ]
