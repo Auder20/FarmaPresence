@@ -11,7 +11,6 @@ import { EditarPerfilComponent } from './components/usuario/editar-perfil.compon
 import { AgregarUsuarioComponent } from './components/usuario/agregar-usuario.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AuthGuard } from './services/auth.guard';
-import { RedirectGuard } from './guards/redirect.guard';
 import { TurnoProgramadoComponent } from './components/turno-programado/turno-programado.component';
 
 const routes: Routes = [
@@ -29,8 +28,8 @@ const routes: Routes = [
   // Ruta pública para login
   { path: 'login', component: LoginComponent },
 
-  // Redirección condicional por defecto
-  { path: '', canActivate: [RedirectGuard], component: LoginComponent },
+  // Ruta raíz redirige directo a login
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
   // Ruta comodín para cualquier ruta no definida
   { path: '**', redirectTo: '/login' }
