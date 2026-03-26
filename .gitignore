@@ -47,3 +47,4 @@ application-*.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+vercel.json
