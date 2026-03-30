@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Empleado {
   id: number;
@@ -28,7 +29,7 @@ export interface Horario {
   providedIn: 'root'
 })
 export class TurnoProgramadoService {
-  private baseUrl = 'https://prueba-ylpz.onrender.com/turnoProgramado';
+  private baseUrl = environment.apiUrl + '/turnoProgramado';
 
   constructor(private http: HttpClient) {}
 

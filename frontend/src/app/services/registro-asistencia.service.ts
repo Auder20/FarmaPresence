@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 // Interface para envío de datos al backend
 export interface NuevaAsistencia {
@@ -26,12 +27,13 @@ export interface Reporte {
 })
 export class RegistroAsistenciaService {
   // URL para el registro manual en controlador asistenciaManual
-private urlRegistrarManual = 'https://prueba-ylpz.onrender.com/asistencia/manual/registrarIngreso';
-private urlEvaluarEntrada = 'https://prueba-ylpz.onrender.com/asistencia/manual/evaluar-hora-entrada';
+private baseUrl = environment.apiUrl;
+private urlRegistrarManual = this.baseUrl + '/asistencia/manual/registrarIngreso';
+private urlEvaluarEntrada = this.baseUrl + '/asistencia/manual/evaluar-hora-entrada';
 
   // URL para obtener registros y para la huella en controlador asistenciaHuella
-  private urlRegistrosHuella = 'https://prueba-ylpz.onrender.com/asistenciaHuella/todas';
-  private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistenciaHuella/entrada';
+  private urlRegistrosHuella = this.baseUrl + '/asistenciaHuella/todas';
+  private urlRegistrarHuella = this.baseUrl + '/asistenciaHuella/entrada';
 
 
   constructor(private http: HttpClient) {}

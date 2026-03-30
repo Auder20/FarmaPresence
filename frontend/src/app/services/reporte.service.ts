@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface Empleado {
   id: number;
@@ -24,7 +25,7 @@ export interface Reporte {
   providedIn: 'root'
 })
 export class ReporteService {
-  private baseUrl = 'https://prueba-ylpz.onrender.com'; // Cambia si tu API está en otro host/puerto
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

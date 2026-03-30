@@ -2,18 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegistroEmpleadosService {
 
-  private apiUrl = 'https://prueba-ylpz.onrender.com/empleado'; // Ajusta la URL según sea necesario
-  private apiUrlRegsitrarEmpeleado = 'https://prueba-ylpz.onrender.com/empleado/registrar'; // Cambia la URL al endpoint correcto de tu backend
-  private apiUrlHorarios = 'https://prueba-ylpz.onrender.com/horarios'; // URL para horarios
-  private apiUrlAsistencia = 'https://prueba-ylpz.onrender.com/asistencia'; // URL para asistencia
-  private apiUrlRegistrarhuella = 'https://prueba-ylpz.onrender.com/empleado/registrarHuella';
-  private urlRegistrarHuella = 'https://prueba-ylpz.onrender.com/asistencia/huella/entrada';
+  private baseUrl = environment.apiUrl;
+  private apiUrl = this.baseUrl + '/empleado';
+  private apiUrlRegsitrarEmpeleado = this.baseUrl + '/empleado/registrar';
+  private apiUrlHorarios = this.baseUrl + '/horarios';
+  private apiUrlAsistencia = this.baseUrl + '/asistencia';
+  private apiUrlRegistrarhuella = this.baseUrl + '/empleado/registrarHuella';
+  private urlRegistrarHuella = this.baseUrl + '/asistencia/huella/entrada';
 
 
   constructor(private http: HttpClient) {}
