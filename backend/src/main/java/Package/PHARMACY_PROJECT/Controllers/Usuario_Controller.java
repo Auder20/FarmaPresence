@@ -248,9 +248,7 @@ public ResponseEntity<Response<UsuarioDTO>> update(@PathVariable Long id, @Reque
         Response<UsuarioDTO> response = new Response<>("404", "Usuario no encontrado con ID: " + id, null, "USER_NOT_FOUND");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
-}
-
-    @GetMapping("/{id}")
+@GetMapping("/{id}")
     public ResponseEntity<Response<UsuarioDTO>> getUsuarioById(@PathVariable Long id) {
         Optional<Usuario_Model> usuario = usersServices.findById(id);
 
