@@ -14,6 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -44,37 +50,39 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:4200",
+            "https://farma-presence.vercel.app"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(Arrays.asList("Content-Disposition", "Authorization"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.configurationSource(request -> {
-                    org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-                    configuration.setAllowedOrigins(java.util.Arrays.asList(
-                        "http://localhost:4200",
-                        "https://farma-presence.vercel.app",
-                        "https://farmapresence.onrender.com"
-                    ));
-                    configuration.setAllowedMethods(java.util.Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    configuration.setAllowedHeaders(java.util.Arrays.asList("*"));
-                    configuration.setExposedHeaders(java.util.Arrays.asList("Content-Disposition", "Authorization"));
-                    configuration.setAllowCredentials(true);
-                    return configuration;
-                }))
+        http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Endpoints públicos que no requieren autenticación
-                .requestMatchers("/usuario/login", "/usuario/health", "/auth/**", "/public/**", "/health", "/actuator/health").permitAll()
-                // Endpoints de desarrollo (si es necesario)
-                .requestMatchers("/h2-console/**", "/error").permitAll()
-                // Permitir acceso a recursos estáticos
+                .requestMatchers("/usuario/login", "/usuario/health", "/auth/**", "/public/**").permitAll()
+                .requestMatchers("/health", "/actuator/**").permitAll()
+                .requestMatchers("/error", "/h2-console/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
-                // Todos los demás endpoints requieren autenticación
                 .anyRequest().authenticated()
             )
-            // Deshabilitar frame options para H2 console (si se usa)
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        
+
         return http.build();
     }
 }

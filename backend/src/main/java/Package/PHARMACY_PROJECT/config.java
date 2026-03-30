@@ -1,23 +1,9 @@
 package Package.PHARMACY_PROJECT;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+// CORS manejado exclusivamente en SecurityConfig.java via CorsConfigurationSource bean.
 
 @Configuration
-public class config implements WebMvcConfigurer {
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://localhost:4200", // Para desarrollo local
-                        "https://farma-presence.vercel.app", // Dominio desplegado en Vercel (sin barra al final)
-                        "https://farmapresence.onrender.com" // Dominio del backend en Render
-                )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Métodos permitidos
-                .allowedHeaders("*") // Permitir todos los encabezados
-                .exposedHeaders("Content-Disposition", "Authorization") // Exponer encabezados
-                .allowCredentials(true); // Permitir envío de cookies o credenciales si es necesario
-    }
+public class config {
 }
