@@ -38,6 +38,14 @@ public class Dataseeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        // Esperar un momento para que la aplicación esté completamente lista
+        try {
+            Thread.sleep(5000); // 5 segundos de retraso
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         try {
             // Solo siembra si no hay datos ya cargados
             if (usuarioRepository.count() > 0) {
@@ -181,6 +189,7 @@ public class Dataseeder implements CommandLineRunner {
         } catch (Exception e) {
             System.out.println("[DataSeeder] Error al ejecutar el seed: " + e.getMessage());
             System.out.println("[DataSeeder] La aplicación continuará ejecutándose normalmente.");
+            // No relanzar la excepción para que la aplicación continúe
         }
     }
 }
