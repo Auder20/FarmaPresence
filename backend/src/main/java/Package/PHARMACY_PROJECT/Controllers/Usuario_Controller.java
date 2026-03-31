@@ -65,12 +65,15 @@ public class Usuario_Controller {
     @PostMapping("/init-data")
     public ResponseEntity<Response<String>> initializeData() {
         try {
-            // Verificar si ya hay datos
-            if (usersServices.findAll().size() > 0) {
-                return ResponseEntity.ok(new Response<>("200", "Los datos ya existen", null, "DATA_EXISTS"));
+            // Forzar recreación del usuario admin
+            List<Usuario_Model> usuarios = usersServices.findAll();
+            
+            // Eliminar usuarios existentes para evitar conflictos
+            for (Usuario_Model user : usuarios) {
+                usersServices.deleteById(user.getId());
             }
-
-            // Crear usuario admin
+            
+            // Crear usuario admin con credenciales conocidas
             Usuario_Model admin = new Usuario_Model();
             admin.setNombreCompleto("Administrador Farmacenter");
             admin.setUsername("admin");
@@ -80,7 +83,7 @@ public class Usuario_Controller {
             admin.setTelefono("3000000001");
             usersServices.save(admin);
 
-            return ResponseEntity.ok(new Response<>("200", "Datos inicializados correctamente", null, "DATA_INITIALIZED"));
+            return ResponseEntity.ok(new Response<>("200", "Usuario admin recreado correctamente", null, "DATA_INITIALIZED"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new Response<>("500", "Error al inicializar datos: " + e.getMessage(), null, "INIT_ERROR"));
