@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Component
 public class Dataseeder implements CommandLineRunner {
@@ -57,8 +58,9 @@ public class Dataseeder implements CommandLineRunner {
                 System.out.println("[DataSeeder] Iniciando seed de datos de ejemplo (modo idempotente)...");
 
                 // ── 1. HORARIOS ──────────────────────────────────────────────
-                Horario_Model horarioManana = horarioRepository.findByDescripcion("Turno Mañana");
-                if (horarioManana == null) {
+                Optional<Horario_Model> horarioMananaOpt = horarioRepository.findByDescripcion("Turno Mañana");
+                Horario_Model horarioManana;
+                if (horarioMananaOpt.isEmpty()) {
                     horarioManana = new Horario_Model();
                     horarioManana.setDescripcion("Turno Mañana");
                     horarioManana.setHoraInicio1(LocalTime.of(7, 0));
@@ -68,11 +70,13 @@ public class Dataseeder implements CommandLineRunner {
                     horarioRepository.save(horarioManana);
                     System.out.println("[DataSeeder] ✅ Horario 'Turno Mañana' creado");
                 } else {
+                    horarioManana = horarioMananaOpt.get();
                     System.out.println("[DataSeeder] ⏭️ Horario 'Turno Mañana' ya existe, omitiendo");
                 }
 
-                Horario_Model horarioTarde = horarioRepository.findByDescripcion("Turno Tarde");
-                if (horarioTarde == null) {
+                Optional<Horario_Model> horarioTardeOpt = horarioRepository.findByDescripcion("Turno Tarde");
+                Horario_Model horarioTarde;
+                if (horarioTardeOpt.isEmpty()) {
                     horarioTarde = new Horario_Model();
                     horarioTarde.setDescripcion("Turno Tarde");
                     horarioTarde.setHoraInicio1(LocalTime.of(13, 0));
@@ -82,11 +86,13 @@ public class Dataseeder implements CommandLineRunner {
                     horarioRepository.save(horarioTarde);
                     System.out.println("[DataSeeder] ✅ Horario 'Turno Tarde' creado");
                 } else {
+                    horarioTarde = horarioTardeOpt.get();
                     System.out.println("[DataSeeder] ⏭️ Horario 'Turno Tarde' ya existe, omitiendo");
                 }
 
-                Horario_Model horarioCompleto = horarioRepository.findByDescripcion("Turno Completo");
-                if (horarioCompleto == null) {
+                Optional<Horario_Model> horarioCompletoOpt = horarioRepository.findByDescripcion("Turno Completo");
+                Horario_Model horarioCompleto;
+                if (horarioCompletoOpt.isEmpty()) {
                     horarioCompleto = new Horario_Model();
                     horarioCompleto.setDescripcion("Turno Completo");
                     horarioCompleto.setHoraInicio1(LocalTime.of(8, 0));
@@ -96,12 +102,14 @@ public class Dataseeder implements CommandLineRunner {
                     horarioRepository.save(horarioCompleto);
                     System.out.println("[DataSeeder] ✅ Horario 'Turno Completo' creado");
                 } else {
+                    horarioCompleto = horarioCompletoOpt.get();
                     System.out.println("[DataSeeder] ⏭️ Horario 'Turno Completo' ya existe, omitiendo");
                 }
 
                 // ── 2. EMPLEADOS ─────────────────────────────────────────────
-                Empleado_Model emp1 = empleadoRepository.findByIdentificacion("1001234567");
-                if (emp1 == null) {
+                Optional<Empleado_Model> emp1Opt = empleadoRepository.findByIdentificacion("1001234567");
+                Empleado_Model emp1;
+                if (emp1Opt.isEmpty()) {
                     emp1 = new Empleado_Model();
                     emp1.setNombre("Carlos Andrés Pérez");
                     emp1.setIdentificacion("1001234567");
@@ -115,11 +123,13 @@ public class Dataseeder implements CommandLineRunner {
                     empleadoRepository.save(emp1);
                     System.out.println("[DataSeeder] ✅ Empleado 'Carlos Andrés Pérez' creado");
                 } else {
+                    emp1 = emp1Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Empleado 'Carlos Andrés Pérez' ya existe, omitiendo");
                 }
 
-                Empleado_Model emp2 = empleadoRepository.findByIdentificacion("1009876543");
-                if (emp2 == null) {
+                Optional<Empleado_Model> emp2Opt = empleadoRepository.findByIdentificacion("1009876543");
+                Empleado_Model emp2;
+                if (emp2Opt.isEmpty()) {
                     emp2 = new Empleado_Model();
                     emp2.setNombre("Laura Sofía Martínez");
                     emp2.setIdentificacion("1009876543");
@@ -133,11 +143,13 @@ public class Dataseeder implements CommandLineRunner {
                     empleadoRepository.save(emp2);
                     System.out.println("[DataSeeder] ✅ Empleado 'Laura Sofía Martínez' creado");
                 } else {
+                    emp2 = emp2Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Empleado 'Laura Sofía Martínez' ya existe, omitiendo");
                 }
 
-                Empleado_Model emp3 = empleadoRepository.findByIdentificacion("1112233445");
-                if (emp3 == null) {
+                Optional<Empleado_Model> emp3Opt = empleadoRepository.findByIdentificacion("1112233445");
+                Empleado_Model emp3;
+                if (emp3Opt.isEmpty()) {
                     emp3 = new Empleado_Model();
                     emp3.setNombre("Jhon Sebastián Gómez");
                     emp3.setIdentificacion("1112233445");
@@ -151,11 +163,13 @@ public class Dataseeder implements CommandLineRunner {
                     empleadoRepository.save(emp3);
                     System.out.println("[DataSeeder] ✅ Empleado 'Jhon Sebastián Gómez' creado");
                 } else {
+                    emp3 = emp3Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Empleado 'Jhon Sebastián Gómez' ya existe, omitiendo");
                 }
 
-                Empleado_Model emp4 = empleadoRepository.findByIdentificacion("1005566778");
-                if (emp4 == null) {
+                Optional<Empleado_Model> emp4Opt = empleadoRepository.findByIdentificacion("1005566778");
+                Empleado_Model emp4;
+                if (emp4Opt.isEmpty()) {
                     emp4 = new Empleado_Model();
                     emp4.setNombre("María Camila Torres");
                     emp4.setIdentificacion("1005566778");
@@ -169,12 +183,14 @@ public class Dataseeder implements CommandLineRunner {
                     empleadoRepository.save(emp4);
                     System.out.println("[DataSeeder] ✅ Empleado 'María Camila Torres' creado");
                 } else {
+                    emp4 = emp4Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Empleado 'María Camila Torres' ya existe, omitiendo");
                 }
 
                 // ── 3. TURNOS PROGRAMADOS ─────────────────────────────────────
-                TurnoProgramado_Model turno1 = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp1.getId(), LocalDate.now().plusDays(1));
-                if (turno1 == null) {
+                Optional<TurnoProgramado_Model> turno1Opt = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp1.getId(), LocalDate.now().plusDays(1));
+                TurnoProgramado_Model turno1;
+                if (turno1Opt.isEmpty()) {
                     turno1 = new TurnoProgramado_Model();
                     turno1.setFecha(LocalDate.now().plusDays(1));
                     turno1.setHoraInicio(LocalTime.of(7, 0));
@@ -183,11 +199,13 @@ public class Dataseeder implements CommandLineRunner {
                     turnoProgramadoRepository.save(turno1);
                     System.out.println("[DataSeeder] ✅ Turno para 'Carlos Andrés Pérez' creado");
                 } else {
+                    turno1 = turno1Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Turno para 'Carlos Andrés Pérez' ya existe, omitiendo");
                 }
 
-                TurnoProgramado_Model turno2 = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp2.getId(), LocalDate.now().plusDays(1));
-                if (turno2 == null) {
+                Optional<TurnoProgramado_Model> turno2Opt = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp2.getId(), LocalDate.now().plusDays(1));
+                TurnoProgramado_Model turno2;
+                if (turno2Opt.isEmpty()) {
                     turno2 = new TurnoProgramado_Model();
                     turno2.setFecha(LocalDate.now().plusDays(1));
                     turno2.setHoraInicio(LocalTime.of(13, 0));
@@ -196,11 +214,13 @@ public class Dataseeder implements CommandLineRunner {
                     turnoProgramadoRepository.save(turno2);
                     System.out.println("[DataSeeder] ✅ Turno para 'Laura Sofía Martínez' creado");
                 } else {
+                    turno2 = turno2Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Turno para 'Laura Sofía Martínez' ya existe, omitiendo");
                 }
 
-                TurnoProgramado_Model turno3 = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp3.getId(), LocalDate.now().plusDays(2));
-                if (turno3 == null) {
+                Optional<TurnoProgramado_Model> turno3Opt = turnoProgramadoRepository.findByEmpleadoIdAndFecha(emp3.getId(), LocalDate.now().plusDays(2));
+                TurnoProgramado_Model turno3;
+                if (turno3Opt.isEmpty()) {
                     turno3 = new TurnoProgramado_Model();
                     turno3.setFecha(LocalDate.now().plusDays(2));
                     turno3.setHoraInicio(LocalTime.of(8, 0));
@@ -209,12 +229,14 @@ public class Dataseeder implements CommandLineRunner {
                     turnoProgramadoRepository.save(turno3);
                     System.out.println("[DataSeeder] ✅ Turno para 'Jhon Sebastián Gómez' creado");
                 } else {
+                    turno3 = turno3Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Turno para 'Jhon Sebastián Gómez' ya existe, omitiendo");
                 }
 
                 // ── 4. USUARIOS ───────────────────────────────────────────────
-                Usuario_Model admin = usuarioRepository.findByUsername("admin");
-                if (admin == null) {
+                Optional<Usuario_Model> adminOpt = usuarioRepository.findByUsername("admin");
+                Usuario_Model admin;
+                if (adminOpt.isEmpty()) {
                     admin = new Usuario_Model();
                     admin.setNombreCompleto("Administrador Farmacenter");
                     admin.setUsername("admin");
@@ -225,11 +247,13 @@ public class Dataseeder implements CommandLineRunner {
                     usuarioRepository.save(admin);
                     System.out.println("[DataSeeder] ✅ Usuario 'admin' creado");
                 } else {
+                    admin = adminOpt.get();
                     System.out.println("[DataSeeder] ⏭️ Usuario 'admin' ya existe, omitiendo");
                 }
 
-                Usuario_Model user1 = usuarioRepository.findByUsername("caperez");
-                if (user1 == null) {
+                Optional<Usuario_Model> user1Opt = usuarioRepository.findByUsername("caperez");
+                Usuario_Model user1;
+                if (user1Opt.isEmpty()) {
                     user1 = new Usuario_Model();
                     user1.setNombreCompleto("Carlos Andrés Pérez");
                     user1.setUsername("caperez");
@@ -240,11 +264,13 @@ public class Dataseeder implements CommandLineRunner {
                     usuarioRepository.save(user1);
                     System.out.println("[DataSeeder] ✅ Usuario 'caperez' creado");
                 } else {
+                    user1 = user1Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Usuario 'caperez' ya existe, omitiendo");
                 }
 
-                Usuario_Model user2 = usuarioRepository.findByUsername("lsmartinez");
-                if (user2 == null) {
+                Optional<Usuario_Model> user2Opt = usuarioRepository.findByUsername("lsmartinez");
+                Usuario_Model user2;
+                if (user2Opt.isEmpty()) {
                     user2 = new Usuario_Model();
                     user2.setNombreCompleto("Laura Sofía Martínez");
                     user2.setUsername("lsmartinez");
@@ -255,6 +281,7 @@ public class Dataseeder implements CommandLineRunner {
                     usuarioRepository.save(user2);
                     System.out.println("[DataSeeder] ✅ Usuario 'lsmartinez' creado");
                 } else {
+                    user2 = user2Opt.get();
                     System.out.println("[DataSeeder] ⏭️ Usuario 'lsmartinez' ya existe, omitiendo");
                 }
 
