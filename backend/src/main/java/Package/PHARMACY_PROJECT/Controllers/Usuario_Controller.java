@@ -113,6 +113,35 @@ public class Usuario_Controller {
         }
     }
 
+    @PostMapping("/force-seed")
+    public ResponseEntity<Response<String>> forceSeed() {
+        try {
+            // Obtener el Dataseeder del contexto y ejecutarlo
+            Dataseeder dataseeder = new Dataseeder(
+                usuarioRepository,
+                empleadoRepository, 
+                horarioRepository,
+                turnoProgramadoRepository,
+                passwordEncoder
+            );
+            
+            // Ejecutar en un thread separado para no bloquear
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000); // Pequeña espera
+                    dataseeder.run();
+                } catch (Exception e) {
+                    System.out.println("[ForceSeed] Error: " + e.getMessage());
+                }
+            }).start();
+            
+            return ResponseEntity.ok(new Response<>("200", "Dataseeder ejecutándose en segundo plano. Verifica en 30 segundos.", null, "SEED_STARTED"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response<>("500", "Error al forzar seed: " + e.getMessage(), null, "FORCE_SEED_ERROR"));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Response<Map<String, Object>>> login(
             @RequestBody Usuario_Model loginRequest,

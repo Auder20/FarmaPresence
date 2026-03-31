@@ -18,6 +18,24 @@ public class PharmacyProjectApplication {
 		// Invocación manual del servicio e PUERTO COM  (solo si @PostConstruct no funciona)
 		/*SerialReaderService serialReaderService = context.getBean(SerialReaderService.class);
 		serialReaderService.startSerialCommunication();¨*/
+		
+		// Forzar ejecución del Dataseeder si no se ejecuta automáticamente
+		try {
+		    Dataseeder dataseeder = context.getBean(Dataseeder.class);
+		    System.out.println("[Main] Dataseeder encontrado, ejecutando manualmente...");
+		    new Thread(() -> {
+		        try {
+		            Thread.sleep(15000); // Esperar 15 segundos para que todo esté listo
+		            dataseeder.run();
+		        } catch (InterruptedException e) {
+		            Thread.currentThread().interrupt();
+		        } catch (Exception e) {
+		            System.out.println("[Main] Error ejecutando Dataseeder manualmente: " + e.getMessage());
+		        }
+		    }).start();
+		} catch (Exception e) {
+		    System.out.println("[Main] Dataseeder no encontrado o error: " + e.getMessage());
+		}
 	}
 
 }
