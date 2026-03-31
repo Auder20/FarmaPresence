@@ -62,6 +62,31 @@ public class Usuario_Controller {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/init-data")
+    public ResponseEntity<Response<String>> initializeData() {
+        try {
+            // Verificar si ya hay datos
+            if (usuarioRepository.count() > 0) {
+                return ResponseEntity.ok(new Response<>("200", "Los datos ya existen", null, "DATA_EXISTS"));
+            }
+
+            // Crear usuario admin
+            Usuario_Model admin = new Usuario_Model();
+            admin.setNombreCompleto("Administrador Farmacenter");
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("Admin123"));
+            admin.setCorreoElectronico("admin@farmacenter.com");
+            admin.setRol("ADMIN");
+            admin.setTelefono("3000000001");
+            usuarioRepository.save(admin);
+
+            return ResponseEntity.ok(new Response<>("200", "Datos inicializados correctamente", null, "DATA_INITIALIZED"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response<>("500", "Error al inicializar datos: " + e.getMessage(), null, "INIT_ERROR"));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Response<Map<String, Object>>> login(
             @RequestBody Usuario_Model loginRequest,

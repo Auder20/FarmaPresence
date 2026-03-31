@@ -71,7 +71,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/usuario/login", "/usuario/health", "/auth/**", "/public/**").permitAll()
+                .requestMatchers("/", "/usuario/login", "/usuario/health", "/usuario/init-data", "/auth/**", "/public/**").permitAll()
                 .requestMatchers("/health", "/actuator/**").permitAll()
                 .requestMatchers("/error", "/h2-console/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
