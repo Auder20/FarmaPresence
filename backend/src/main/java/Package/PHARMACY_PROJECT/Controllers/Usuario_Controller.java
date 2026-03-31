@@ -66,7 +66,7 @@ public class Usuario_Controller {
     public ResponseEntity<Response<String>> initializeData() {
         try {
             // Verificar si ya hay datos
-            if (usuarioRepository.count() > 0) {
+            if (usersServices.findAll().size() > 0) {
                 return ResponseEntity.ok(new Response<>("200", "Los datos ya existen", null, "DATA_EXISTS"));
             }
 
@@ -78,7 +78,7 @@ public class Usuario_Controller {
             admin.setCorreoElectronico("admin@farmacenter.com");
             admin.setRol("ADMIN");
             admin.setTelefono("3000000001");
-            usuarioRepository.save(admin);
+            usersServices.save(admin);
 
             return ResponseEntity.ok(new Response<>("200", "Datos inicializados correctamente", null, "DATA_INITIALIZED"));
         } catch (Exception e) {
