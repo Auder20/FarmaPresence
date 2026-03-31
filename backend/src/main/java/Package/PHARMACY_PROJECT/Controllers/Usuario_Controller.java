@@ -87,6 +87,29 @@ public class Usuario_Controller {
         }
     }
 
+    @GetMapping("/debug-users")
+    public ResponseEntity<Response<String>> debugUsers() {
+        try {
+            List<Usuario_Model> usuarios = usersServices.findAll();
+            StringBuilder info = new StringBuilder();
+            info.append("Total usuarios: ").append(usuarios.size()).append("\n");
+            
+            for (Usuario_Model user : usuarios) {
+                info.append("ID: ").append(user.getId())
+                    .append(", Username: ").append(user.getUsername())
+                    .append(", Email: ").append(user.getCorreoElectronico())
+                    .append(", Rol: ").append(user.getRol())
+                    .append(", PasswordHash: ").append(user.getPassword() != null ? "YES" : "NO")
+                    .append("\n");
+            }
+            
+            return ResponseEntity.ok(new Response<>("200", info.toString(), null, "DEBUG_INFO"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new Response<>("500", "Error: " + e.getMessage(), null, "DEBUG_ERROR"));
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<Response<Map<String, Object>>> login(
             @RequestBody Usuario_Model loginRequest,
