@@ -154,7 +154,7 @@ Los reportes se generan en el backend con iTextPDF e incluyen tablas con estadí
 
 Proyecto funcional desarrollado como sistema real para una droguería. Actualmente desplegado en producción. Algunas mejoras pendientes:
 
-- [ ] Implementar JWT para autenticación stateless
+- [x] JWT para autenticación stateless (IMPLEMENTADO)
 - [ ] Agregar paginación en listados
 - [ ] Mejorar manejo de errores en el frontend
 - [ ] Tests unitarios en el frontend
